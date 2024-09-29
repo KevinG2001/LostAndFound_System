@@ -6,10 +6,10 @@ function Navbar() {
       <div className={Styles.navContainer}>
         <div className={Styles.navWrapper}>
           <div className={Styles.navHeader}>Header</div>
-          <div className={Styles.navLinks}>
-            <div>Dashboard</div>
-            <div>Items</div>
-            <div>Tickets</div>
+          <div className={Styles.navLinkWrapper}>
+            <div className={Styles.navLink}>Dashboard</div>
+            <div className={Styles.navLink}>Items</div>
+            <div className={Styles.navLink}>Tickets</div>
           </div>
           <div className={Styles.navFooter}>Footer</div>
         </div>

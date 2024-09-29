@@ -1,10 +1,10 @@
+@import "./variables/colours.module.scss";
+
 .navbarContainer {
   display: flex;
   flex-direction: column;
   height: 100vh;
   width: 250px;
-  background-color: lightgray;
-  border-right: 2px solid black;
 }
 
 .navWrapper {
@@ -14,4 +14,13 @@
   align-items: center;
   height: 100%;
   width: 250px;
+  background-color: $primary-bg-colour;
+}
+
+.navLink {
+  padding: 10px 16px;
+  margin: 10px;
+  border-radius: 25px;
+  background-color: $Accent-colour;
+  text-align: center;
 }
