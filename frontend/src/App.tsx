@@ -3,13 +3,23 @@
 
 import "./App.css";
 import Navbar from "./components/Navbar";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
+import Dashboard from "./pages/Dashboard";
+import Items from "./pages/Items";
 
 function App() {
   return (
     <>
       <div id="root">
-        <Navbar />
-        <div>This will be the landing page</div>
+        <Router>
+          {" "}
+          {/* Wrap everything in HashRouter */}
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/items" element={<Items />} />
+          </Routes>
+        </Router>
       </div>
     </>
   );

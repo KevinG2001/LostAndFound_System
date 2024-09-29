@@ -17,6 +17,11 @@
   background-color: $primary-bg-colour;
 }
 
+.navLinkWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
 .navLink {
   padding: 10px 16px;
   margin: 10px;
