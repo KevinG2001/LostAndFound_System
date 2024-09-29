@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES2020", // Target modern JavaScript (good choice for Vite)
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"], // Use DOM for browser environment
+    "module": "ESNext", // ESNext module resolution (works well with Vite)
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler", // Keep bundler resolution for Vite
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force", // Force detection of modules
+    "noEmit": true, // Vite handles the output, so no need to emit files
+    "jsx": "react-jsx", // Use the React JSX runtime
+
+    /* Linting and Type Checking */
+    "strict": true, // Enable strict mode for type safety
+    "noUnusedLocals": true, // Error on unused local variables
+    "noUnusedParameters": true, // Error on unused function parameters
+    "noFallthroughCasesInSwitch": true, // Prevent fallthrough in switch statements
+
+    /* Additional settings for Electron + Vite */
+    "types": ["vite/client", "node"], // Include Vite and Node.js types (in case you interact with Electron)
+    "allowJs": false // Prevent importing `.js` files to avoid inconsistencies
+  },
+  "include": ["src"], // Include all source files in the `src` directory
+  "exclude": ["node_modules", "electron"] // Exclude Electron files (handled separately in `tsconfig.node.json`)
+}
