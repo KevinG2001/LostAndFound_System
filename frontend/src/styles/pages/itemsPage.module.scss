@@ -1,0 +1,33 @@
+.itemsContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+
+  .statsWrapper {
+    min-height: 250px;
+    max-height: 250px;
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+    margin: 2%;
+    .statBubble {
+      background-color: red;
+      height: 200px;
+      width: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 25%;
+    }
+  }
+
+  .itemTable {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
