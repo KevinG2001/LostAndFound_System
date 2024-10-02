@@ -1,0 +1,36 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 30%;
+  border: 1px solid black;
+
+  .formRow {
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+
+    .innerRow {
+      display: flex;
+      width: 100%;
+      flex-direction: column;
+      margin: 1%;
+    }
+  }
+  .submitBtn {
+    margin: 2%;
+    padding: 12px 16px;
+    border-radius: 20px;
+    border: 1px solid black;
+  }
+}
