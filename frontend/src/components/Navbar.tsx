@@ -19,11 +19,7 @@ function Navbar() {
     <>
       <div className={Styles.navContainer}>
         <div className={Styles.navWrapper}>
-          <div className={Styles.navHeader}>
-            Lost
-            <br />&<br />
-            Found
-          </div>
+          <div className={Styles.navHeader}>Lost & Found</div>
           <div className={Styles.navLinkWrapper}>
             <button className={Styles.navLink} onClick={goToDashboardPage}>
               Dashboard
