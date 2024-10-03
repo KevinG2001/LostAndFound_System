@@ -11,11 +11,19 @@ function Navbar() {
   const goToItemsPage = () => {
     navigate("/items");
   };
+
+  const goToTickets = () => {
+    navigate("/tickets");
+  };
   return (
     <>
       <div className={Styles.navContainer}>
         <div className={Styles.navWrapper}>
-          <div className={Styles.navHeader}>Header</div>
+          <div className={Styles.navHeader}>
+            Lost
+            <br />&<br />
+            Found
+          </div>
           <div className={Styles.navLinkWrapper}>
             <button className={Styles.navLink} onClick={goToDashboardPage}>
               Dashboard
@@ -23,7 +31,9 @@ function Navbar() {
             <button className={Styles.navLink} onClick={goToItemsPage}>
               Items
             </button>
-            <button className={Styles.navLink}>Tickets</button>
+            <button className={Styles.navLink} onClick={goToTickets}>
+              Tickets
+            </button>
           </div>
           <div className={Styles.navFooter}>Footer</div>
         </div>

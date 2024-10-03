@@ -36,12 +36,13 @@ function CreateItem() {
         const data = await response.json();
         console.log("Item created successfully:", data);
         setItem({
-          name: "",
           description: "",
           type: "",
           category: "",
           route: "",
           garage: "",
+          notes: "",
+          dateLost: "",
         });
       } else {
         console.error("Failed to create item");
