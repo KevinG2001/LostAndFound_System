@@ -7,15 +7,10 @@ let TableView = ({ columns, data }) => {
       <div className={Style.container}>
         <table className={Style.tableContainer}>
           <thead className={Style.tableHeader}>
-            <tr className={Style.tableRow}>
-              <th>ID</th>
-              <th>Description</th>
-              <th>Category</th>
-              <th>Type</th>
-              <th>Route</th>
-              <th>Garage</th>
-              <th>Date Lost</th>
-              <th>Status</th>
+            <tr>
+              {columns.map((col, index) => (
+                <th key={index}>{col.header}</th>
+              ))}
             </tr>
           </thead>
           <tbody className={Style.tableBody}>

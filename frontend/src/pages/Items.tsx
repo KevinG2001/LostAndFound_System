@@ -6,7 +6,6 @@ import useItemCount from "../util/useItemCount";
 function Items() {
   const [items, setItems] = useState([]);
   const { itemCounts } = useItemCount("count"); // Assuming itemCounts is an object
-  console.log(itemCounts);
 
   //Columns pased into the TableView
   const columns = [
