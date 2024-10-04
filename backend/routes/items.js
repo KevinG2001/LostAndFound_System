@@ -77,4 +77,29 @@ router.get("/count", async (req, res) => {
   }
 });
 
+router.post("/search", async (req, res) => {
+  const { param, query } = req.body;
+
+  try {
+    const searchCriteria = {
+      [param.toLowerCase()]: query,
+    };
+    console.log(searchCriteria);
+
+    const items = await Item.find(searchCriteria);
+
+    res.status(200).json({
+      success: true,
+      items,
+    });
+  } catch (error) {
+    console.error("Error searching for items", error);
+    res.status(500).json({
+      success: false,
+      message: "Error searching for items",
+      error: error.message,
+    });
+  }
+});
+
 module.exports = router;
