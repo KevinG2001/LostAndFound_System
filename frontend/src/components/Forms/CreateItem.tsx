@@ -1,6 +1,12 @@
 import { useState } from "react";
 import Style from "../../styles/pages/createItem.module.scss";
-function CreateItem() {
+function CreateItem({ show, onClose }: any) {
+  if (!show) return null;
+
+  const closeModal = () => {
+    onClose();
+  };
+
   const [item, setItem] = useState({
     description: "",
     type: "",
@@ -135,9 +141,18 @@ function CreateItem() {
           </div>
         </div>
 
-        <button type="submit" className={Style.submitBtn}>
-          Submit
-        </button>
+        <div className={Style.btnWrapper}>
+          <button type="submit" className={Style.submitBtn}>
+            Submit
+          </button>
+          <button
+            type="submit"
+            className={Style.submitBtn}
+            onClick={closeModal}
+          >
+            Close
+          </button>
+        </div>
       </form>
     </div>
   );
