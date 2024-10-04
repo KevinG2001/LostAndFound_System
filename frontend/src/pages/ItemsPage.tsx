@@ -2,6 +2,7 @@ import Styles from "../styles/pages/itemsPage.module.scss";
 import TableView from "../components/Views/TableView";
 import useItemCount from "../util/useItemCount";
 import useItemList from "../util/useItemList";
+import Searchbar from "../components/Searchbar";
 
 function Items() {
   const { itemCounts } = useItemCount("count");
@@ -43,6 +44,10 @@ function Items() {
               : "Loading..."}
           </div>
           <div className={Styles.statBubble}>Item Expired</div>
+        </div>
+        <div className={Styles.searchBar_NewItemBtn}>
+          <Searchbar />
+          <button>New Item</button>
         </div>
         <div className={Styles.itemTable}>
           <TableView columns={columns} data={items} />

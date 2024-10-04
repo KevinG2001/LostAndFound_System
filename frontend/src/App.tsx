@@ -5,7 +5,7 @@ import "./App.css";
 import Navbar from "./components/Navbar";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
-import Items from "./pages/Items";
+import Items from "./pages/ItemsPage";
 import Tickets from "./components/Forms/CreateItem";
 
 function App() {
