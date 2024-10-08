@@ -16,7 +16,6 @@ function Items() {
     setSearchTerm,
     searchDB,
     items: searchResults,
-    loading,
   } = useSearch();
 
   const toggleModal = () => {
@@ -66,7 +65,6 @@ function Items() {
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             searchDB={searchDB}
-            loading={loading}
           />
           <button onClick={toggleModal}>New Item</button>
         </div>

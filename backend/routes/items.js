@@ -87,10 +87,19 @@ router.post("/search", async (req, res) => {
     console.log(searchCriteria);
 
     const items = await Item.find(searchCriteria);
+    const formattedItems = items.map((item) => {
+      const plainItem = item.toObject();
+
+      return {
+        ...plainItem,
+        dateLost: dayjs(plainItem.createdAt).format("DD-MM-YYYY"), // Example format
+        updatedAt: dayjs(plainItem.updatedAt).format("DD-MM-YYYY"), // Example format
+      };
+    });
 
     res.status(200).json({
       success: true,
-      items,
+      items: formattedItems,
     });
   } catch (error) {
     console.error("Error searching for items", error);

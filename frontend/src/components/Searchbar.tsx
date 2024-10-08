@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Style from "../styles/searchbar.module.scss";
 
-function Searchbar({ searchTerm, setSearchTerm, searchDB, loading }) {
+function Searchbar({ searchTerm, setSearchTerm, searchDB }: any) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Category");
 
@@ -9,13 +9,13 @@ function Searchbar({ searchTerm, setSearchTerm, searchDB, loading }) {
     setIsDropdownOpen((prev) => !prev);
   };
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event: any) => {
     if (event.key === "Enter") {
       searchDB(selectedOption);
     }
   };
 
-  const handleOptionSelect = (option) => {
+  const handleOptionSelect = (option: any) => {
     setSelectedOption(option);
     setIsDropdownOpen(false);
   };
@@ -50,9 +50,7 @@ function Searchbar({ searchTerm, setSearchTerm, searchDB, loading }) {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button onClick={handleSearch} disabled={loading}>
-          Search
-        </button>
+        <button onClick={handleSearch}>Search</button>
       </div>
     </div>
   );
