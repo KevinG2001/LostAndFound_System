@@ -46,6 +46,8 @@ const TableView = ({ columns, data }) => {
                     statusClass = Style.lostStatus;
                   } else if (cellData === "Expired") {
                     statusClass = Style.expiredStatus;
+                  } else if (cellData === "To Collect") {
+                    statusClass = Style.tocollect;
                   }
                 }
 
