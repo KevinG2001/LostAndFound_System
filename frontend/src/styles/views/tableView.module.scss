@@ -8,31 +8,38 @@
   align-items: center;
   flex-direction: column;
 }
+
 .tableContainer {
   width: 90%;
   height: 100%;
   font-size: small;
-  border-spacing: 0px;
-  .tableHeader {
-    text-align: left;
-    .tableRow {
-    }
+  border-spacing: 0;
+}
+
+.tableHeader {
+  text-align: left;
+}
+
+.tableBody {
+  .tableRow:nth-child(odd) {
+    background-color: grey;
   }
 
-  .tableBody {
-    .tableRow:nth-child(odd) {
-      background-color: grey;
-    }
-    td {
-      padding: 0px;
-    }
+  .tableRow {
+    height: 30px;
+  }
+
+  td {
+    padding: 0px;
   }
 }
+
 .pageBtnWrapper {
   display: flex;
   width: 80%;
   justify-content: center;
 }
+
 .pageBtn {
   background-color: $Accent-colour;
   border-radius: 50%;
@@ -47,7 +54,13 @@
   font-size: large;
 }
 
-//Change the colour of the status box depending onthe word in it
+//Change the colour of the page button
+.activePage {
+  background-color: #007bff;
+  color: white;
+}
+
+// Change the colour of the status box depending on the word in it
 .returnedStatus {
   background-color: #22a03f;
   color: #ffffff;
@@ -62,7 +75,7 @@
   text-align: center;
 }
 
-.expired {
+.expiredStatus {
   background-color: #ff0000;
   color: #000000;
   font-weight: bold;
