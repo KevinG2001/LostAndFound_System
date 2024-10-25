@@ -6,24 +6,10 @@ const ticketSchema = new mongoose.Schema({
     ref: "Item",
     required: true,
   },
-  user: {
-    name: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-    },
-  },
-  issue: {
-    type: String,
-    required: true,
-  },
   status: {
     type: String,
-    enum: ["pending", "resolved", "rejected"],
-    default: "pending",
+    enum: ["Open", "Closed"],
+    default: "Open",
   },
   createdAt: {
     type: Date,
