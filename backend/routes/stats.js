@@ -9,17 +9,17 @@ router.get("/:resource/count", async (req, res) => {
   try {
     if (resource === "items") {
       const itemCount = await Item.countDocuments({});
-      const returnedCount = await Item.countDocuments({ status: "Returned" });
-      const lostItemCount = await Item.countDocuments({ status: "Lost" });
+      const returnedCount = await Item.countDocuments({ status: "Claimed" });
+      const lostItemCount = await Item.countDocuments({ status: "Unclaimed" });
 
       return res.json({
         itemCounts: { itemCount, returnedCount, lostItemCount },
       });
     } else if (resource === "tickets") {
       const ticketCount = await Ticket.countDocuments({});
-      const openTicketCount = await Ticket.countDocuments({ status: "open" });
+      const openTicketCount = await Ticket.countDocuments({ status: "Open" });
       const closedTicketCount = await Ticket.countDocuments({
-        status: "closed",
+        status: "Closed",
       });
 
       return res.json({
