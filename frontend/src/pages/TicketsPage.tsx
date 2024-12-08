@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 import useCount from "../util/useCount";
 import Styles from "../styles/pages/itemsPage.module.scss";
 import TableView from "../components/Views/TableView";
-// import useSearch from "../util/useSearch";
+import useList from "../util/useList";
 
 function TicketsPage() {
   const [isNewTicketOpen, setIsNewTicketOpen] = useState(false);
   const { counts } = useCount("tickets"); // Fetch counts for tickets
 
-  // const { items: tickets } = useSearch("tickets");
+  const { items: tickets } = useList("tickets", "list");
 
   const toggleModal = () => {
     setIsNewTicketOpen((prevState) => !prevState);
@@ -47,7 +47,10 @@ function TicketsPage() {
         </div>
       </div>
       <div className={Styles.ticketTable}>
-        <TableView columns={columns} data={tickets.length > 0 ? tickets : []} />
+        <TableView
+          columns={columns}
+          data={tickets.length > 0 ? tickets : []} // Pass the fetched tickets data
+        />
       </div>
     </div>
   );

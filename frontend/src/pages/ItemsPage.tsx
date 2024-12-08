@@ -3,20 +3,20 @@ import useCount from "../util/useCount"; // Use the generalized hook
 import Styles from "../styles/pages/itemsPage.module.scss";
 import TableView from "../components/Views/TableView";
 import Searchbar from "../components/Searchbar";
-import useSearch from "../util/useSearch";
+import useList from "../util/useList";
 
 function ItemsPage() {
   const [isNewItemOpen, setIsNewItemOpen] = useState(false);
   const { counts, loading } = useCount("items");
 
-  console.log("Counts in ItemsPage:", counts);
+  const { items: itemsList } = useList("items", "list");
 
-  const {
-    searchTerm,
-    setSearchTerm,
-    searchDB,
-    items: searchResults,
-  } = useSearch();
+  // const {
+  //   searchTerm,
+  //   setSearchTerm,
+  //   searchDB,
+  //   items: searchResults,
+  // } = useSearch();
 
   const toggleModal = () => {
     setIsNewItemOpen((prevState) => !prevState);
@@ -54,17 +54,17 @@ function ItemsPage() {
         </div>
       </div>
       <div className={Styles.searchBar_NewItemBtn}>
-        <Searchbar
+        {/* <Searchbar
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           searchDB={searchDB}
-        />
+        /> */}
         <button onClick={toggleModal}>New Item</button>
       </div>
       <div className={Styles.itemTable}>
         <TableView
           columns={columns}
-          data={searchResults.length > 0 ? searchResults : []}
+          data={itemsList.length > 0 ? itemsList : []} // Pass the fetched items data
         />
       </div>
     </div>
