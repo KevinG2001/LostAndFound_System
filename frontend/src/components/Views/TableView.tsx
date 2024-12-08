@@ -12,7 +12,7 @@ const TableView = ({ columns, data }) => {
     currentPage * rowsPerPage
   );
 
-  //Creating empty rows to keep the table clean
+  // Creating empty rows to keep the table clean
   const emptyRows = Array.from(
     { length: rowsPerPage - paginatedData.length },
     () => ({})
@@ -20,6 +20,16 @@ const TableView = ({ columns, data }) => {
 
   const goToPage = (pageNumber) => {
     setCurrentPage(pageNumber);
+  };
+
+  // Status mapping to corresponding CSS class names
+  const statusMapping = {
+    Claimed: Style.claimedStatus,
+    Unclaimed: Style.unclaimedStatus,
+    Expired: Style.expiredStatus,
+    "To Collect": Style.tocollectStatus,
+    Open: Style.openStatus,
+    Closed: Style.closedStatus,
   };
 
   return (
@@ -37,19 +47,10 @@ const TableView = ({ columns, data }) => {
             <tr key={rowIndex} className={Style.tableRow}>
               {columns.map((col, colIndex) => {
                 const cellData = row[col.accessor] || "";
-                let statusClass = "";
-
-                if (col.accessor === "status") {
-                  if (cellData === "Returned") {
-                    statusClass = Style.returnedStatus;
-                  } else if (cellData === "Lost") {
-                    statusClass = Style.lostStatus;
-                  } else if (cellData === "Expired") {
-                    statusClass = Style.expiredStatus;
-                  } else if (cellData === "To Collect") {
-                    statusClass = Style.tocollect;
-                  }
-                }
+                const statusClass =
+                  col.accessor === "status"
+                    ? statusMapping[cellData] || ""
+                    : "";
 
                 return (
                   <td key={colIndex} className={statusClass}>
@@ -61,7 +62,6 @@ const TableView = ({ columns, data }) => {
           ))}
 
           {/* Filling empty space with empty rows to keep clean look */}
-          {/* Will fix later on to just not fill the space but the look will be the same */}
           {emptyRows.map((_, index) => (
             <tr key={`empty-${index}`} className={Style.tableRow}>
               {columns.map((_, colIndex) => (

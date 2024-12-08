@@ -25,7 +25,7 @@ function TicketsPage() {
   ];
 
   return (
-    <div className={Styles.ticketsContainer}>
+    <div className={Styles.itemsContainer}>
       <div className={Styles.statsWrapper}>
         <div className={Styles.statBubble}>
           Total Tickets <br />
@@ -46,7 +46,7 @@ function TicketsPage() {
             : "Loading..."}
         </div>
       </div>
-      <div className={Styles.ticketTable}>
+      <div className={Styles.itemTable}>
         <TableView
           columns={columns}
           data={tickets.length > 0 ? tickets : []} // Pass the fetched tickets data
