@@ -60,16 +60,15 @@
   color: white;
 }
 
-/* Base style for status columns */
+//! Base style for status columns */
 .statusCell {
   font-weight: bold;
   text-align: center;
   padding: 5px 10px;
-  border-radius: 4px;
   color: #fff;
 }
 
-/* Status-specific styles */
+//! Status-specific styles */
 .claimedStatus {
   @extend .statusCell;
   background-color: #22a03f; // green
