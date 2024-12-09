@@ -1,25 +1,26 @@
 import { useState } from "react";
-import useCount from "../util/useCount"; // Use the generalized hook
+import useCount from "../util/useCount";
 import Styles from "../styles/pages/itemsPage.module.scss";
 import TableView from "../components/Views/TableView";
-import Searchbar from "../components/Searchbar";
 import useList from "../util/useList";
+import MoreDetailsModal from "../components/Modals/moreDetails";
 
 function ItemsPage() {
-  const [isNewItemOpen, setIsNewItemOpen] = useState(false);
-  const { counts, loading } = useCount("items");
+  const { counts } = useCount("items");
 
   const { items: itemsList } = useList("items", "list");
 
-  // const {
-  //   searchTerm,
-  //   setSearchTerm,
-  //   searchDB,
-  //   items: searchResults,
-  // } = useSearch();
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const toggleModal = () => {
-    setIsNewItemOpen((prevState) => !prevState);
+  const handleRowClick = (item: any) => {
+    setSelectedItem(item);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedItem(null);
   };
 
   const columns = [
@@ -53,20 +54,21 @@ function ItemsPage() {
             : "Loading..."}
         </div>
       </div>
-      <div className={Styles.searchBar_NewItemBtn}>
-        {/* <Searchbar
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          searchDB={searchDB}
-        /> */}
-        <button onClick={toggleModal}>New Item</button>
-      </div>
+
       <div className={Styles.itemTable}>
         <TableView
           columns={columns}
-          data={itemsList.length > 0 ? itemsList : []} // Pass the fetched items data
+          data={itemsList.length > 0 ? itemsList : []}
+          onRowClick={handleRowClick}
         />
       </div>
+
+      <MoreDetailsModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        data={selectedItem}
+        type="item"
+      />
     </div>
   );
 }
