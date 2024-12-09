@@ -77,4 +77,38 @@ router.get("/count", async (req, res) => {
   }
 });
 
+router.post("/search", async (req, res) => {
+  const { param, query } = req.body;
+
+  try {
+    const searchCriteria = {
+      [param.toLowerCase()]: query,
+    };
+    console.log(searchCriteria);
+
+    const items = await Item.find(searchCriteria);
+    const formattedItems = items.map((item) => {
+      const plainItem = item.toObject();
+
+      return {
+        ...plainItem,
+        dateLost: dayjs(plainItem.createdAt).format("DD-MM-YYYY"), // Example format
+        updatedAt: dayjs(plainItem.updatedAt).format("DD-MM-YYYY"), // Example format
+      };
+    });
+
+    res.status(200).json({
+      success: true,
+      items: formattedItems,
+    });
+  } catch (error) {
+    console.error("Error searching for items", error);
+    res.status(500).json({
+      success: false,
+      message: "Error searching for items",
+      error: error.message,
+    });
+  }
+});
+
 module.exports = router;

@@ -1,6 +1,37 @@
+import { useState } from "react";
 import Style from "../../styles/views/tableView.module.scss";
 
-let TableView = ({ columns, data }) => {
+const TableView = ({ columns, data }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
+
+  const totalPages = Math.ceil(data.length / rowsPerPage);
+
+  const paginatedData = data.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
+
+  // Creating empty rows to keep the table clean
+  const emptyRows = Array.from(
+    { length: rowsPerPage - paginatedData.length },
+    () => ({})
+  );
+
+  const goToPage = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Status mapping to corresponding CSS class names
+  const statusMapping = {
+    Claimed: Style.claimedStatus,
+    Unclaimed: Style.unclaimedStatus,
+    Expired: Style.expiredStatus,
+    "To Collect": Style.tocollectStatus,
+    Open: Style.openStatus,
+    Closed: Style.closedStatus,
+  };
+
   return (
     <div className={Style.container}>
       <table className={Style.tableContainer}>
@@ -12,38 +43,63 @@ let TableView = ({ columns, data }) => {
           </tr>
         </thead>
         <tbody className={Style.tableBody}>
-          {data.map((row, rowIndex) => (
+          {paginatedData.map((row, rowIndex) => (
             <tr key={rowIndex} className={Style.tableRow}>
               {columns.map((col, colIndex) => {
-                // Change the colour of the box in status depending on whats in it (Lost, Returned etc..)
-                //Change colours in tableViewmodule
-                const status = row[col.accessor];
-                let statusClass = "";
-
-                if (col.accessor === "status") {
-                  if (status === "Returned") {
-                    statusClass = Style.returnedStatus;
-                  } else if (status === "Lost") {
-                    statusClass = Style.lostStatus;
-                  } else if (status === "Expired") {
-                    statusClass = Style.emailSentStatus;
-                  }
-                }
+                const cellData = row[col.accessor] || "";
+                const statusClass =
+                  col.accessor === "status"
+                    ? statusMapping[cellData] || ""
+                    : "";
 
                 return (
                   <td key={colIndex} className={statusClass}>
-                    {status}
+                    {cellData}
                   </td>
                 );
               })}
             </tr>
           ))}
+
+          {/* Filling empty space with empty rows to keep clean look */}
+          {emptyRows.map((_, index) => (
+            <tr key={`empty-${index}`} className={Style.tableRow}>
+              {columns.map((_, colIndex) => (
+                <td key={colIndex}>&nbsp;</td> // Add an empty space (&nbsp;) to preserve cell structure
+              ))}
+            </tr>
+          ))}
         </tbody>
       </table>
+
       <div className={Style.pageBtnWrapper}>
-        <div className={Style.pageBtn}>1</div>
-        <div className={Style.pageBtn}>2</div>
-        <div className={Style.pageBtn}>3</div>
+        <button
+          className={Style.pageBtn}
+          disabled={currentPage === 1}
+          onClick={() => goToPage(currentPage - 1)}
+        >
+          Previous
+        </button>
+
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            className={`${Style.pageBtn} ${
+              currentPage === index + 1 ? Style.activePage : ""
+            }`}
+            onClick={() => goToPage(index + 1)}
+          >
+            {index + 1}
+          </button>
+        ))}
+
+        <button
+          className={Style.pageBtn}
+          disabled={currentPage === totalPages}
+          onClick={() => goToPage(currentPage + 1)}
+        >
+          Next
+        </button>
       </div>
     </div>
   );
