@@ -1,17 +1,26 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import useCount from "../util/useCount";
 import Styles from "../styles/pages/itemsPage.module.scss";
 import TableView from "../components/Views/TableView";
 import useList from "../util/useList";
+import MoreDetailsModal from "../components/Modals/moreDetails";
 
 function TicketsPage() {
-  const [isNewTicketOpen, setIsNewTicketOpen] = useState(false);
-  const { counts } = useCount("tickets"); // Fetch counts for tickets
+  const { counts } = useCount("tickets");
 
   const { items: tickets } = useList("tickets", "list");
 
-  const toggleModal = () => {
-    setIsNewTicketOpen((prevState) => !prevState);
+  const [selectedTicket, setSelectedTicket] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleRowClick = (ticket: any) => {
+    setSelectedTicket(ticket);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedTicket(null);
   };
 
   const columns = [
@@ -44,12 +53,21 @@ function TicketsPage() {
             : "Loading..."}
         </div>
       </div>
+
       <div className={Styles.itemTable}>
         <TableView
           columns={columns}
-          data={tickets.length > 0 ? tickets : []} // Pass the fetched tickets data
+          data={tickets.length > 0 ? tickets : []}
+          onRowClick={handleRowClick}
         />
       </div>
+
+      <MoreDetailsModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        data={selectedTicket}
+        type="ticket"
+      />
     </div>
   );
 }

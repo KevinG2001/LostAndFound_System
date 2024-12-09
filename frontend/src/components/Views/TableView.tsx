@@ -1,7 +1,13 @@
 import { useState } from "react";
 import Style from "../../styles/views/tableView.module.scss";
 
-const TableView = ({ columns, data }) => {
+interface TableViewProps {
+  columns: { header: string; accessor: string }[];
+  data: any[];
+  onRowClick?: (item: any) => void; // Make sure the onRowClick prop is accepted
+}
+
+const TableView = ({ columns, data, onRowClick }: TableViewProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
 
@@ -18,7 +24,7 @@ const TableView = ({ columns, data }) => {
     () => ({})
   );
 
-  const goToPage = (pageNumber) => {
+  const goToPage = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
 
@@ -44,7 +50,11 @@ const TableView = ({ columns, data }) => {
         </thead>
         <tbody className={Style.tableBody}>
           {paginatedData.map((row, rowIndex) => (
-            <tr key={rowIndex} className={Style.tableRow}>
+            <tr
+              key={rowIndex}
+              className={Style.tableRow}
+              onClick={() => onRowClick && onRowClick(row)} // Trigger the row click handler
+            >
               {columns.map((col, colIndex) => {
                 const cellData = row[col.accessor] || "";
                 const statusClass =
