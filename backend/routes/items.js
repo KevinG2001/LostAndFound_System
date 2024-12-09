@@ -2,7 +2,7 @@ const express = require("express");
 const Item = require("../models/Item");
 const router = express.Router();
 const { getNextId } = require("../util/idGenerator");
-const { formatItemDates } = require("../utils/dateFormatter");
+const { formatItemDates } = require("../util/dateFormatter");
 
 // Create new item
 router.post("/create", async (req, res) => {

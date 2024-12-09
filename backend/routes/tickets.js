@@ -1,7 +1,7 @@
 const express = require("express");
 const Ticket = require("../models/Tickets");
 const router = express.Router();
-const { formatItemDates } = require("../utils/dateFormatter");
+const { formatItemDates } = require("../util/dateFormatter");
 
 router.get("/list", async (req, res) => {
   try {

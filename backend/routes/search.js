@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { formatItemDates } = require("../utils/dateFormatter");
+const { formatItemDates } = require("../util/dateFormatter");
 
 const genericSearch = async (Model, param, query) => {
   const searchCriteria = {
