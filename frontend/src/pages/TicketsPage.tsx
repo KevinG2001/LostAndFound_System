@@ -29,9 +29,7 @@ function TicketsPage() {
       <div className={Styles.statsWrapper}>
         <div className={Styles.statBubble}>
           Total Tickets <br />
-          {counts?.ticketCount !== undefined
-            ? counts.ticketCount
-            : "Loading..."}
+          {counts?.totalCount !== undefined ? counts.totalCount : "Loading..."}
         </div>
         <div className={Styles.statBubble}>
           Open Tickets <br />

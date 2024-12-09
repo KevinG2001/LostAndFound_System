@@ -38,7 +38,7 @@ function ItemsPage() {
       <div className={Styles.statsWrapper}>
         <div className={Styles.statBubble}>
           Total Items Lost <br />
-          {counts?.itemCount !== undefined ? counts.itemCount : "Loading..."}
+          {counts?.totalCount !== undefined ? counts.totalCount : "Loading..."}
         </div>
         <div className={Styles.statBubble}>
           Items Returned <br />

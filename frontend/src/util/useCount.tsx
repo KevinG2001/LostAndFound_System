@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 
 const useCount = (resource: string) => {
-  const [counts, setCounts] = useState<any>(null); // Assuming the response is an object
+  const [counts, setCounts] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   const fetchCounts = async () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:4000/stats/${resource}/count`
+        `http://localhost:4000/counts/${resource}/count`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch counts");
@@ -16,11 +16,8 @@ const useCount = (resource: string) => {
       const data = await response.json();
       console.log(`Fetched counts data:`, data);
 
-      if (resource === "items") {
-        setCounts(data.itemCounts);
-      } else if (resource === "tickets") {
-        setCounts(data.ticketCounts);
-      }
+      const countKey = `${resource}Counts`;
+      setCounts(data[countKey]);
     } catch (error) {
       console.error("Error fetching count", error);
     } finally {
