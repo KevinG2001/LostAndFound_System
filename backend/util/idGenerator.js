@@ -1,5 +1,6 @@
 const Item = require("../models/Item");
 
+//!Need to add other id ranges like misc, wallets, valubles etc..
 const idRanges = {
   Backpack: { start: 1, prefix: "BAG" },
   "Plastic Bag": { start: 1, prefix: "PLB" },
@@ -8,29 +9,35 @@ const idRanges = {
 };
 
 const getNextId = async (type) => {
-  const range = idRanges[type];
+  const normalizedType = type.toLowerCase();
+
+  const range = Object.keys(idRanges).find(
+    (key) => key.toLowerCase() === normalizedType
+  );
 
   if (!range) {
     throw new Error("Invalid item type");
   }
 
+  const itemRange = idRanges[range];
+
   const highestItem = await Item.findOne({
-    itemID: { $regex: `^${range.prefix}` },
+    itemID: { $regex: `^${itemRange.prefix}` },
   }).sort({ itemID: -1 });
 
   let nextId;
 
   if (highestItem) {
     const currentIdNumber = parseInt(
-      highestItem.itemID.replace(range.prefix, ""),
+      highestItem.itemID.replace(itemRange.prefix, ""),
       10
     );
     nextId = currentIdNumber + 1;
   } else {
-    nextId = range.start;
+    nextId = itemRange.start;
   }
 
-  return `${range.prefix}${nextId}`;
+  return `${itemRange.prefix}${nextId}`;
 };
 
 module.exports = { getNextId };

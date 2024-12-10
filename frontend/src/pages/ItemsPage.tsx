@@ -4,14 +4,16 @@ import Styles from "../styles/pages/itemsPage.module.scss";
 import TableView from "../components/Views/TableView";
 import useList from "../util/useList";
 import MoreDetailsModal from "../components/Modals/moreDetails";
+import NewItemModal from "../components/Modals/newItem";
 
 function ItemsPage() {
   const { counts } = useCount("items");
-
   const { items: itemsList } = useList("items", "list");
 
   const [selectedItem, setSelectedItem] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isNewItemModalOpen, setIsNewItemModalOpen] = useState(false);
+  const [items, setItems] = useState(itemsList);
 
   const handleRowClick = (item: any) => {
     setSelectedItem(item);
@@ -21,6 +23,14 @@ function ItemsPage() {
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedItem(null);
+  };
+
+  const openNewItemModal = () => setIsNewItemModalOpen(true);
+  const closeNewItemModal = () => setIsNewItemModalOpen(false);
+
+  const handleCreateNewItem = (newItem: any) => {
+    setItems([...items, newItem]);
+    closeNewItemModal();
   };
 
   const columns = [
@@ -55,13 +65,24 @@ function ItemsPage() {
         </div>
       </div>
 
+      <button className={Styles.newItemButton} onClick={openNewItemModal}>
+        New Item
+      </button>
+
       <div className={Styles.itemTable}>
         <TableView
           columns={columns}
-          data={itemsList.length > 0 ? itemsList : []}
+          data={itemsList}
           onRowClick={handleRowClick}
         />
       </div>
+
+      {isNewItemModalOpen && (
+        <NewItemModal
+          onClose={closeNewItemModal}
+          onCreate={handleCreateNewItem}
+        />
+      )}
 
       <MoreDetailsModal
         isOpen={isModalOpen}
