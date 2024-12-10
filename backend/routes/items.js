@@ -22,6 +22,7 @@ router.post("/create", async (req, res) => {
       garage,
       notes,
       dateLost,
+      status: "Unclaimed",
       itemID,
     });
 
