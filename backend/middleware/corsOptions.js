@@ -5,7 +5,7 @@ const corsOptions = {
     "http://192.168.0.197:5173",
     "http://192.168.0.197:5174",
   ],
-  methods: ["GET", "POST"],
+  methods: ["GET", "POST", "PUT"],
   allowedHeaders: ["Content-Type"],
   credentials: true,
 };
