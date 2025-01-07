@@ -1,13 +1,17 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const http = require("http");
 const errorHandler = require("./middleware/errorHandler");
+const corsOptions = require("./middleware/corsOptions");
+const io = require("./socket/chat");
 require("dotenv").config();
 
 const app = express();
+const server = http.createServer(app);
 
-// Middleware
-app.use(cors());
+// Apply CORS middleware to Express
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Routes
@@ -22,16 +26,19 @@ app.use("/tickets", ticketRoutes);
 app.use("/counts", countsRoutes);
 app.use("/search", searchRoutes);
 
+// Use error handler middleware
 app.use(errorHandler);
 
+// MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
   .then(() => {
-    const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => {
+    const PORT = process.env.PORT || 4000;
+    server.listen(PORT, "0.0.0.0", () => {
+      io.attach(server, { cors: corsOptions });
       console.log(`Server started on port ${PORT}`);
     });
   })
