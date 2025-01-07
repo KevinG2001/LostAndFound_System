@@ -9,6 +9,7 @@ function TicketsPage() {
   const { counts } = useCount("tickets");
 
   const { items: tickets } = useList("tickets", "list");
+  console.log("Tickets:", tickets);
 
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,12 +25,10 @@ function TicketsPage() {
   };
 
   const columns = [
-    { header: "ID", accessor: "id" },
-    { header: "Type", accessor: "type" },
-    { header: "Brand", accessor: "brand" },
-    { header: "Colour", accessor: "colour" },
-    { header: "Date Lost", accessor: "datelost" },
-    { header: "Date Created", accessor: "datecreated" },
+    { header: "ID", accessor: "ticketId" },
+    { header: "Description", accessor: "description" },
+    { header: "Date Lost", accessor: "dateLost" },
+    { header: "Date Created", accessor: "dateCreated" },
     { header: "Status", accessor: "status" },
   ];
 

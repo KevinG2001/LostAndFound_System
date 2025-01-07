@@ -1,5 +1,5 @@
-import React from "react";
 import Styles from "../../styles/modals/moreDetails.module.scss";
+import TicketChat from "../TicketChat";
 
 interface MoreDetailsModalProps {
   isOpen: boolean;
@@ -19,60 +19,69 @@ const MoreDetailsModal = ({
   const renderContent = () => {
     if (type === "item") {
       return (
-        <>
-          <h2>Item Details</h2>
-          <p>
-            <strong>ID:</strong> {data.itemID}
-          </p>
-          <p>
-            <strong>Description:</strong> {data.description}
-          </p>
-          <p>
-            <strong>Category:</strong> {data.category}
-          </p>
-          <p>
-            <strong>Type:</strong> {data.type}
-          </p>
-          <p>
-            <strong>Route:</strong> {data.route}
-          </p>
-          <p>
-            <strong>Garage:</strong> {data.garage}
-          </p>
-          <p>
-            <strong>Date Lost:</strong> {data.dateLost}
-          </p>
-          <p>
-            <strong>Status:</strong> {data.status}
-          </p>
-        </>
+        <div className={Styles.detailsContainer}>
+          <h2 className={Styles.detailsTitle}>Item Details</h2>
+          <div className={Styles.detailsRow}>
+            <span className={Styles.detailLabel}>ID:</span>
+            <span className={Styles.detailValue}>{data.itemID}</span>
+          </div>
+          <div className={Styles.detailsRow}>
+            <span className={Styles.detailLabel}>Description:</span>
+            <span className={Styles.detailValue}>{data.description}</span>
+          </div>
+          <div className={Styles.detailsRow}>
+            <span className={Styles.detailLabel}>Category:</span>
+            <span className={Styles.detailValue}>{data.category}</span>
+          </div>
+          <div className={Styles.detailsRow}>
+            <span className={Styles.detailLabel}>Type:</span>
+            <span className={Styles.detailValue}>{data.type}</span>
+          </div>
+          <div className={Styles.detailsRow}>
+            <span className={Styles.detailLabel}>Route:</span>
+            <span className={Styles.detailValue}>{data.route}</span>
+          </div>
+          <div className={Styles.detailsRow}>
+            <span className={Styles.detailLabel}>Garage:</span>
+            <span className={Styles.detailValue}>{data.garage}</span>
+          </div>
+          <div className={Styles.detailsRow}>
+            <span className={Styles.detailLabel}>Date Lost:</span>
+            <span className={Styles.detailValue}>{data.dateLost}</span>
+          </div>
+          <div className={Styles.detailsRow}>
+            <span className={Styles.detailLabel}>Status:</span>
+            <span className={Styles.detailValue}>{data.status}</span>
+          </div>
+        </div>
       );
     } else if (type === "ticket") {
       return (
-        <>
-          <h2>Ticket Details</h2>
-          <p>
-            <strong>ID:</strong> {data.id}
-          </p>
-          <p>
-            <strong>Type:</strong> {data.type}
-          </p>
-          <p>
-            <strong>Brand:</strong> {data.brand}
-          </p>
-          <p>
-            <strong>Colour:</strong> {data.colour}
-          </p>
-          <p>
-            <strong>Date Lost:</strong> {data.datelost}
-          </p>
-          <p>
-            <strong>Date Created:</strong> {data.datecreated}
-          </p>
-          <p>
-            <strong>Status:</strong> {data.status}
-          </p>
-        </>
+        <div className={Styles.detailsContainer}>
+          <h2 className={Styles.detailsTitle}>Ticket Details</h2>
+          <div className={Styles.detailsRow}>
+            <span className={Styles.detailLabel}>ID:</span>
+            <span className={Styles.detailValue}>{data.ticketId}</span>
+          </div>
+          <div className={Styles.detailsRow}>
+            <span className={Styles.detailLabel}>Date Lost:</span>
+            <span className={Styles.detailValue}>{data.dateLost}</span>
+          </div>
+          <div className={Styles.detailsRow}>
+            <span className={Styles.detailLabel}>Date Created:</span>
+            <span className={Styles.detailValue}>{data.dateCreated}</span>
+          </div>
+          <div className={Styles.detailsRow}>
+            <span className={Styles.detailLabel}>Status:</span>
+            <span className={Styles.detailValue}>{data.status}</span>
+          </div>
+          <div className={Styles.chatContainer}>
+            <TicketChat
+              ticketId={data.ticketId}
+              description={data.description}
+            />
+          </div>
+        </div>
       );
     }
     return null;
