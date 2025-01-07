@@ -20,13 +20,16 @@ const useNewItem = () => {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:4000/items/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(itemData),
-      });
+      const response = await fetch(
+        "${import.meta.env.VITE_API_URL}/items/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(itemData),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to create new item");

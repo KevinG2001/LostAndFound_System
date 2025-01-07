@@ -8,7 +8,7 @@ const useCount = (resource: string) => {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:4000/counts/${resource}/count`
+        `${import.meta.env.VITE_API_URL}/counts/${resource}/count`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch counts");

@@ -5,9 +5,8 @@ const useList = (resource: string, endpoint: string) => {
 
   const fetchItems = async () => {
     try {
-      // Use dynamic endpoint based on the resource (items or tickets)
       const response = await fetch(
-        `http://localhost:4000/${resource}/${endpoint}`
+        `${import.meta.env.VITE_API_URL}/${resource}/${endpoint}`
       );
       if (!response.ok) {
         throw new Error(`Failed to fetch ${resource}`);
@@ -21,9 +20,9 @@ const useList = (resource: string, endpoint: string) => {
 
   useEffect(() => {
     fetchItems();
-    const interval = setInterval(fetchItems, 5 * 60 * 1000); // Fetch data every 5 minutes
+    const interval = setInterval(fetchItems, 5 * 60 * 1000);
     return () => clearInterval(interval);
-  }, [resource, endpoint]); // Re-run when resource or endpoint changes
+  }, [resource, endpoint]);
 
   return { items };
 };

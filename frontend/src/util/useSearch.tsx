@@ -6,16 +6,19 @@ const useSearch = () => {
 
   const searchDB = async (param) => {
     try {
-      const response = await fetch("http://localhost:4000/items/search", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          param,
-          query: searchTerm,
-        }),
-      });
+      const response = await fetch(
+        "${import.meta.env.VITE_API_URL}/items/search",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            param,
+            query: searchTerm,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to search items");

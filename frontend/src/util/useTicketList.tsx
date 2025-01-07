@@ -5,7 +5,9 @@ const useTicketList = (endpoint: string) => {
 
   const fetchItems = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/tickets/${endpoint}`);
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/tickets/${endpoint}`
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch tickets");
       }
