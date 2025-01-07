@@ -1,0 +1,75 @@
+.chatContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  background-color: #f9f9f9;
+}
+
+.chatTitle {
+  font-size: 1.5rem;
+  margin: 0;
+  color: #333;
+  text-align: center;
+}
+
+.messagesContainer {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+.message {
+  margin-bottom: 10px;
+  padding: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.messageSender {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.messageText {
+  color: #333;
+}
+
+.messageTimestamp {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.messageInput {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  resize: none;
+}
+
+.sendButton {
+  align-self: flex-end;
+  background-color: #007bff;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+}
+
+.errorText {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
