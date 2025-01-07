@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
 const ticketSchema = new mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
   ticketId: { type: String, required: true, unique: true },
   dateCreated: { type: Date, default: Date.now },
   dateLost: { type: Date, required: false },
@@ -11,7 +10,7 @@ const ticketSchema = new mongoose.Schema({
     phone: { type: String, required: false },
   },
   description: { type: String, required: true },
-  status: { type: String, default: "Open" },
+  status: { type: String, default: "Open", enum: ["Open", "Closed"] },
   messages: [
     {
       sender: { type: String, required: true },
