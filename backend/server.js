@@ -19,12 +19,14 @@ const itemRoutes = require("./routes/items");
 const ticketRoutes = require("./routes/tickets");
 const countsRoutes = require("./routes/counts");
 const searchRoutes = require("./routes/search");
+const statRoutes = require("./routes/stats");
 
 // Use routes
 app.use("/items", itemRoutes);
 app.use("/tickets", ticketRoutes);
 app.use("/counts", countsRoutes);
 app.use("/search", searchRoutes);
+app.use("/stats", statRoutes);
 
 // Use error handler middleware
 app.use(errorHandler);

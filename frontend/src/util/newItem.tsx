@@ -21,7 +21,7 @@ const useNewItem = () => {
 
     try {
       const response = await fetch(
-        "${import.meta.env.VITE_API_URL}/items/create",
+        `${import.meta.env.VITE_API_URL}/items/create`,
         {
           method: "POST",
           headers: {
