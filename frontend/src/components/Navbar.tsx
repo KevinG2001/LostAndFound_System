@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Styles from "../Styles/navStyles.module.scss";
+import { color } from "chart.js/helpers";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -19,7 +20,12 @@ function Navbar() {
     <>
       <div className={Styles.navContainer}>
         <div className={Styles.navWrapper}>
-          <div className={Styles.navHeader}>Lost & Found</div>
+          <div className={Styles.navHeader}>
+            <div className={Styles.navTitle}>
+              Track<span style={{ color: "green" }}>It</span>Down
+            </div>
+            <div className={Styles.navSubTitle}>Lost & Found</div>
+          </div>
           <div className={Styles.navLinkWrapper}>
             <button className={Styles.navLink} onClick={goToDashboardPage}>
               Dashboard
