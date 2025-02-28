@@ -1,0 +1,27 @@
+@import "../variables/colours.module.scss";
+
+.chartContainer {
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+}
+
+.claimed-line {
+  border-color: $claimed-colour;
+  point-background-color: $claimed-colour;
+}
+
+.unclaimed-line {
+  border-color: $unclaimed-colour;
+  point-background-color: $unclaimed-colour;
+}
+
+.expired-line {
+  border-color: $expired-colour;
+  point-background-color: $expired-colour;
+}
+
+.tocollect-line {
+  border-color: $tocollect-colour;
+  point-background-color: $tocollect-colour;
+}

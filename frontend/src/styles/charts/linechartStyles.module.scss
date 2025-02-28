@@ -1,0 +1,19 @@
+.claimed-line {
+  border-color: var(--claimed-colour);
+  point-background-color: var(--claimed-colour);
+}
+
+.unclaimed-line {
+  border-color: var(--unclaimed-colour);
+  point-background-color: var(--unclaimed-colour);
+}
+
+.expired-line {
+  border-color: var(--expired-colour);
+  point-background-color: var(--expired-colour);
+}
+
+.tocollect-line {
+  border-color: var(--tocollect-colour);
+  point-background-color: var(--tocollect-colour);
+}

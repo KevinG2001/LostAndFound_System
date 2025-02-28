@@ -1,42 +1,39 @@
+@import "../variables/colours.module.scss";
+
 .dashboardContainer {
   display: flex;
-  height: 100%;
+  height: 100vh;
   width: 100%;
+  gap: 10px;
+  padding: 10px;
+  overflow: hidden;
 }
 
 .leftBox {
-  width: 80%;
+  flex: 2;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 10px;
-  background-color: #f0f0f0;
+  height: 100%;
 }
 
 .rightBox {
-  padding: 10px;
-  height: 100%;
-  background-color: #333;
-  color: #fff;
+  flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
 }
 
 .box {
-  background-color: #4caf50;
-  padding: 20px;
-  height: 100%;
-  color: white;
+  background-color: $tiertiary-bg-colour;
+  border: 1px solid gray;
   border-radius: 5px;
   text-align: center;
-  flex-grow: 1;
-}
-
-.leftBox .box:nth-child(1) {
-  background-color: #ff7043;
-}
-
-.leftBox .box:nth-child(2) {
-  background-color: #42a5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 0;
+  margin: 20px;
 }

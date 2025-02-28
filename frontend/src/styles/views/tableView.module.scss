@@ -1,4 +1,4 @@
-@import "../variables/colours.module.scss";
+@use "../variables/colours.module.scss" as *;
 
 .container {
   width: 100%;
@@ -10,28 +10,54 @@
 }
 
 .tableContainer {
-  width: 90%;
+  width: 95%;
   height: 100%;
   font-size: small;
   border-spacing: 0;
+  border: 1px solid gray;
+  border-radius: 1%;
+  overflow: hidden;
 }
 
 .tableHeader {
   text-align: left;
+  background-color: $tiertiary-bg-colour;
+  height: 25px;
+  font-size: 1.2rem;
+}
+
+.tableCell {
+  font-size: 1rem;
+  padding: 1%;
 }
 
 .tableBody {
   .tableRow:nth-child(odd) {
-    background-color: grey;
+    background-color: $secondary-bg-colour;
+  }
+  .tableRow {
+    background-color: white;
   }
 
   .tableRow {
-    height: 30px;
+    height: 15px;
   }
 
   td {
-    padding: 0px;
+    padding: 2px;
   }
+}
+
+.statusBubble {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 15px;
+  font-weight: bold;
+  color: white;
+  font-size: 0.9rem;
+  text-align: center;
+  min-width: 80px;
+  text-transform: capitalize;
 }
 
 .pageBtnWrapper {
@@ -41,7 +67,6 @@
 }
 
 .pageBtn {
-  background-color: $Accent-colour;
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -55,47 +80,43 @@
   border: none;
 }
 
-//Change the colour of the page button
 .activePage {
-  background-color: #007bff;
+  background-color: $primary-bg-colour;
   color: white;
 }
 
-//! Base style for status columns */
 .statusCell {
   font-weight: bold;
   text-align: center;
-  padding: 5px 10px;
   color: #fff;
 }
 
-//! Status-specific styles */
 .claimedStatus {
   @extend .statusCell;
-  background-color: #22a03f; // green
+  background-color: $claimed-colour;
 }
 
 .unclaimedStatus {
   @extend .statusCell;
-  background-color: #f1aa0f; // yellow
+  background-color: $unclaimed-colour;
 }
 
 .tocollectStatus {
   @extend .statusCell;
-  background-color: #27dbcc; // cyan
+  background-color: $tocollect-colour;
 }
 
 .expiredStatus {
   @extend .statusCell;
-  background-color: #ff0000; // red
+  background-color: $expired-colour;
 }
 
 .openStatus {
   @extend .statusCell;
-  background-color: #28a745; // green (for open)
+  background-color: #28a745;
 }
 
 .closedStatus {
   @extend .statusCell;
-  background-color: #dc3545; // red (for closed)
+  background-color: #dc3545;
 }
