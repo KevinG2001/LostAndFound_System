@@ -9,7 +9,6 @@ function TicketsPage() {
   const { counts } = useCount("tickets");
 
   const { items: tickets } = useList("tickets", "list");
-  console.log("Tickets:", tickets);
 
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);

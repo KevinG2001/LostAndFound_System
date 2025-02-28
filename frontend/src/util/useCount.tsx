@@ -14,7 +14,6 @@ const useCount = (resource: string) => {
         throw new Error("Failed to fetch counts");
       }
       const data = await response.json();
-      console.log(`Fetched counts data:`, data);
 
       const countKey = `${resource}Counts`;
       setCounts(data[countKey]);
