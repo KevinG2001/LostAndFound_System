@@ -1,43 +1,30 @@
 const Item = require("../models/Item");
 
-//!Need to add other id ranges like misc, wallets, valubles etc..
-const idRanges = {
-  Backpack: { start: 1, prefix: "BAG" },
-  "Plastic Bag": { start: 1, prefix: "PLB" },
-  Keys: { start: 1, prefix: "KEY" },
-  Phone: { start: 1, prefix: "PHO" },
+// itemID is made off of category, Can change to type depending on final decision of what to use
+const generatePrefix = (category) => {
+  return category
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
 };
 
-const getNextId = async (type) => {
-  const normalizedType = type.toLowerCase();
-
-  const range = Object.keys(idRanges).find(
-    (key) => key.toLowerCase() === normalizedType
-  );
-
-  if (!range) {
-    throw new Error("Invalid item type");
+const getNextId = async (category) => {
+  if (!category) {
+    throw new Error("Category is required to generate an ID.");
   }
 
-  const itemRange = idRanges[range];
+  const prefix = generatePrefix(category);
 
   const highestItem = await Item.findOne({
-    itemID: { $regex: `^${itemRange.prefix}` },
+    itemID: { $regex: `^${prefix}\\d+$` },
   }).sort({ itemID: -1 });
 
-  let nextId;
+  let nextId = highestItem
+    ? parseInt(highestItem.itemID.replace(prefix, ""), 10) + 1 || 1
+    : 1;
 
-  if (highestItem) {
-    const currentIdNumber = parseInt(
-      highestItem.itemID.replace(itemRange.prefix, ""),
-      10
-    );
-    nextId = currentIdNumber + 1;
-  } else {
-    nextId = itemRange.start;
-  }
-
-  return `${itemRange.prefix}${nextId}`;
+  return `${prefix}${nextId.toString().padStart(3, "0")}`;
 };
 
 module.exports = { getNextId };

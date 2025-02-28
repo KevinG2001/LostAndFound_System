@@ -97,4 +97,34 @@ router.get("/typeLost", async (req, res) => {
   }
 });
 
+router.get("/items-by-type", async (req, res) => {
+  try {
+    const model = require("../models/Item");
+
+    const result = await model.aggregate([
+      {
+        $group: {
+          _id: "$category",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { count: -1 },
+      },
+    ]);
+
+    const formattedData = result.map((item) => ({
+      category: item._id,
+      count: item.count,
+    }));
+    res.json(formattedData);
+  } catch (error) {
+    console.error("Error fetching items by type:", error);
+    res.status(500).json({
+      message: "Error fetching items by type",
+      error: error.message,
+    });
+  }
+});
+
 module.exports = router;

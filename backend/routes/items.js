@@ -4,14 +4,13 @@ const router = express.Router();
 const { getNextId } = require("../util/idGenerator");
 const { formatItemDates } = require("../util/dateFormatter");
 
-// Existing route for creating items (unchanged)
 router.post("/create", async (req, res) => {
   const { description, category, type, route, garage, notes, dateLost } =
     req.body;
-  console.log("Request received:", req.body);
 
   try {
-    const itemID = await getNextId(type);
+    const itemID = await getNextId(category);
+
     const newItem = new Item({
       description,
       category,
@@ -25,18 +24,16 @@ router.post("/create", async (req, res) => {
     });
 
     const savedItem = await newItem.save();
-    console.log("Item saved:", savedItem);
+    console.log(itemID);
     res.status(201).json(savedItem);
   } catch (error) {
     console.error("Error saving item:", error);
     res
       .status(500)
       .json({ message: "Error creating item", error: error.message });
-    console.log("Item not saved");
   }
 });
 
-// Route to get a list of items (unchanged)
 router.get("/list", async (req, res) => {
   try {
     const items = await Item.find();
