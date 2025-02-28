@@ -1,5 +1,6 @@
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import Styles from "../../styles/charts/doughnutStyles.module.scss";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -34,11 +35,11 @@ function DoughnutChart({ data, error }) {
   };
 
   return (
-    <div>
+    <div className={Styles.chartContainer}>
       <Doughnut
         data={chartData}
         options={{
-          maintainAspectRatio: true,
+          maintainAspectRatio: false,
         }}
       />
     </div>

@@ -1,3 +1,4 @@
+import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -8,8 +9,9 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Line } from "react-chartjs-2";
+import variables from "../../styles/variables/colours.module.scss";
 
+// Registering the required chart components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -36,8 +38,8 @@ function LineChart({ data, error, loading }) {
         label: "Claimed",
         data: data.map((item) => item.claimed),
         fill: false,
-        borderColor: "rgba(75,192,192,1)",
-        pointBackgroundColor: "rgba(75,192,192,1)",
+        borderColor: variables.claimedColour,
+        pointBackgroundColor: variables.claimedColour,
         pointRadius: 5,
         tension: 0.1,
       },
@@ -45,8 +47,8 @@ function LineChart({ data, error, loading }) {
         label: "Unclaimed",
         data: data.map((item) => item.unclaimed),
         fill: false,
-        borderColor: "rgba(255,159,64,1)",
-        pointBackgroundColor: "rgba(255,159,64,1)",
+        borderColor: variables.unclaimedColour,
+        pointBackgroundColor: variables.unclaimedColour,
         pointRadius: 5,
         tension: 0.1,
       },
@@ -54,8 +56,8 @@ function LineChart({ data, error, loading }) {
         label: "Expired",
         data: data.map((item) => item.expired),
         fill: false,
-        borderColor: "rgba(255,99,132,1)",
-        pointBackgroundColor: "rgba(255,99,132,1)",
+        borderColor: variables.expiredColour,
+        pointBackgroundColor: variables.expiredColour,
         pointRadius: 5,
         tension: 0.1,
       },
@@ -63,8 +65,8 @@ function LineChart({ data, error, loading }) {
         label: "To Collect",
         data: data.map((item) => item.toCollect),
         fill: false,
-        borderColor: "rgba(153,102,255,1)",
-        pointBackgroundColor: "rgba(153,102,255,1)",
+        borderColor: variables.tocollectColour,
+        pointBackgroundColor: variables.tocollectColour,
         pointRadius: 5,
         tension: 0.1,
       },
@@ -73,6 +75,7 @@ function LineChart({ data, error, loading }) {
 
   const chartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       title: {
         display: true,
