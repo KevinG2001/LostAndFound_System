@@ -38,7 +38,9 @@ const MoreDetailsModal = ({
     setIsEditing(true);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setEditedData({
       ...editedData,
@@ -158,12 +160,16 @@ const MoreDetailsModal = ({
           <div className={Styles.detailsRow}>
             <span className={Styles.detailLabel}>Status:</span>
             {isEditing ? (
-              <input
-                type="text"
+              <select
                 name="status"
                 value={editedData.status}
                 onChange={handleInputChange}
-              />
+              >
+                <option value="Claimed">Claimed</option>
+                <option value="Unclaimed">Unclaimed</option>
+                <option value="Expired">Expired</option>
+                <option value="To Collect">To Collect</option>
+              </select>
             ) : (
               <span className={Styles.detailValue}>{editedData.status}</span>
             )}
