@@ -4,7 +4,7 @@ import Style from "../../styles/views/tableView.module.scss";
 interface TableViewProps {
   columns: { header: string; accessor: string }[];
   data: any[];
-  onRowClick?: (item: any) => void; // Make sure the onRowClick prop is accepted
+  onRowClick?: (item: any) => void;
 }
 
 const TableView = ({ columns, data, onRowClick }: TableViewProps) => {
@@ -18,7 +18,7 @@ const TableView = ({ columns, data, onRowClick }: TableViewProps) => {
     currentPage * rowsPerPage
   );
 
-  // Creating empty rows to keep the table clean
+  // Empty row for styling
   const emptyRows = Array.from(
     { length: rowsPerPage - paginatedData.length },
     () => ({})
@@ -28,7 +28,6 @@ const TableView = ({ columns, data, onRowClick }: TableViewProps) => {
     setCurrentPage(pageNumber);
   };
 
-  // Status mapping to corresponding CSS class names
   const statusMapping = {
     Claimed: Style.claimedStatus,
     Unclaimed: Style.unclaimedStatus,
@@ -53,7 +52,7 @@ const TableView = ({ columns, data, onRowClick }: TableViewProps) => {
             <tr
               key={rowIndex}
               className={Style.tableRow}
-              onClick={() => onRowClick && onRowClick(row)} // Trigger the row click handler
+              onClick={() => onRowClick && onRowClick(row)}
             >
               {columns.map((col, colIndex) => {
                 const cellData = row[col.accessor] || "";
@@ -63,8 +62,14 @@ const TableView = ({ columns, data, onRowClick }: TableViewProps) => {
                     : "";
 
                 return (
-                  <td key={colIndex} className={statusClass}>
-                    {cellData}
+                  <td key={colIndex} className={Style.tableCell}>
+                    {col.accessor === "status" ? (
+                      <span className={`${Style.statusBubble} ${statusClass}`}>
+                        {cellData}
+                      </span>
+                    ) : (
+                      cellData
+                    )}
                   </td>
                 );
               })}
@@ -75,7 +80,7 @@ const TableView = ({ columns, data, onRowClick }: TableViewProps) => {
           {emptyRows.map((_, index) => (
             <tr key={`empty-${index}`} className={Style.tableRow}>
               {columns.map((_, colIndex) => (
-                <td key={colIndex}>&nbsp;</td> // Add an empty space (&nbsp;) to preserve cell structure
+                <td key={colIndex}>&nbsp;</td>
               ))}
             </tr>
           ))}

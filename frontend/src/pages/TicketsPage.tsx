@@ -35,20 +35,20 @@ function TicketsPage() {
   return (
     <div className={Styles.itemsContainer}>
       <div className={Styles.statsWrapper}>
-        <div className={Styles.statBubble}>
+        <div className={`${Styles.statBubble} ${Styles.itemsLost}`}>
           Total Tickets <br />
           {counts?.totalCount !== undefined ? counts.totalCount : "Loading..."}
         </div>
-        <div className={Styles.statBubble}>
-          Open Tickets <br />
-          {counts?.openTicketCount !== undefined
-            ? counts.openTicketCount
-            : "Loading..."}
-        </div>
-        <div className={Styles.statBubble}>
+        <div className={`${Styles.statBubble} ${Styles.itemsReturned}`}>
           Closed Tickets <br />
           {counts?.closedTicketCount !== undefined
             ? counts.closedTicketCount
+            : "Loading..."}
+        </div>
+        <div className={`${Styles.statBubble} ${Styles.itemsExpired}`}>
+          Open Tickets <br />
+          {counts?.openTicketCount !== undefined
+            ? counts.openTicketCount
             : "Loading..."}
         </div>
       </div>

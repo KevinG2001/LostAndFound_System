@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useCount from "../util/useCount";
 import Styles from "../styles/pages/itemsPage.module.scss";
 import TableView from "../components/Views/TableView";
 import useList from "../util/useList";
 import MoreDetailsModal from "../components/Modals/moreDetails";
 import NewItemModal from "../components/Modals/newItem";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function ItemsPage() {
   const { counts } = useCount("items");
@@ -14,6 +15,17 @@ function ItemsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNewItemModalOpen, setIsNewItemModalOpen] = useState(false);
   const [items, setItems] = useState(itemsList);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.state?.openNewItemModal) {
+      setIsNewItemModalOpen(true);
+
+      navigate("/items", { replace: true, state: {} });
+    }
+  }, [location.state, navigate]);
 
   const handleRowClick = (item: any) => {
     setSelectedItem(item);
@@ -47,27 +59,27 @@ function ItemsPage() {
   return (
     <div className={Styles.itemsContainer}>
       <div className={Styles.statsWrapper}>
-        <div className={Styles.statBubble}>
+        <div className={`${Styles.statBubble} ${Styles.itemsLost}`}>
           Total Items Lost <br />
           {counts?.totalCount !== undefined ? counts.totalCount : "Loading..."}
         </div>
-        <div className={Styles.statBubble}>
+        <div className={`${Styles.statBubble} ${Styles.itemsReturned}`}>
           Items Returned <br />
           {counts?.returnedCount !== undefined
             ? counts.returnedCount
             : "Loading..."}
         </div>
-        <div className={Styles.statBubble}>
-          Lost Items <br />
+        <div className={`${Styles.statBubble} ${Styles.itemsExpired}`}>
+          Lost This Month <br />
           {counts?.lostItemCount !== undefined
             ? counts.lostItemCount
             : "Loading..."}
         </div>
       </div>
 
-      <button className={Styles.newItemButton} onClick={openNewItemModal}>
+      {/* <button className={Styles.newItemButton} onClick={openNewItemModal}>
         New Item
-      </button>
+      </button> */}
 
       <div className={Styles.itemTable}>
         <TableView
