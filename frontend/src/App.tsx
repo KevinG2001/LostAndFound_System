@@ -13,8 +13,6 @@ function App() {
     <>
       <div id="root">
         <Router>
-          {" "}
-          {/* Wrap everything in HashRouter */}
           <Navbar />
           <Routes>
             <Route path="/" element={<Dashboard />} />
