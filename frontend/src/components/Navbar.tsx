@@ -1,9 +1,16 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Styles from "../Styles/navStyles.module.scss";
-import { color } from "chart.js/helpers";
+import { useState } from "react";
+import TicketIcon from "./Icons/TicketIcon";
+import BackpackIcon from "./Icons/BackpackIcon";
+import PieChartIcon from "./Icons/PieChartIcon";
 
 function Navbar() {
   const navigate = useNavigate();
+  const url = useLocation();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [isNewItemModalOpen, setIsNewItemModalOpen] = useState(false);
 
   const goToDashboardPage = () => {
     navigate("/");
@@ -16,6 +23,11 @@ function Navbar() {
   const goToTickets = () => {
     navigate("/tickets");
   };
+
+  const openNewItemModal = () => {
+    navigate("/items", { state: { openNewItemModal: true } });
+  };
+
   return (
     <>
       <div className={Styles.navContainer}>
@@ -28,12 +40,21 @@ function Navbar() {
           </div>
           <div className={Styles.navLinkWrapper}>
             <button className={Styles.navLink} onClick={goToDashboardPage}>
+              <PieChartIcon />
               Dashboard
             </button>
             <button className={Styles.navLink} onClick={goToItemsPage}>
+              <BackpackIcon />
               Items
             </button>
+            {url.pathname === "/items" && (
+              <button className={Styles.navLink} onClick={openNewItemModal}>
+                New Item
+              </button>
+            )}
+
             <button className={Styles.navLink} onClick={goToTickets}>
+              <TicketIcon />
               Tickets
             </button>
           </div>
