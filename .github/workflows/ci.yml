@@ -34,5 +34,13 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Wait for MongoDB to be ready
+        run: |
+          echo "Waiting for MongoDB to be ready..."
+          until mongo --host mongodb --eval "print('MongoDB is ready')" > /dev/null 2>&1; do
+            sleep 5
+          done
+          echo "MongoDB is ready."
+
       - name: Run tests
         run: npm test
