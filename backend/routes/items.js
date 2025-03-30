@@ -7,10 +7,14 @@ const { formatItemDates } = require("../util/dateFormatter");
 router.post("/create", async (req, res) => {
   const { description, category, type, route, garage, notes, dateLost } =
     req.body;
-
   try {
-    const itemID = await getNextId(category);
+    if (!description || !dateLost) {
+      return res.status(400).json({
+        message: "Validation failed: description, dateLost",
+      });
+    }
 
+    const itemID = await getNextId(category);
     const newItem = new Item({
       description,
       category,
@@ -24,7 +28,6 @@ router.post("/create", async (req, res) => {
     });
 
     const savedItem = await newItem.save();
-    console.log(itemID);
     res.status(201).json(savedItem);
   } catch (error) {
     console.error("Error saving item:", error);
