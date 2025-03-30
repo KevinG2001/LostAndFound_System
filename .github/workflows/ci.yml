@@ -12,6 +12,16 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      mongodb:
+        image: mongo:4.4
+        ports:
+          - 27017:27017
+        options: |
+          --health-cmd="mongo --eval 'db.runCommand({ connectionStatus: 1 })'"
+          --health-timeout=5s
+          --health-retries=3
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
@@ -22,13 +32,7 @@ jobs:
           node-version: "18"
 
       - name: Install dependencies
-        run: |
-          npm install
-
-      - name: Set up MongoDB for tests
-        uses: eazy/gh-action-mongodb@v2
-        with:
-          mongodb-version: 8.0
+        run: npm install
 
       - name: Run tests
         run: npm test
