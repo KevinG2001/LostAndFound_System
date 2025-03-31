@@ -65,8 +65,8 @@ router.get("/list", async (req, res) => {
     });
   }
 });
-
 router.put("/update/:itemID", async (req, res) => {
+  console.log("Update Backend", req.body);
   const { itemID } = req.params;
   const {
     description,
@@ -81,6 +81,16 @@ router.put("/update/:itemID", async (req, res) => {
   } = req.body;
 
   try {
+    let formattedDateLost = null;
+
+    if (dateLost && !isNaN(Date.parse(dateLost))) {
+      formattedDateLost = new Date(dateLost);
+    } else {
+      return res.status(400).json({
+        message: "Invalid date format for dateLost. Use 'YYYY-MM-DD'.",
+      });
+    }
+
     const updatedItem = await Item.findOneAndUpdate(
       { itemID },
       {
@@ -90,7 +100,7 @@ router.put("/update/:itemID", async (req, res) => {
         route,
         garage,
         notes,
-        dateLost,
+        dateLost: formattedDateLost,
         status,
         imageUrl,
       },

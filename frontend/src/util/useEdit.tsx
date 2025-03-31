@@ -19,6 +19,13 @@ const useEdit = (itemId: string) => {
     setError(null);
     setSuccess(false);
 
+    if (updatedData.dateLost) {
+      const [day, month, year] = updatedData.dateLost.split("-");
+      updatedData.dateLost = new Date(`${year}-${month}-${day}`)
+        .toISOString()
+        .split("T")[0];
+    }
+
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/items/update/${itemId}`,
