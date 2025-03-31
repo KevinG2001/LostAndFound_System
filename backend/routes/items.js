@@ -9,8 +9,16 @@ const { uploadFileToS3 } = require("../util/s3Uploader");
 const upload = multer({ storage: multer.memoryStorage() });
 
 router.post("/create", upload.single("image"), async (req, res) => {
-  const { description, category, type, route, notes, dateLost, status } =
-    req.body;
+  const {
+    description,
+    category,
+    type,
+    route,
+    garage,
+    notes,
+    dateLost,
+    status,
+  } = req.body;
 
   if (!description || !dateLost) {
     return res
@@ -36,6 +44,7 @@ router.post("/create", upload.single("image"), async (req, res) => {
       category,
       type,
       route,
+      garage,
       notes,
       dateLost,
       status,

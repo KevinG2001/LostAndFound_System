@@ -12,6 +12,7 @@ const NewItemModal = ({ onClose, onCreate }: NewItemModalProps) => {
   const [category, setCategory] = useState("");
   const [type, setType] = useState("");
   const [route, setRoute] = useState("");
+  const [garage, setGarage] = useState("");
   const [notes, setNotes] = useState("");
   const [dateLost, setDateLost] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -32,6 +33,7 @@ const NewItemModal = ({ onClose, onCreate }: NewItemModalProps) => {
       category,
       type,
       route,
+      garage,
       notes,
       dateLost,
       status: "Unclaimed",
@@ -92,6 +94,14 @@ const NewItemModal = ({ onClose, onCreate }: NewItemModalProps) => {
               value={route}
               onChange={(e) => setRoute(e.target.value)}
               required
+            />
+          </div>
+          <div className={Style.formGroup}>
+            <label>Garage:</label>
+            <input
+              type="text"
+              value={garage}
+              onChange={(e) => setGarage(e.target.value)}
             />
           </div>
 
