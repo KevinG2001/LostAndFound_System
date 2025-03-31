@@ -36,6 +36,9 @@ const itemSchema = new mongoose.Schema(
     status: {
       type: String,
     },
+    imageUrl: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

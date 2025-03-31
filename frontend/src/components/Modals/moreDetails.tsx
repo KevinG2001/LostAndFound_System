@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Styles from "../../styles/modals/moreDetails.module.scss";
 import TicketChat from "../TicketChat";
 import useEdit from "../../util/useEdit";
@@ -32,6 +32,11 @@ const MoreDetailsModal = ({
     status: data?.status || "",
   });
 
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string | null>(
+    data?.imageUrl || null
+  );
   const { loading, error, success, editItem } = useEdit(data?.itemID);
 
   const handleEditClick = () => {
@@ -57,13 +62,88 @@ const MoreDetailsModal = ({
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files ? e.target.files[0] : null;
+    setFile(selectedFile);
+  };
+
+  const handleUpload = async () => {
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("image", file);
+    formData.append("itemID", editedData.itemID);
+
+    setUploading(true);
+    //! Change link for fetch later
+
+    try {
+      const response = await fetch("http://localhost:4000/file/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload image");
+      }
+
+      const data = await response.json();
+      setImageUrl(data.imageUrl);
+      setUploading(false);
+    } catch (err) {
+      console.error("Error uploading file:", err);
+      setUploading(false);
+    }
+  };
+
+  useEffect(() => {
+    console.log("data.imageUrl:", data?.imageUrl);
+    if (data?.imageUrl) {
+      setImageUrl(data.imageUrl);
+    }
+  }, [data]);
+
   if (!isOpen) return null;
 
   const renderContent = () => {
     if (type === "item") {
       return (
         <div className={Styles.detailsContainer}>
+          {isEditing && (
+            <div className={Styles.uploadSection}>
+              <h2 className={Styles.detailsTitle}>Upload Item Image</h2>
+              <input type="file" onChange={handleFileChange} />
+              <button
+                onClick={handleUpload}
+                disabled={uploading || !file}
+                className={Styles.uploadButton}
+              >
+                {uploading ? "Uploading..." : "Upload"}
+              </button>
+              {imageUrl && (
+                <div>
+                  <h3>Uploaded Image:</h3>
+                  <img
+                    src={imageUrl}
+                    alt="Uploaded"
+                    style={{ width: "100px", height: "auto" }}
+                  />
+                </div>
+              )}
+            </div>
+          )}
+
           <h2 className={Styles.detailsTitle}>Item Details</h2>
+          {!isEditing && imageUrl && (
+            <div className={Styles.formGroup}>
+              <img
+                src={imageUrl}
+                alt="Item"
+                className={Styles.itemImage}
+                style={{ width: "200px", height: "auto", marginTop: "10px" }}
+              />
+            </div>
+          )}
           <div className={Styles.detailsRow}>
             <span className={Styles.detailLabel}>ID:</span>
             {isEditing ? (
@@ -174,6 +254,7 @@ const MoreDetailsModal = ({
               <span className={Styles.detailValue}>{editedData.status}</span>
             )}
           </div>
+
           <div>
             {isEditing ? (
               <button onClick={handleSave} disabled={loading}>

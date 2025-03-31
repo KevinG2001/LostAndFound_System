@@ -8,6 +8,8 @@ interface NewItem {
   notes: string;
   dateLost: string;
   status: string;
+  itemID?: string;
+  imageUrl?: string;
 }
 
 const useNewItem = () => {
@@ -15,29 +17,39 @@ const useNewItem = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const createItem = async (itemData: NewItem) => {
+  const createItem = async (itemData: NewItem, imageFile: File | null) => {
     setLoading(true);
     setError(null);
 
     try {
+      const formData = new FormData();
+      formData.append("description", itemData.description);
+      formData.append("category", itemData.category);
+      formData.append("type", itemData.type);
+      formData.append("route", itemData.route);
+      formData.append("notes", itemData.notes);
+      formData.append("dateLost", itemData.dateLost);
+      formData.append("status", itemData.status);
+
+      if (imageFile) {
+        formData.append("image", imageFile);
+      }
+
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/items/create`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(itemData),
+          body: formData,
         }
       );
 
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Server Error Response:", errorText);
         throw new Error("Failed to create new item");
       }
 
       const data = await response.json();
-      console.log("Created item data:", data);
-
       setCreatedItem(data);
     } catch (err: any) {
       console.error("Error creating item:", err);
