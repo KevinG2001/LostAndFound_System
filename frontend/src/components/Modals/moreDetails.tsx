@@ -109,9 +109,9 @@ const MoreDetailsModal = ({
     if (type === "item") {
       return (
         <div className={Styles.detailsContainer}>
+          <h2 className={Styles.detailsTitle}>Item Details</h2>
           {isEditing && (
             <div className={Styles.uploadSection}>
-              <h2 className={Styles.detailsTitle}>Upload Item Image</h2>
               <input type="file" onChange={handleFileChange} />
               <button
                 onClick={handleUpload}
@@ -120,28 +120,11 @@ const MoreDetailsModal = ({
               >
                 {uploading ? "Uploading..." : "Upload"}
               </button>
-              {imageUrl && (
-                <div>
-                  <h3>Uploaded Image:</h3>
-                  <img
-                    src={imageUrl}
-                    alt="Uploaded"
-                    style={{ width: "100px", height: "auto" }}
-                  />
-                </div>
-              )}
             </div>
           )}
-
-          <h2 className={Styles.detailsTitle}>Item Details</h2>
           {!isEditing && imageUrl && (
-            <div className={Styles.formGroup}>
-              <img
-                src={imageUrl}
-                alt="Item"
-                className={Styles.itemImage}
-                style={{ width: "200px", height: "auto", marginTop: "10px" }}
-              />
+            <div className={Styles.imgWrapper}>
+              <img src={imageUrl} alt="Item" className={Styles.itemImage} />
             </div>
           )}
           <div className={Styles.detailsRow}>
@@ -173,86 +156,102 @@ const MoreDetailsModal = ({
             )}
           </div>
           <div className={Styles.detailsRow}>
-            <span className={Styles.detailLabel}>Category:</span>
-            {isEditing ? (
-              <input
-                type="text"
-                name="category"
-                value={editedData.category}
-                onChange={handleInputChange}
-              />
-            ) : (
-              <span className={Styles.detailValue}>{editedData.category}</span>
-            )}
+            <div className={Styles.detailsRowSingle}>
+              <span className={Styles.detailLabel}>Category:</span>
+              {isEditing ? (
+                <input
+                  type="text"
+                  name="category"
+                  value={editedData.category}
+                  onChange={handleInputChange}
+                  className={Styles.inputField}
+                />
+              ) : (
+                <span className={Styles.detailValue}>
+                  {editedData.category}
+                </span>
+              )}
+            </div>
+            <div className={Styles.detailsRowSingle}>
+              <span className={Styles.detailLabel}>Type:</span>
+              {isEditing ? (
+                <input
+                  type="text"
+                  name="type"
+                  value={editedData.type}
+                  onChange={handleInputChange}
+                  className={Styles.inputField}
+                />
+              ) : (
+                <span className={Styles.detailValue}>{editedData.type}</span>
+              )}
+            </div>
+          </div>
+
+          <div className={Styles.detailsRow}>
+            <div className={Styles.detailsRowSingle}>
+              <span className={Styles.detailLabel}>Route:</span>
+              {isEditing ? (
+                <input
+                  type="text"
+                  name="route"
+                  value={editedData.route}
+                  onChange={handleInputChange}
+                  className={Styles.inputField}
+                />
+              ) : (
+                <span className={Styles.detailValue}>{editedData.route}</span>
+              )}
+            </div>
+            <div className={Styles.detailsRowSingle}>
+              <span className={Styles.detailLabel}>Garage:</span>
+              {isEditing ? (
+                <input
+                  type="text"
+                  name="garage"
+                  value={editedData.garage}
+                  onChange={handleInputChange}
+                  className={Styles.inputField}
+                />
+              ) : (
+                <span className={Styles.detailValue}>{editedData.garage}</span>
+              )}
+            </div>
           </div>
           <div className={Styles.detailsRow}>
-            <span className={Styles.detailLabel}>Type:</span>
-            {isEditing ? (
-              <input
-                type="text"
-                name="type"
-                value={editedData.type}
-                onChange={handleInputChange}
-              />
-            ) : (
-              <span className={Styles.detailValue}>{editedData.type}</span>
-            )}
-          </div>
-          <div className={Styles.detailsRow}>
-            <span className={Styles.detailLabel}>Route:</span>
-            {isEditing ? (
-              <input
-                type="text"
-                name="route"
-                value={editedData.route}
-                onChange={handleInputChange}
-              />
-            ) : (
-              <span className={Styles.detailValue}>{editedData.route}</span>
-            )}
-          </div>
-          <div className={Styles.detailsRow}>
-            <span className={Styles.detailLabel}>Garage:</span>
-            {isEditing ? (
-              <input
-                type="text"
-                name="garage"
-                value={editedData.garage}
-                onChange={handleInputChange}
-              />
-            ) : (
-              <span className={Styles.detailValue}>{editedData.garage}</span>
-            )}
-          </div>
-          <div className={Styles.detailsRow}>
-            <span className={Styles.detailLabel}>Date Lost:</span>
-            {isEditing ? (
-              <input
-                type="text"
-                name="dateLost"
-                value={editedData.dateLost}
-                onChange={handleInputChange}
-              />
-            ) : (
-              <span className={Styles.detailValue}>{editedData.dateLost}</span>
-            )}
-          </div>
-          <div className={Styles.detailsRow}>
-            <span className={Styles.detailLabel}>Status:</span>
-            {isEditing ? (
-              <select
-                name="status"
-                value={editedData.status}
-                onChange={handleInputChange}
-              >
-                <option value="Claimed">Claimed</option>
-                <option value="Unclaimed">Unclaimed</option>
-                <option value="Expired">Expired</option>
-                <option value="To Collect">To Collect</option>
-              </select>
-            ) : (
-              <span className={Styles.detailValue}>{editedData.status}</span>
-            )}
+            <div className={Styles.detailsRowSingle}>
+              <span className={Styles.detailLabel}>Date Lost:</span>
+              {isEditing ? (
+                <input
+                  type="text"
+                  name="dateLost"
+                  value={editedData.dateLost}
+                  onChange={handleInputChange}
+                  className={Styles.inputField}
+                />
+              ) : (
+                <span className={Styles.detailValue}>
+                  {editedData.dateLost}
+                </span>
+              )}
+            </div>
+            <div className={Styles.detailsRowSingle}>
+              <span className={Styles.detailLabel}>Status:</span>
+              {isEditing ? (
+                <select
+                  name="status"
+                  value={editedData.status}
+                  onChange={handleInputChange}
+                >
+                  <option value="Claimed">Claimed</option>
+                  <option value="Unclaimed">Unclaimed</option>
+                  <option value="Expired">Expired</option>
+                  <option value="To Collect">To Collect</option>
+                </select>
+              ) : (
+                <span className={Styles.detailValue}>{editedData.status}</span>
+              )}
+            </div>
           </div>
 
           <div>

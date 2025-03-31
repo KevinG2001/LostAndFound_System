@@ -16,11 +16,14 @@
   border-radius: 8px;
   width: 90%;
   max-width: 600px;
-  padding: 20px;
+  padding: 30px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 20px;
   position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .closeButton {
@@ -36,39 +39,204 @@
 .detailsContainer {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  gap: 24px;
+  width: 90%;
+  max-width: 500px;
 }
 
 .detailsTitle {
   font-size: 1.5rem;
-  margin-bottom: 10px;
+  text-align: center;
+  margin-bottom: 16px;
+  width: 100%;
 }
 
+// Image section
+.imgWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.itemImage {
+  max-width: 300px;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.uploadSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+  width: 100%;
+
+  input[type="file"] {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+// Form fields
 .detailsRow {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  width: 100%;
+  gap: 16px;
+  margin-bottom: 12px;
   flex-wrap: wrap;
-  gap: 10px;
-  padding: 8px 0;
-  border-bottom: 1px solid #f0f0f0;
+
+  // ID and Description fields should be centered
+  &:nth-child(3),
+  &:nth-child(4) {
+    justify-content: center;
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+
+    .detailLabel {
+      min-width: 90px;
+      text-align: right;
+    }
+
+    .detailValue,
+    input[type="text"] {
+      flex: 1;
+      max-width: 70%;
+    }
+  }
+
+  // Single row item
+  &:not(:has(.detailsRowSingle)) {
+    align-items: center;
+
+    .detailLabel {
+      min-width: 100px;
+      text-align: right;
+      margin-bottom: 0;
+      margin-right: 8px;
+    }
+
+    .detailValue,
+    input[type="text"] {
+      flex: 1;
+    }
+  }
+
+  // For paired fields (side by side)
+  &:has(.detailsRowSingle) {
+    justify-content: space-between;
+  }
+}
+
+.detailsRowSingle {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-width: 200px;
+  align-items: center;
+
+  .detailLabel {
+    min-width: 80px;
+    text-align: right;
+    margin-bottom: 0;
+    margin-right: 8px;
+  }
+
+  .detailValue,
+  input[type="text"],
+  select {
+    flex: 1;
+  }
 }
 
 .detailLabel {
   font-weight: 600;
   color: #444;
-  font-size: 1rem;
-  min-width: 120px;
-  text-align: right;
+  font-size: 0.9rem;
+  display: block;
 }
 
 .detailValue {
   font-size: 1rem;
   color: #222;
   font-weight: 500;
-  flex: 1;
+  display: block;
+  padding: 4px 0;
+}
+
+// For non-row input fields
+input[type="text"],
+select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.inputField {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+// Buttons
+button {
+  padding: 10px 15px;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  margin-top: 8px;
+
+  &:hover {
+    background-color: #1558b7;
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+}
+
+.uploadButton {
+  padding: 8px 15px;
+  background-color: #4caf50;
+  width: fit-content;
+
+  &:disabled {
+    background-color: #ccc;
+  }
 }
 
 .chatContainer {
   margin-top: 20px;
+  width: 100%;
+}
+
+// Error and success messages
+.error {
+  color: #d32f2f;
+  margin-top: 8px;
+  text-align: center;
+}
+
+.success {
+  color: #388e3c;
+  margin-top: 8px;
+  text-align: center;
+}
+
+// Container for action buttons
+div:has(> button:only-child) {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }

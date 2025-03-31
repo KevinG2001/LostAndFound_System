@@ -52,6 +52,10 @@ const NewItemModal = ({ onClose, onCreate }: NewItemModalProps) => {
         <h2>Create New Item</h2>
         <form onSubmit={handleSubmit}>
           <div className={Style.formGroup}>
+            <label>Upload Image:</label>
+            <input type="file" accept="image/*" onChange={handleImageChange} />
+          </div>
+          <div className={Style.formGroup}>
             <label>Description:</label>
             <input
               type="text"
@@ -107,11 +111,6 @@ const NewItemModal = ({ onClose, onCreate }: NewItemModalProps) => {
               onChange={(e) => setDateLost(e.target.value)}
               required
             />
-          </div>
-
-          <div className={Style.formGroup}>
-            <label>Upload Image:</label>
-            <input type="file" accept="image/*" onChange={handleImageChange} />
           </div>
 
           <div className={Style.buttonGroup}>
