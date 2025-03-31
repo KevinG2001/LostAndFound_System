@@ -15,7 +15,7 @@ router.post("/create", upload.single("image"), async (req, res) => {
   if (!description || !dateLost) {
     return res
       .status(400)
-      .json({ message: "Description and dateLost are required" });
+      .json({ message: "Validation failed: description, dateLost" });
   }
 
   try {

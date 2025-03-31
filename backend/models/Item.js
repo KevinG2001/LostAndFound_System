@@ -33,9 +33,7 @@ const itemSchema = new mongoose.Schema(
     dateClaimed: {
       type: Date,
     },
-    status: {
-      type: String,
-    },
+    status: { type: String, default: "Unclaimed" },
     imageUrl: {
       type: String,
     },
