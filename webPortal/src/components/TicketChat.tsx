@@ -1,98 +1,93 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
+import Styles from "../styles/ticketchat.module.scss";
+import useTicketMessages from "../util/useTicketMessage";
+
+interface Message {
+  sender: string;
+  message: string;
+  timestamp: string;
+}
 
 const TicketChat = ({ ticketId }: { ticketId: string }) => {
-  const [messages, setMessages] = useState<
-    { sender: string; message: string; timestamp: string }[]
-  >([]);
+  const { messages, customerName, error, fetchMessages } =
+    useTicketMessages(ticketId);
+
   const [newMessage, setNewMessage] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [customerName, setCustomerName] = useState<string | null>(null); // New state for customer name
   const socketRef = useRef<Socket | null>(null);
+  const [localMessages, setLocalMessages] = useState<Message[]>([]);
 
-  const fetchMessages = async () => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/tickets/${ticketId}`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch messages");
-      }
-      const ticket = await response.json();
-      setMessages(ticket.messages || []);
-      setCustomerName(ticket.contactInfo?.name || "User"); // Set the customer's name
-    } catch (error: any) {
-      console.error("Error fetching messages:", error.message);
-      setError("Failed to load messages");
-    }
-  };
+  const handleSendMessage = useCallback(() => {
+    if (!newMessage.trim() || !socketRef.current) return;
 
-  const handleSendMessage = () => {
-    if (!newMessage.trim()) return;
-
-    const messageData = {
-      sender: customerName || "User", // Use customerName in the sender field
-      message: newMessage,
+    const messageData: Message = {
+      sender: customerName || "User",
+      message: newMessage.trim(),
       timestamp: new Date().toISOString(),
     };
 
-    if (socketRef.current) {
-      socketRef.current.emit("sendMessage", {
-        ticketId,
-        ...messageData,
-      });
-      setNewMessage("");
-    }
-  };
+    socketRef.current.emit("sendMessage", { ticketId, ...messageData });
+    setNewMessage("");
+    setLocalMessages((prev) => [...prev, messageData]);
+  }, [newMessage, customerName, ticketId]);
 
   useEffect(() => {
-    // Fetch initial messages and customer name
     fetchMessages();
 
-    // Connect to WebSocket server
     const socket = io(import.meta.env.VITE_API_URL);
     socketRef.current = socket;
 
-    // Listen for new messages
-    socket.on("newMessage", (data) => {
+    const handleIncoming = (data: any) => {
       if (data.ticketId === ticketId) {
-        setMessages((prev) => [...prev, data]);
+        setLocalMessages((prev) => [...prev, data]);
       }
-    });
+    };
 
-    // Cleanup on component unmount
+    socket.on("newMessage", handleIncoming);
+
     return () => {
+      socket.off("newMessage", handleIncoming);
       socket.disconnect();
     };
-  }, [ticketId]);
+  }, [fetchMessages, ticketId]);
+
+  const allMessages = [...messages, ...localMessages];
+
+  const formatTime = (timestamp: string) =>
+    new Date(timestamp).toLocaleString();
 
   return (
-    <div>
-      <h3>Chat</h3>
-      <div
-        style={{
-          maxHeight: "300px",
-          overflowY: "auto",
-          border: "1px solid #ccc",
-          padding: "10px",
-        }}
-      >
-        {messages.map((msg, index) => (
-          <div key={index} style={{ marginBottom: "10px" }}>
-            <strong>{msg.sender}</strong>: {msg.message} <br />
-            <small>{new Date(msg.timestamp).toLocaleString()}</small>
+    <div className={Styles.chatContainer}>
+      <h3 className={Styles.chatTitle}>Chat</h3>
+
+      <div className={Styles.chatBox}>
+        {allMessages.map(({ sender, message, timestamp }, idx) => (
+          <div
+            key={idx}
+            className={`${Styles.chatMessage} ${
+              sender === customerName ? Styles.userMessage : Styles.staffMessage
+            }`}
+          >
+            <strong>{sender}</strong>
+            <p>{message}</p>
+            <small>{formatTime(timestamp)}</small>
           </div>
         ))}
       </div>
+
       <textarea
         rows={3}
         value={newMessage}
         onChange={(e) => setNewMessage(e.target.value)}
         placeholder="Type your message here..."
-        style={{ width: "100%", margin: "10px 0" }}
+        className={Styles.textInput}
       />
-      <button onClick={handleSendMessage}>Send</button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      <button onClick={handleSendMessage} className={Styles.sendButton}>
+        Send
+      </button>
+
+      {error && <p className={Styles.errorMessage}>{error}</p>}
     </div>
   );
 };
