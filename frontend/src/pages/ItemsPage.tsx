@@ -6,6 +6,8 @@ import useList from "../util/useList";
 import MoreDetailsModal from "../components/Modals/moreDetails";
 import NewItemModal from "../components/Modals/newItem";
 import { useLocation, useNavigate } from "react-router-dom";
+import useSearch from "../util/useSearch";
+import Searchbar from "../components/Searchbar";
 
 function ItemsPage() {
   const { counts } = useCount("items");
@@ -14,7 +16,15 @@ function ItemsPage() {
   const [selectedItem, setSelectedItem] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNewItemModalOpen, setIsNewItemModalOpen] = useState(false);
-  const [items, setItems] = useState(itemsList);
+
+  const {
+    searchTerm,
+    setSearchTerm,
+    searchDB,
+    items: searchResults,
+    loading,
+    hasSearched,
+  } = useSearch();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -22,7 +32,6 @@ function ItemsPage() {
   useEffect(() => {
     if (location.state?.openNewItemModal) {
       setIsNewItemModalOpen(true);
-
       navigate("/items", { replace: true, state: {} });
     }
   }, [location.state, navigate]);
@@ -41,7 +50,6 @@ function ItemsPage() {
   const closeNewItemModal = () => setIsNewItemModalOpen(false);
 
   const handleCreateNewItem = (newItem: any) => {
-    setItems([...items, newItem]);
     closeNewItemModal();
   };
 
@@ -77,14 +85,17 @@ function ItemsPage() {
         </div>
       </div>
 
-      {/* <button className={Styles.newItemButton} onClick={openNewItemModal}>
-        New Item
-      </button> */}
+      <Searchbar
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        searchDB={searchDB}
+        loading={loading}
+      />
 
       <div className={Styles.itemTable}>
         <TableView
           columns={columns}
-          data={itemsList}
+          data={hasSearched ? searchResults : itemsList}
           onRowClick={handleRowClick}
         />
       </div>

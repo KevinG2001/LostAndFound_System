@@ -128,4 +128,36 @@ router.put("/update/:itemID", async (req, res) => {
   }
 });
 
+router.post("/search", async (req, res) => {
+  const { filters } = req.body;
+
+  try {
+    let criteria = {};
+
+    //Takes apart criteria, loops over them, trims and makessure if a space is empty it isnt searched
+    for (const [key, value] of Object.entries(filters)) {
+      if (value.trim() !== "") {
+        criteria[key] = {
+          $regex: new RegExp(value, "i"),
+        };
+      }
+    }
+
+    const items = await Item.find(criteria);
+    const formattedItems = items.map((item) => formatItemDates(item));
+
+    res.status(200).json({
+      success: true,
+      items: formattedItems,
+    });
+  } catch (error) {
+    console.error("Error searching for items", error);
+    res.status(500).json({
+      success: false,
+      message: "Error searching for items",
+      error: error.message,
+    });
+  }
+});
+
 module.exports = router;

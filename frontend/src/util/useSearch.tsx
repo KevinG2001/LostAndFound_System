@@ -3,20 +3,26 @@ import { useState } from "react";
 const useSearch = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [items, setItems] = useState([]);
+  const [hasSearched, setHasSearched] = useState(false);
 
-  const searchDB = async (param) => {
+  const searchDB = async (searchFields: any) => {
     try {
+      const filters: Record<string, string> = {};
+
+      for (const [key, value] of Object.entries(searchFields)) {
+        if (value.trim() !== "") {
+          filters[key] = value;
+        }
+      }
+
       const response = await fetch(
-        "${import.meta.env.VITE_API_URL}/items/search",
+        `${import.meta.env.VITE_API_URL}/items/search`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            param,
-            query: searchTerm,
-          }),
+          body: JSON.stringify({ filters }),
         }
       );
 
@@ -26,7 +32,7 @@ const useSearch = () => {
 
       const data = await response.json();
       setItems(data.items);
-      console.log(data);
+      setHasSearched(true);
     } catch (error) {
       console.error("Error searching for items", error);
     }
@@ -37,6 +43,7 @@ const useSearch = () => {
     setSearchTerm,
     searchDB,
     items,
+    hasSearched,
   };
 };
 

@@ -2,51 +2,41 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  margin: 0% 0% 1% 0%;
 }
 
 .searchbarWrapper {
-  position: relative;
-  width: 100%;
   display: flex;
-  flex-direction: row;
+  align-items: center;
+  background-color: grey;
+  width: 95%;
+  border-radius: 25px;
+  padding: 1%;
 }
 
-.searchParamBtn {
-  width: 10%;
+.inputCol {
+  display: flex;
+  flex-direction: column;
+  min-width: 20%;
+  max-width: 20%;
   height: 100%;
-  padding: 10px;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  cursor: pointer;
-  border-top-left-radius: 15px;
-  border-bottom-left-radius: 15px;
+  margin: 1%;
 }
 
-.dropdownMenu {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 9%;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  z-index: 1;
-  border-top-left-radius: 15px;
-
-  div {
-    padding: 10px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: #f0f0f0;
-      border-top-left-radius: 15px;
-    }
-  }
-}
-
-.searchInput {
-  padding: 10px;
+.inputBar {
+  display: flex;
+  flex-grow: 1;
   width: 100%;
-  border-bottom-right-radius: 15px;
-  border-top-right-radius: 15px;
-  border: 1px solid #ccc;
+  margin: 2%;
+  padding: 16px 8px;
+}
+
+.searchBtn {
+  width: 50%;
+  padding: 16px 8px;
+  font-size: 16px;
+}
+
+.dateBar {
+  display: flex;
 }
