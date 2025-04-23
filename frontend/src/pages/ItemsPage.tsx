@@ -3,7 +3,7 @@ import useCount from "../util/useCount";
 import Styles from "../styles/pages/itemsPage.module.scss";
 import TableView from "../components/Views/TableView";
 import useList from "../util/useList";
-import MoreDetailsModal from "../components/Modals/moreDetails";
+import MoreDetailsModal from "../components/Modals/moreDetailsModal";
 import NewItemModal from "../components/Modals/newItem";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -28,6 +28,8 @@ function ItemsPage() {
   }, [location.state, navigate]);
 
   const handleRowClick = (item: any) => {
+    setSelectedItem(item);
+    setIsModalOpen(true);
     setSelectedItem(item);
     setIsModalOpen(true);
   };
@@ -76,10 +78,6 @@ function ItemsPage() {
             : "Loading..."}
         </div>
       </div>
-
-      {/* <button className={Styles.newItemButton} onClick={openNewItemModal}>
-        New Item
-      </button> */}
 
       <div className={Styles.itemTable}>
         <TableView
