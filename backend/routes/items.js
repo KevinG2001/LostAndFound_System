@@ -74,8 +74,8 @@ router.get("/list", async (req, res) => {
     });
   }
 });
+
 router.put("/update/:itemID", async (req, res) => {
-  console.log("Update Backend", req.body);
   const { itemID } = req.params;
   const {
     description,
@@ -87,34 +87,38 @@ router.put("/update/:itemID", async (req, res) => {
     dateLost,
     status,
     imageUrl,
+    collectionDetails,
   } = req.body;
 
   try {
-    let formattedDateLost = null;
+    const updateFields = {
+      description,
+      category,
+      type,
+      route,
+      garage,
+      notes,
+      status,
+      imageUrl,
+    };
 
-    if (dateLost && !isNaN(Date.parse(dateLost))) {
-      formattedDateLost = new Date(dateLost);
-    } else {
-      return res.status(400).json({
-        message: "Invalid date format for dateLost. Use 'YYYY-MM-DD'.",
-      });
+    if (collectionDetails) {
+      updateFields.collectionDetails = collectionDetails;
     }
 
-    const updatedItem = await Item.findOneAndUpdate(
-      { itemID },
-      {
-        description,
-        category,
-        type,
-        route,
-        garage,
-        notes,
-        dateLost: formattedDateLost,
-        status,
-        imageUrl,
-      },
-      { new: true }
-    );
+    if (dateLost) {
+      if (!isNaN(Date.parse(dateLost))) {
+        updateFields.dateLost = new Date(dateLost);
+      } else {
+        return res.status(400).json({
+          message: "Invalid date format for dateLost. Use 'YYYY-MM-DD'.",
+        });
+      }
+    }
+
+    const updatedItem = await Item.findOneAndUpdate({ itemID }, updateFields, {
+      new: true,
+    });
 
     if (!updatedItem) {
       return res.status(404).json({ message: "Item not found" });
