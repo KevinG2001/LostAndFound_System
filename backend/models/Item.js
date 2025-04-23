@@ -1,5 +1,15 @@
 const mongoose = require("mongoose");
 
+const collectionDetailsSchema = new mongoose.Schema(
+  {
+    firstName: { type: String, default: "" },
+    surname: { type: String, default: "" },
+    email: { type: String, default: "" },
+    phone: { type: String, default: "" },
+  },
+  { _id: false }
+);
+
 const itemSchema = new mongoose.Schema(
   {
     itemID: {
@@ -41,6 +51,7 @@ const itemSchema = new mongoose.Schema(
     imageUrl: {
       type: String,
     },
+    collectionDetails: collectionDetailsSchema,
   },
   { timestamps: true }
 );
