@@ -1,4 +1,12 @@
+// useEdit.ts
 import { useState } from "react";
+
+type CollectionDetails = {
+  firstName?: string;
+  surname?: string;
+  email?: string;
+  phone?: string;
+};
 
 const useEdit = (itemId: string) => {
   const [loading, setLoading] = useState(false);
@@ -14,6 +22,8 @@ const useEdit = (itemId: string) => {
     notes?: string;
     dateLost?: string;
     status?: string;
+    imageUrl?: string;
+    collectionDetails?: CollectionDetails;
   }) => {
     setLoading(true);
     setError(null);
