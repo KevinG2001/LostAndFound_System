@@ -26,6 +26,7 @@
   min-height: 750px;
   max-height: 90vh;
   background-color: $secondary-bg-colour;
+  overflow: hidden;
 }
 
 .closeButton {
@@ -50,6 +51,7 @@
 
 .tabContent {
   width: 100%;
+  flex-grow: 1;
   justify-content: center;
   align-items: center;
   display: flex;
@@ -64,6 +66,7 @@
   text-align: center;
   width: 100%;
   margin: 8px;
+  color: white;
 }
 
 .imgWrapper {
@@ -236,7 +239,7 @@ button {
   border-radius: 0px;
 }
 
-.chatContainer {
+.chatWrapper {
   margin-top: 20px;
   width: 100%;
 }
