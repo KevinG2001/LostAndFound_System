@@ -51,82 +51,103 @@ const NewItemModal = ({ onClose, onCreate }: NewItemModalProps) => {
   return (
     <div className={Style.modalOverlay}>
       <div className={Style.modalContent}>
-        <h2>Create New Item</h2>
-        <form onSubmit={handleSubmit}>
-          <div className={Style.formGroup}>
-            <label>Upload Image:</label>
-            <input type="file" accept="image/*" onChange={handleImageChange} />
-          </div>
-          <div className={Style.formGroup}>
-            <label>Description:</label>
+        <h2 className={Style.modalTitle}>Create New Item</h2>
+        <form className={Style.modalForm} onSubmit={handleSubmit}>
+          <div className={Style.detailRow}>
+            <label className={Style.inputLabel}>Upload Image</label>
             <input
-              type="text"
+              type="file"
+              accept="image/*"
+              className={Style.inputField}
+              onChange={handleImageChange}
+            />
+          </div>
+
+          <div className={Style.detailRow}>
+            <label className={Style.inputLabel}>Description</label>
+            <textarea
+              className={Style.textareaField}
+              maxLength={256}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               required
             />
+            <div className={Style.charCounter}>{description.length}/256</div>
           </div>
 
-          <div className={Style.formGroup}>
-            <label>Category:</label>
-            <input
-              type="text"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              required
-            />
+          <div className={Style.doubleRow}>
+            <div className={Style.detailRow}>
+              <label className={Style.inputLabel}>Category</label>
+              <input
+                type="text"
+                className={Style.inputField}
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className={Style.detailRow}>
+              <label className={Style.inputLabel}>Type</label>
+              <input
+                type="text"
+                className={Style.inputField}
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                required
+              />
+            </div>
           </div>
 
-          <div className={Style.formGroup}>
-            <label>Type:</label>
-            <input
-              type="text"
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-              required
-            />
+          <div className={Style.doubleRow}>
+            <div className={Style.detailRow}>
+              <label className={Style.inputLabel}>Route</label>
+              <input
+                type="text"
+                className={Style.inputField}
+                value={route}
+                onChange={(e) => setRoute(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className={Style.detailRow}>
+              <label className={Style.inputLabel}>Garage</label>
+              <input
+                type="text"
+                className={Style.inputField}
+                value={garage}
+                onChange={(e) => setGarage(e.target.value)}
+              />
+            </div>
           </div>
 
-          <div className={Style.formGroup}>
-            <label>Route:</label>
-            <input
-              type="text"
-              value={route}
-              onChange={(e) => setRoute(e.target.value)}
-              required
-            />
-          </div>
-          <div className={Style.formGroup}>
-            <label>Garage:</label>
-            <input
-              type="text"
-              value={garage}
-              onChange={(e) => setGarage(e.target.value)}
-            />
-          </div>
-
-          <div className={Style.formGroup}>
-            <label>Notes:</label>
+          <div className={Style.detailRow}>
+            <label className={Style.inputLabel}>Notes</label>
             <textarea
+              className={Style.textareaField}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
             />
           </div>
 
-          <div className={Style.formGroup}>
-            <label>Date Lost:</label>
+          <div className={Style.detailRow}>
+            <label className={Style.inputLabel}>Date Lost</label>
             <input
               type="date"
+              className={Style.inputField}
               value={dateLost}
               onChange={(e) => setDateLost(e.target.value)}
               required
             />
           </div>
 
+          {error && <div className={Style.errorMessage}>{error}</div>}
+
           <div className={Style.buttonGroup}>
             <button
               type="submit"
-              className={Style.createButton}
+              className={Style.submitButton}
               disabled={loading}
             >
               {loading ? "Creating..." : "Create"}
@@ -139,8 +160,6 @@ const NewItemModal = ({ onClose, onCreate }: NewItemModalProps) => {
               Cancel
             </button>
           </div>
-
-          {error && <p className={Style.errorMessage}>{error}</p>}
         </form>
       </div>
     </div>
