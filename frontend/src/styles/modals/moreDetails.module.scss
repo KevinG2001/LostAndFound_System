@@ -255,3 +255,38 @@ button {
   margin-top: 8px;
   text-align: center;
 }
+
+.dropdownContainer {
+  position: relative;
+  width: 100%;
+}
+
+.suggestionsList {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 150px;
+  overflow-y: auto;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.suggestionItem {
+  padding: 8px 12px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+}
+
+.fileInput {
+  margin-bottom: 10px;
+}

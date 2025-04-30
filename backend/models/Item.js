@@ -16,6 +16,10 @@ const itemSchema = new mongoose.Schema(
       type: String,
       unique: true,
     },
+    article: {
+      type: String,
+      required: true,
+    },
     description: {
       type: String,
       required: true,

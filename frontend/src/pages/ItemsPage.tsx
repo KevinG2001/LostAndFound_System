@@ -57,7 +57,7 @@ function ItemsPage() {
 
   const columns = [
     { header: "ID", accessor: "itemID" },
-    { header: "Description", accessor: "description" },
+    { header: "Article", accessor: "article" },
     { header: "Category", accessor: "category" },
     { header: "Type", accessor: "type" },
     { header: "Route", accessor: "route" },

@@ -40,6 +40,7 @@
 }
 
 .detailRow {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -114,4 +115,26 @@
   color: white;
   display: flex;
   justify-content: right;
+}
+
+.suggestionsList {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 5px;
+  z-index: 10;
+}
+
+.suggestionItem {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.suggestionItem:hover {
+  background-color: #f0f0f0;
 }
