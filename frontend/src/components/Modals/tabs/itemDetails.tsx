@@ -13,6 +13,7 @@ const ItemDetailsTab = ({ data }: { data: any }) => {
     garage: "",
     dateLost: "",
     status: "",
+    dateClaimed: "",
   });
 
   const [file, setFile] = useState<File | null>(null);
@@ -32,6 +33,7 @@ const ItemDetailsTab = ({ data }: { data: any }) => {
         garage: data.garage || "",
         dateLost: data.dateLost || "",
         status: data.status || "",
+        dateClaimed: data.dateClaimed || "",
       });
 
       setImageUrl(data.imageUrl || null);
@@ -47,7 +49,13 @@ const ItemDetailsTab = ({ data }: { data: any }) => {
 
   const handleSave = async () => {
     try {
-      await editItem(editedData);
+      const updatedData = { ...editedData };
+
+      if (data.status !== "Claimed" && editedData.status === "Claimed") {
+        updatedData.dateClaimed = new Date().toISOString();
+      }
+
+      await editItem(updatedData);
       setIsEditing(false);
     } catch (err) {
       console.error("Error saving item:", err);

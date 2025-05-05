@@ -88,6 +88,7 @@ router.put("/update/:itemID", async (req, res) => {
     status,
     imageUrl,
     collectionDetails,
+    dateClaimed,
   } = req.body;
 
   try {
@@ -116,6 +117,17 @@ router.put("/update/:itemID", async (req, res) => {
       }
     }
 
+    if (dateClaimed) {
+      if (!isNaN(Date.parse(dateClaimed))) {
+        updateFields.dateClaimed = new Date(dateClaimed);
+      } else {
+        return res.status(400).json({
+          message:
+            "Invalid date format for dateClaimed. Use ISO string or 'YYYY-MM-DD'.",
+        });
+      }
+    }
+
     const updatedItem = await Item.findOneAndUpdate({ itemID }, updateFields, {
       new: true,
     });
@@ -138,7 +150,6 @@ router.post("/search", async (req, res) => {
   try {
     let criteria = {};
 
-    //Takes apart criteria, loops over them, trims and makessure if a space is empty it isnt searched
     for (const [key, value] of Object.entries(filters)) {
       if (value.trim() !== "") {
         criteria[key] = {

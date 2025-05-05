@@ -1,65 +1,63 @@
 const express = require("express");
 const router = express.Router();
 
-const countDocuments = async (Model, statusField = null) => {
-  const totalCount = await Model.countDocuments({});
-
-  if (statusField) {
-    const statusCounts = await Promise.all(
-      Object.keys(statusField.statuses).map(async (status) => ({
-        [statusField.statuses[status]]: await Model.countDocuments({
-          [statusField.field]: status,
-        }),
-      }))
-    );
-
-    return {
-      totalCount,
-      ...statusCounts.reduce((acc, curr) => ({ ...acc, ...curr }), {}),
-    };
-  }
-
-  return { totalCount };
-};
+const Item = require("../models/Item");
+const Ticket = require("../models/Tickets");
 
 router.get("/:resource/count", async (req, res) => {
   const { resource } = req.params;
 
   try {
-    const models = {
-      items: {
-        model: require("../models/Item"),
-        statusField: {
-          field: "status",
-          statuses: {
-            Claimed: "returnedCount",
-            Unclaimed: "lostItemCount",
-          },
-        },
-      },
-      tickets: {
-        model: require("../models/Tickets"),
-        statusField: {
-          field: "status",
-          statuses: {
-            Open: "openTicketCount",
-            Closed: "closedTicketCount",
-          },
-        },
-      },
-    };
+    if (resource === "items") {
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const endOfMonth = new Date(
+        now.getFullYear(),
+        now.getMonth() + 1,
+        0,
+        23,
+        59,
+        59,
+        999
+      );
 
-    if (!models[resource]) {
-      return res.status(400).json({ error: "Invalid resource" });
+      const totalLostThisMonth = await Item.countDocuments({
+        createdAt: { $gte: startOfMonth, $lte: endOfMonth },
+      });
+
+      const toCollectThisMonth = await Item.countDocuments({
+        status: "To Collect",
+        createdAt: { $gte: startOfMonth, $lte: endOfMonth },
+      });
+
+      const totalReturnedThisMonth = await Item.countDocuments({
+        status: "Claimed",
+        dateClaimed: { $gte: startOfMonth, $lte: endOfMonth },
+      });
+
+      return res.json({
+        totalLostThisMonth,
+        toCollectThisMonth,
+        totalReturnedThisMonth,
+      });
+    } else if (resource === "tickets") {
+      const totalCount = await Ticket.countDocuments();
+      const openTicketCount = await Ticket.countDocuments({ status: "Open" });
+      const closedTicketCount = await Ticket.countDocuments({
+        status: "Closed",
+      });
+
+      return res.json({
+        totalCount,
+        openTicketCount,
+        closedTicketCount,
+      });
+    } else {
+      return res.status(400).json({ message: "Invalid resource type" });
     }
-
-    const { model, statusField } = models[resource];
-    const counts = await countDocuments(model, statusField);
-
-    res.json({ [`${resource}Counts`]: counts });
   } catch (error) {
     res.status(500).json({
-      message: "Error fetching counts",
+      message: `Error fetching ${resource} stats`,
       error: error.message,
     });
   }

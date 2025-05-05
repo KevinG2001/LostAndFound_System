@@ -44,6 +44,10 @@ const itemSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    claimedAt: {
+      type: Date,
+      default: null,
+    },
     dateClaimed: {
       type: Date,
     },

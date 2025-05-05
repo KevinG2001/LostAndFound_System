@@ -15,8 +15,7 @@ const useCount = (resource: string) => {
       }
       const data = await response.json();
 
-      const countKey = `${resource}Counts`;
-      setCounts(data[countKey]);
+      setCounts(data);
     } catch (error) {
       console.error("Error fetching count", error);
     } finally {

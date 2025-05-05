@@ -70,20 +70,16 @@ function ItemsPage() {
     <div className={Styles.itemsContainer}>
       <div className={Styles.statsWrapper}>
         <div className={`${Styles.statBubble} ${Styles.itemsLost}`}>
-          Total Items Lost <br />
-          {counts?.totalCount !== undefined ? counts.totalCount : "Loading..."}
+          Lost This Month <br />
+          {counts?.totalLostThisMonth ?? "Loading..."}
         </div>
         <div className={`${Styles.statBubble} ${Styles.itemsReturned}`}>
-          Items Returned <br />
-          {counts?.returnedCount !== undefined
-            ? counts.returnedCount
-            : "Loading..."}
+          To Collect This Month <br />
+          {counts?.toCollectThisMonth ?? "Loading..."}
         </div>
         <div className={`${Styles.statBubble} ${Styles.itemsExpired}`}>
-          Lost This Month <br />
-          {counts?.lostItemCount !== undefined
-            ? counts.lostItemCount
-            : "Loading..."}
+          Returned This Month <br />
+          {counts?.totalReturnedThisMonth ?? "Loading..."}
         </div>
       </div>
 
