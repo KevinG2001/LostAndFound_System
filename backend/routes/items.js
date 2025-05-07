@@ -50,9 +50,27 @@ router.post("/create", upload.single("image"), async (req, res) => {
       status,
       itemID,
       imageUrl,
+      historyDetails: [
+        {
+          action: "Created",
+          date: new Date(),
+          by: "system",
+          changes: {
+            description: { from: null, to: description },
+            category: { from: null, to: category },
+            type: { from: null, to: type },
+            route: { from: null, to: route },
+            garage: { from: null, to: garage },
+            notes: { from: null, to: notes },
+            dateLost: { from: null, to: dateLost },
+            status: { from: null, to: status },
+          },
+        },
+      ],
     });
 
     const savedItem = await newItem.save();
+
     res.status(201).json(savedItem);
   } catch (error) {
     console.error("Error saving item:", error);
@@ -88,10 +106,17 @@ router.put("/update/:itemID", async (req, res) => {
     status,
     imageUrl,
     collectionDetails,
+    updatedBy,
   } = req.body;
 
   try {
-    const updateFields = {
+    const item = await Item.findOne({ itemID });
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    const changes = {};
+    const fields = {
       description,
       category,
       type,
@@ -102,13 +127,28 @@ router.put("/update/:itemID", async (req, res) => {
       imageUrl,
     };
 
+    for (const key in fields) {
+      if (fields[key] !== undefined && item[key] !== fields[key]) {
+        changes[key] = { from: item[key], to: fields[key] };
+        item[key] = fields[key];
+      }
+    }
+
     if (collectionDetails) {
-      updateFields.collectionDetails = collectionDetails;
+      changes["collectionDetails"] = {
+        from: item.collectionDetails || {},
+        to: collectionDetails,
+      };
+      item.collectionDetails = collectionDetails;
     }
 
     if (dateLost) {
       if (!isNaN(Date.parse(dateLost))) {
-        updateFields.dateLost = new Date(dateLost);
+        const parsedDate = new Date(dateLost);
+        if (item.dateLost.toISOString() !== parsedDate.toISOString()) {
+          changes["dateLost"] = { from: item.dateLost, to: parsedDate };
+          item.dateLost = parsedDate;
+        }
       } else {
         return res.status(400).json({
           message: "Invalid date format for dateLost. Use 'YYYY-MM-DD'.",
@@ -116,19 +156,22 @@ router.put("/update/:itemID", async (req, res) => {
       }
     }
 
-    const updatedItem = await Item.findOneAndUpdate({ itemID }, updateFields, {
-      new: true,
-    });
-
-    if (!updatedItem) {
-      return res.status(404).json({ message: "Item not found" });
+    if (Object.keys(changes).length > 0) {
+      item.historyDetails.push({
+        action: "Updated",
+        date: new Date(),
+        by: updatedBy || "System",
+        changes,
+      });
     }
 
-    res.status(200).json(updatedItem);
+    const savedItem = await item.save();
+    res.status(200).json(savedItem);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error updating item", error: error.message });
+    res.status(500).json({
+      message: "Error updating item",
+      error: error.message,
+    });
   }
 });
 

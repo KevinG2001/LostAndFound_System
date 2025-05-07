@@ -10,6 +10,16 @@ const collectionDetailsSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const historyDetailsSchema = new mongoose.Schema(
+  {
+    action: { type: String, required: true },
+    date: { type: Date, default: Date.now },
+    changes: { type: Object, default: {} },
+    by: { type: String, default: "System" },
+  },
+  { _id: false }
+);
+
 const itemSchema = new mongoose.Schema(
   {
     itemID: {
@@ -52,7 +62,9 @@ const itemSchema = new mongoose.Schema(
       type: String,
     },
     collectionDetails: collectionDetailsSchema,
+    historyDetails: [historyDetailsSchema],
   },
+
   { timestamps: true }
 );
 
