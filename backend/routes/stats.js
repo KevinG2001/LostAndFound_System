@@ -151,4 +151,29 @@ router.get("/items-today", async (req, res) => {
   }
 });
 
+router.get("/items-to-collect-this-month", async (req, res) => {
+  try {
+    const model = require("../models/Item");
+
+    const startOfMonth = dayjs().startOf("month").toDate();
+    const endOfMonth = dayjs().endOf("month").toDate();
+
+    const count = await model.countDocuments({
+      status: "To Collect",
+      dateLost: {
+        $gte: startOfMonth,
+        $lte: endOfMonth,
+      },
+    });
+
+    res.json({ count });
+  } catch (error) {
+    console.error("Error fetching 'To Collect' count for this month:", error);
+    res.status(500).json({
+      message: "Error fetching count",
+      error: error.message,
+    });
+  }
+});
+
 module.exports = router;

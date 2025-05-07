@@ -111,9 +111,16 @@ router.put("/update/:itemID", async (req, res) => {
     imageUrl,
     collectionDetails,
     updatedBy,
+    dateClaimed,
   } = req.body;
 
   try {
+    const item = await Item.findOne({ itemID });
+
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
     const updateFields = {
       article,
       description,
@@ -126,10 +133,12 @@ router.put("/update/:itemID", async (req, res) => {
       imageUrl,
     };
 
-    for (const key in fields) {
-      if (fields[key] !== undefined && item[key] !== fields[key]) {
-        changes[key] = { from: item[key], to: fields[key] };
-        item[key] = fields[key];
+    const changes = {};
+
+    for (const key in updateFields) {
+      if (updateFields[key] !== undefined && item[key] !== updateFields[key]) {
+        changes[key] = { from: item[key], to: updateFields[key] };
+        item[key] = updateFields[key];
       }
     }
 
@@ -144,13 +153,37 @@ router.put("/update/:itemID", async (req, res) => {
     if (dateLost) {
       if (!isNaN(Date.parse(dateLost))) {
         const parsedDate = new Date(dateLost);
-        if (item.dateLost.toISOString() !== parsedDate.toISOString()) {
+        if (
+          !item.dateLost ||
+          item.dateLost.toISOString() !== parsedDate.toISOString()
+        ) {
           changes["dateLost"] = { from: item.dateLost, to: parsedDate };
           item.dateLost = parsedDate;
         }
       } else {
         return res.status(400).json({
           message: "Invalid date format for dateLost. Use 'YYYY-MM-DD'.",
+        });
+      }
+    }
+
+    if (dateClaimed) {
+      if (!isNaN(Date.parse(dateClaimed))) {
+        const parsedClaimed = new Date(dateClaimed);
+        if (
+          !item.dateClaimed ||
+          item.dateClaimed.toISOString() !== parsedClaimed.toISOString()
+        ) {
+          changes["dateClaimed"] = {
+            from: item.dateClaimed,
+            to: parsedClaimed,
+          };
+          item.dateClaimed = parsedClaimed;
+        }
+      } else {
+        return res.status(400).json({
+          message:
+            "Invalid date format for dateClaimed. Use ISO string or 'YYYY-MM-DD'.",
         });
       }
     }
@@ -167,6 +200,7 @@ router.put("/update/:itemID", async (req, res) => {
     const savedItem = await item.save();
     res.status(200).json(savedItem);
   } catch (error) {
+    console.error("Update error:", error);
     res.status(500).json({
       message: "Error updating item",
       error: error.message,

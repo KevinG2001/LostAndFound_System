@@ -61,10 +61,10 @@ const MoreDetailsModal = ({
         {type === "item" && (
           <>
             <div className={Styles.detailsTitle}>
-              <div className={Styles.itemIdLabel}>Item ID:</div>
-              <div className={Styles.itemIdValue}>{data.itemID}</div>
-              <div className={Styles.itemIdLabel}>Article:</div>
-              <div className={Styles.itemIdValue}>{data.article}</div>
+              <div className={Styles.articleWrapper}>
+                <div className={Styles.itemIdLabel}>Item ID:</div>
+                <div className={Styles.itemIdValue}>{data.itemID}</div>
+              </div>
             </div>
 
             <div className={Styles.tabHeader}>

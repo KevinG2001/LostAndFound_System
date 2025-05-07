@@ -61,12 +61,21 @@
 
 .detailsTitle {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   font-size: 22px;
   text-align: center;
   width: 100%;
   margin: 8px;
   color: white;
+}
+
+.articleWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: black;
+  gap: 15px;
 }
 
 .imgWrapper {
@@ -82,6 +91,7 @@
   max-height: 200px;
   object-fit: contain;
   border-radius: 4px;
+  margin: 5%;
 }
 
 .uploadSection {
@@ -89,8 +99,8 @@
   flex-direction: column;
   gap: 12px;
   align-items: center;
-  margin-bottom: 16px;
   width: 100%;
+  text-align: center;
 }
 
 .detailsRow {
@@ -198,6 +208,7 @@ button {
   align-items: center;
   gap: 12px;
   width: 100%;
+  margin: 2%;
 }
 
 .editBtn {
@@ -256,37 +267,74 @@ button {
   text-align: center;
 }
 
-.dropdownContainer {
-  position: relative;
+.historyTable {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+  color: white;
 }
 
-.suggestionsList {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  max-height: 150px;
-  overflow-y: auto;
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-  z-index: 10;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.suggestionItem {
-  padding: 8px 12px;
+.row {
+  display: flex;
   cursor: pointer;
+  justify-content: center;
+  align-items: center;
 
-  &:hover {
-    background-color: #f5f5f5;
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:nth-child(even) {
+    background-color: $primary-colour;
+    color: black;
+  }
+
+  &.clickable {
+    cursor: pointer;
+
+    &:hover {
+      background-color: darken($primary-colour, 5%);
+    }
   }
 }
 
-.fileInput {
-  margin-bottom: 10px;
+.headerRow {
+  font-weight: bold;
+  cursor: default;
+}
+
+.cell {
+  flex: 1;
+}
+
+.expandedRow {
+  background-color: rgba(255, 255, 255, 0.05);
+  align-items: flex-start;
+  cursor: default;
+}
+
+.changesHeader {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.changeLine {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+  justify-content: center;
+}
+
+.fieldName {
+  font-weight: 500;
+  min-width: 70px;
+  text-align: right;
+}
+
+.valueText {
+  font-style: italic;
+  color: #ccc;
 }

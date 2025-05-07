@@ -10,6 +10,7 @@ import Searchbar from "../components/Searchbar";
 import ItemsToday from "../components/StatBubbles/ItemsToday";
 import ItemsReturned from "../components/StatBubbles/ItemsReturned";
 import LostThisMonth from "../components/StatBubbles/ItemsLostMonth";
+import ItemsToCollectThisMonth from "../components/StatBubbles/ItemsToCollectThisMonth";
 
 function ItemsPage() {
   const { items: itemsList } = useList("items", "list");
@@ -39,8 +40,6 @@ function ItemsPage() {
   const handleRowClick = (item: any) => {
     setSelectedItem(item);
     setIsModalOpen(true);
-    setSelectedItem(item);
-    setIsModalOpen(true);
   };
 
   const closeModal = () => {
@@ -65,6 +64,11 @@ function ItemsPage() {
     { header: "Status", accessor: "status" },
   ];
 
+  // Reverse the list of items (most recent first)
+  const reversedItems = (items: any[]) => {
+    return items.slice().reverse(); // Make sure to create a copy of the array before reversing
+  };
+
   return (
     <div className={Styles.itemsContainer}>
       <div className={Styles.statsWrapper}>
@@ -77,6 +81,9 @@ function ItemsPage() {
         <div className={`${Styles.statBubble} ${Styles.itemsExpired}`}>
           <LostThisMonth />
         </div>
+        <div className={Styles.statBubble}>
+          <ItemsToCollectThisMonth />
+        </div>
       </div>
 
       <Searchbar
@@ -88,7 +95,11 @@ function ItemsPage() {
       <div className={Styles.itemTable}>
         <TableView
           columns={columns}
-          data={hasSearched ? searchResults : itemsList}
+          data={
+            hasSearched
+              ? reversedItems(searchResults)
+              : reversedItems(itemsList)
+          }
           onRowClick={handleRowClick}
         />
       </div>
