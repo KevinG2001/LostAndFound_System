@@ -27,7 +27,7 @@ function ItemsToCollectThisMonth() {
 
   return (
     <div className={Styles.statBubble}>
-      <CalenderIcon className={Styles.bubbleIcon} />
+      <CalenderIcon className={`${Styles.bubbleIcon} ${Styles.toCollect}`} />
       <div className={Styles.statDescription}>
         <div className={Styles.statTitle}>To Collect This Month</div>
         <div className={Styles.statValue}>

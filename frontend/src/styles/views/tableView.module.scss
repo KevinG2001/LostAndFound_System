@@ -35,11 +35,9 @@
   .tableRow:nth-child(odd) {
     background-color: $secondary-bg-colour;
   }
-  .tableRow {
-    background-color: white;
-  }
 
   .tableRow {
+    background-color: white;
     height: 15px;
   }
 
@@ -119,4 +117,84 @@
 .closedStatus {
   @extend .statusCell;
   background-color: #dc3545;
+}
+
+@media (max-width: 1200px) {
+  .tableContainer {
+    font-size: 0.95rem;
+  }
+
+  .tableHeader {
+    font-size: 1rem;
+  }
+
+  .tableCell {
+    font-size: 0.9rem;
+  }
+
+  .statusBubble {
+    font-size: 0.8rem;
+    padding: 3px 8px;
+  }
+
+  .pageBtn {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .tableContainer {
+    width: 100%;
+  }
+
+  .tableHeader {
+    font-size: 0.9rem;
+  }
+
+  .tableCell {
+    font-size: 0.8rem;
+  }
+
+  .statusBubble {
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    min-width: 60px;
+  }
+
+  .pageBtnWrapper {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .pageBtn {
+    width: 35px;
+    height: 35px;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tableContainer {
+    border-radius: 0;
+  }
+
+  .tableHeader {
+    font-size: 0.85rem;
+  }
+
+  .tableCell {
+    font-size: 0.75rem;
+    padding: 1%;
+  }
+
+  .statusBubble {
+    font-size: 0.7rem;
+    padding: 2px 4px;
+  }
+
+  .pageBtn {
+    width: 30px;
+    height: 30px;
+  }
 }

@@ -33,14 +33,14 @@ function TicketsPage() {
 
   return (
     <div className={Styles.itemsContainer}>
-      <div className={Styles.statsWrapper}>
-        <div className={Styles.statBubble}>
+      <div className={Styles.statsContainer}>
+        <div className={Styles.statsWrapper}>
           <TotalTickets />
         </div>
-        <div className={Styles.statBubble}>
+        <div className={Styles.statsWrapper}>
           <ClosedTickets />
         </div>
-        <div className={Styles.statBubble}>
+        <div className={Styles.statsWrapper}>
           <OpenTickets />
         </div>
       </div>

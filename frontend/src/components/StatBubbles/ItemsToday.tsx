@@ -28,7 +28,7 @@ function ItemsToday() {
 
   return (
     <div className={Styles.statBubble}>
-      <CalenderIcon className={Styles.bubbleIcon} />
+      <CalenderIcon className={`${Styles.bubbleIcon} ${Styles.lost}`} />
       <div className={Styles.statDescription}>
         <div className={Styles.statTitle}>Items Lost Today</div>
         <div className={Styles.statValue}>

@@ -7,7 +7,7 @@ function ItemsReturned() {
 
   return (
     <div className={`${Styles.statBubble} ${Styles.itemsReturned}`}>
-      <ReturnIcon className={Styles.bubbleIcon} />
+      <ReturnIcon className={`${Styles.bubbleIcon} ${Styles.returned}`} />
       <div className={Styles.statDescription}>
         <div className={Styles.statTitle}>Items Returned</div>
         <div className={Styles.statValue}>

@@ -7,7 +7,7 @@ function LostThisMonth() {
 
   return (
     <div className={`${Styles.statBubble} ${Styles.itemsExpired}`}>
-      <CalendarIcon className={Styles.bubbleIcon} />
+      <CalendarIcon className={`${Styles.bubbleIcon} ${Styles.lost}`} />
       <div className={Styles.statDescription}>
         <div className={Styles.statTitle}>Lost This Month</div>
         <div className={Styles.statValue}>

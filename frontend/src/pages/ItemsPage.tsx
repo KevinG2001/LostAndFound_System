@@ -71,17 +71,17 @@ function ItemsPage() {
 
   return (
     <div className={Styles.itemsContainer}>
-      <div className={Styles.statsWrapper}>
-        <div className={`${Styles.statBubble} ${Styles.itemsLost}`}>
+      <div className={Styles.statsContainer}>
+        <div className={`${Styles.statsWrapper} ${Styles.itemsLost}`}>
           <ItemsToday />
         </div>
-        <div className={`${Styles.statBubble} ${Styles.itemsReturned}`}>
+        <div className={`${Styles.statsWrapper} ${Styles.itemsReturned}`}>
           <ItemsReturned />
         </div>
-        <div className={`${Styles.statBubble} ${Styles.itemsExpired}`}>
+        <div className={`${Styles.statsWrapper} ${Styles.itemsExpired}`}>
           <LostThisMonth />
         </div>
-        <div className={Styles.statBubble}>
+        <div className={Styles.statsWrapper}>
           <ItemsToCollectThisMonth />
         </div>
       </div>
