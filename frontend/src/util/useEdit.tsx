@@ -1,4 +1,3 @@
-// useEdit.ts
 import { useState } from "react";
 
 type CollectionDetails = {
@@ -14,6 +13,7 @@ const useEdit = (itemId: string) => {
   const [success, setSuccess] = useState(false);
 
   const editItem = async (updatedData: {
+    article?: string;
     description?: string;
     category?: string;
     type?: string;

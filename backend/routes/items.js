@@ -10,6 +10,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 router.post("/create", upload.single("image"), async (req, res) => {
   const {
+    article,
     description,
     category,
     type,
@@ -20,10 +21,11 @@ router.post("/create", upload.single("image"), async (req, res) => {
     status,
   } = req.body;
 
-  if (!description || !dateLost) {
-    return res
-      .status(400)
-      .json({ message: "Validation failed: description, dateLost" });
+  if (!article || !description || !dateLost) {
+    return res.status(400).json({
+      message:
+        "Validation failed: article, description, and dateLost are required",
+    });
   }
 
   try {
@@ -40,6 +42,7 @@ router.post("/create", upload.single("image"), async (req, res) => {
     }
 
     const newItem = new Item({
+      article,
       description,
       category,
       type,
@@ -96,6 +99,7 @@ router.get("/list", async (req, res) => {
 router.put("/update/:itemID", async (req, res) => {
   const { itemID } = req.params;
   const {
+    article,
     description,
     category,
     type,
@@ -110,13 +114,8 @@ router.put("/update/:itemID", async (req, res) => {
   } = req.body;
 
   try {
-    const item = await Item.findOne({ itemID });
-    if (!item) {
-      return res.status(404).json({ message: "Item not found" });
-    }
-
-    const changes = {};
-    const fields = {
+    const updateFields = {
+      article,
       description,
       category,
       type,
@@ -181,7 +180,6 @@ router.post("/search", async (req, res) => {
   try {
     let criteria = {};
 
-    //Takes apart criteria, loops over them, trims and makessure if a space is empty it isnt searched
     for (const [key, value] of Object.entries(filters)) {
       if (value.trim() !== "") {
         criteria[key] = {
@@ -204,6 +202,19 @@ router.post("/search", async (req, res) => {
       message: "Error searching for items",
       error: error.message,
     });
+  }
+});
+
+router.get("/metadata", async (req, res) => {
+  try {
+    const categories = await Item.distinct("category");
+    const types = await Item.distinct("type");
+    const articles = await Item.distinct("article");
+    res.status(200).json({ categories, types, articles });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Error fetching metadata", error: err.message });
   }
 });
 
