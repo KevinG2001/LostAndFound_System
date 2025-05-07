@@ -1,13 +1,13 @@
 import { useState } from "react";
-import useCount from "../util/useCount";
+import useList from "../util/useList";
 import Styles from "../styles/pages/itemsPage.module.scss";
 import TableView from "../components/Views/TableView";
-import useList from "../util/useList";
 import MoreDetailsModal from "../components/Modals/moreDetailsModal";
+import TotalTickets from "../components/StatBubbles/tickets/TotalTickets";
+import ClosedTickets from "../components/StatBubbles/tickets/ClosedTickets";
+import OpenTickets from "../components/StatBubbles/tickets/OpenTickets";
 
 function TicketsPage() {
-  const { counts } = useCount("tickets");
-
   const { items: tickets } = useList("tickets", "list");
 
   const [selectedTicket, setSelectedTicket] = useState(null);
@@ -34,21 +34,14 @@ function TicketsPage() {
   return (
     <div className={Styles.itemsContainer}>
       <div className={Styles.statsWrapper}>
-        <div className={`${Styles.statBubble} ${Styles.itemsLost}`}>
-          Total Tickets <br />
-          {counts?.totalCount !== undefined ? counts.totalCount : "Loading..."}
+        <div className={Styles.statBubble}>
+          <TotalTickets />
         </div>
-        <div className={`${Styles.statBubble} ${Styles.itemsReturned}`}>
-          Closed Tickets <br />
-          {counts?.closedTicketCount !== undefined
-            ? counts.closedTicketCount
-            : "Loading..."}
+        <div className={Styles.statBubble}>
+          <ClosedTickets />
         </div>
-        <div className={`${Styles.statBubble} ${Styles.itemsExpired}`}>
-          Open Tickets <br />
-          {counts?.openTicketCount !== undefined
-            ? counts.openTicketCount
-            : "Loading..."}
+        <div className={Styles.statBubble}>
+          <OpenTickets />
         </div>
       </div>
 

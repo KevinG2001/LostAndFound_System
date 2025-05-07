@@ -13,7 +13,7 @@
   flex: 2;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  // gap: 10px;
   height: 100%;
 }
 
@@ -34,6 +34,25 @@
   align-items: center;
   justify-content: center;
   flex: 1;
-  min-height: 0;
+  min-height: 800px;
   margin: 20px;
+}
+
+.bubbleBox {
+  background-color: $tiertiary-bg-colour;
+  border: 1px solid gray;
+  border-radius: 5px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  margin: 20px;
+  max-width: 550px;
+  max-height: 400px;
+}
+
+.bottomBox {
+  display: flex;
+  min-height: 700px;
 }

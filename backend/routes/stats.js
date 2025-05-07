@@ -127,4 +127,28 @@ router.get("/items-by-type", async (req, res) => {
   }
 });
 
+router.get("/items-today", async (req, res) => {
+  try {
+    const model = require("../models/Item");
+
+    const startOfDay = dayjs().startOf("day").toDate();
+    const endOfDay = dayjs().endOf("day").toDate();
+
+    const count = await model.countDocuments({
+      dateLost: {
+        $gte: startOfDay,
+        $lte: endOfDay,
+      },
+    });
+
+    res.json({ count });
+  } catch (error) {
+    console.error("Error fetching today's item count:", error);
+    res.status(500).json({
+      message: "Error fetching today's item count",
+      error: error.message,
+    });
+  }
+});
+
 module.exports = router;

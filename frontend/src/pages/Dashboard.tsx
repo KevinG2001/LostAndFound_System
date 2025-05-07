@@ -2,22 +2,21 @@ import { useEffect, useState } from "react";
 import Style from "../styles/pages/dashboard.module.scss";
 import LineChart from "../components/Charts/LineChart";
 import DoughnutChart from "../components/Charts/DoughtnutChart";
-import Barchart from "../components/Charts/Barchart";
+import TotalCount from "../components/StatBubbles/TotalCount";
+import ReturnPercent from "../components/StatBubbles/ReturnPercent";
+import TopItem from "../components/StatBubbles/TopItem";
+import ItemsToday from "../components/StatBubbles/ItemsToday";
 
 function Dashboard() {
   const [lineData, setLineData] = useState([]);
   const [doughnutData, setDoughnutData] = useState([]);
-  const [barData, setBarData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [lineError, setLineError] = useState("");
   const [doughnutError, setDoughnutError] = useState("");
-  const [barError, setBarError] = useState("");
 
   useEffect(() => {
     async function fetchData(url, setData, setError) {
       try {
-        console.log("Fetching:", `${import.meta.env.VITE_API_URL}${url}`);
-
         const response = await fetch(`${import.meta.env.VITE_API_URL}${url}`);
         if (!response.ok) throw new Error(`Failed to fetch data from ${url}`);
 
@@ -40,7 +39,6 @@ function Dashboard() {
 
     fetchData("/stats/lost-per-month", setLineData, setLineError);
     fetchData("/stats/typeLost", setDoughnutData, setDoughnutError);
-    fetchData("/stats/items-by-type", setBarData, setBarError);
 
     setLoading(false);
   }, []);
@@ -52,8 +50,19 @@ function Dashboard() {
         <div className={Style.box}>
           <LineChart data={lineData} error={lineError} loading={loading} />
         </div>
-        <div className={Style.box}>
-          <Barchart data={barData} error={barError} />
+        <div className={Style.bottomBox}>
+          <div className={Style.bubbleBox}>
+            <TotalCount />
+          </div>
+          <div className={Style.bubbleBox}>
+            <ReturnPercent />
+          </div>
+          <div className={Style.bubbleBox}>
+            <TopItem />
+          </div>
+          <div className={Style.bubbleBox}>
+            <ItemsToday />
+          </div>
         </div>
       </div>
 

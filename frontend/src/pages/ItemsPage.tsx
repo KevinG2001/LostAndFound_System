@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import useCount from "../util/useCount";
 import Styles from "../styles/pages/itemsPage.module.scss";
 import TableView from "../components/Views/TableView";
 import useList from "../util/useList";
@@ -8,9 +7,11 @@ import NewItemModal from "../components/Modals/newItem";
 import { useLocation, useNavigate } from "react-router-dom";
 import useSearch from "../util/useSearch";
 import Searchbar from "../components/Searchbar";
+import ItemsToday from "../components/StatBubbles/ItemsToday";
+import ItemsReturned from "../components/StatBubbles/ItemsReturned";
+import LostThisMonth from "../components/StatBubbles/ItemsLostMonth";
 
 function ItemsPage() {
-  const { counts } = useCount("items");
   const { items: itemsList } = useList("items", "list");
 
   const [selectedItem, setSelectedItem] = useState(null);
@@ -22,7 +23,6 @@ function ItemsPage() {
     setSearchTerm,
     searchDB,
     items: searchResults,
-    loading,
     hasSearched,
   } = useSearch();
 
@@ -48,10 +48,9 @@ function ItemsPage() {
     setSelectedItem(null);
   };
 
-  const openNewItemModal = () => setIsNewItemModalOpen(true);
   const closeNewItemModal = () => setIsNewItemModalOpen(false);
 
-  const handleCreateNewItem = (newItem: any) => {
+  const handleCreateNewItem = () => {
     closeNewItemModal();
   };
 
@@ -70,20 +69,13 @@ function ItemsPage() {
     <div className={Styles.itemsContainer}>
       <div className={Styles.statsWrapper}>
         <div className={`${Styles.statBubble} ${Styles.itemsLost}`}>
-          Total Items Lost <br />
-          {counts?.totalCount !== undefined ? counts.totalCount : "Loading..."}
+          <ItemsToday />
         </div>
         <div className={`${Styles.statBubble} ${Styles.itemsReturned}`}>
-          Items Returned <br />
-          {counts?.returnedCount !== undefined
-            ? counts.returnedCount
-            : "Loading..."}
+          <ItemsReturned />
         </div>
         <div className={`${Styles.statBubble} ${Styles.itemsExpired}`}>
-          Lost This Month <br />
-          {counts?.lostItemCount !== undefined
-            ? counts.lostItemCount
-            : "Loading..."}
+          <LostThisMonth />
         </div>
       </div>
 
@@ -91,7 +83,6 @@ function ItemsPage() {
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         searchDB={searchDB}
-        loading={loading}
       />
 
       <div className={Styles.itemTable}>

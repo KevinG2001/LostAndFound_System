@@ -1,0 +1,37 @@
+@import "../variables/colours.module.scss";
+
+.statBubble {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.bubbleIcon {
+  fill: $primary-text-colour;
+  width: 35%;
+  padding: 5%;
+}
+
+.statDescription {
+  display: flex;
+  flex-direction: column;
+}
+
+.statTitle {
+  font-size: 24px;
+}
+
+.closed {
+  fill: $claimed-colour;
+}
+
+.open {
+  fill: $expired-colour;
+}
+
+.total {
+  fill: $unclaimed-colour;
+}
