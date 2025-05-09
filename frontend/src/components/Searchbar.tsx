@@ -1,4 +1,6 @@
 import { useState } from "react";
+import DatePicker from "react-datepicker";
+import { format } from "date-fns";
 import Style from "../styles/searchbar.module.scss";
 
 function Searchbar({ searchDB }: any) {
@@ -9,12 +11,12 @@ function Searchbar({ searchDB }: any) {
     type: "",
     route: "",
     garage: "",
-    startDate: "",
-    endDate: "",
+    startDate: null,
+    endDate: null,
     status: "",
   });
 
-  const handleChange = (field: string, value: string) => {
+  const handleChange = (field: string, value: any) => {
     setSearchFields((prev) => ({
       ...prev,
       [field]: value,
@@ -22,7 +24,17 @@ function Searchbar({ searchDB }: any) {
   };
 
   const handleSearch = () => {
-    searchDB(searchFields);
+    const formattedFields = {
+      ...searchFields,
+      startDate: searchFields.startDate
+        ? format(searchFields.startDate, "yyyy-MM-dd")
+        : "",
+      endDate: searchFields.endDate
+        ? format(searchFields.endDate, "yyyy-MM-dd")
+        : "",
+    };
+
+    searchDB(formattedFields);
   };
 
   const handleKeyDown = (event: any) => {
@@ -92,22 +104,14 @@ function Searchbar({ searchDB }: any) {
         </div>
 
         <div className={Style.inputCol}>
-          <div className={Style.inputBar}>
-            <input
-              type="date"
-              placeholder="Start Date"
-              value={searchFields.startDate}
-              onChange={(e) => handleChange("startDate", e.target.value)}
-              onKeyDown={handleKeyDown}
-              className={Style.dateBar}
-            />
-            <input
-              type="date"
-              placeholder="End Date"
-              value={searchFields.endDate}
-              onChange={(e) => handleChange("endDate", e.target.value)}
-              onKeyDown={handleKeyDown}
-              className={Style.dateBar}
+          <div className={Style.dateWrapper}>
+            <DatePicker
+              selected={searchFields.startDate}
+              onChange={(date) => handleChange("startDate", date)}
+              placeholderText="From"
+              className={`${Style.dateInput} custom-datepicker`}
+              calendarClassName="custom-datepicker-calendar"
+              dateFormat="dd-MM-yyyy"
             />
           </div>
           <input
@@ -121,6 +125,15 @@ function Searchbar({ searchDB }: any) {
         </div>
 
         <div className={Style.inputCol}>
+          <div className={Style.dateWrapper}>
+            <DatePicker
+              selected={searchFields.endDate}
+              onChange={(date) => handleChange("endDate", date)}
+              placeholderText="To"
+              className={Style.dateInput}
+              dateFormat="dd-MM-yyyy"
+            />
+          </div>
           <button onClick={handleSearch} className={Style.searchBtn}>
             Search
           </button>

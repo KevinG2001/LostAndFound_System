@@ -7,6 +7,7 @@
   width: 100%;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
 .statsContainer {
@@ -49,17 +50,48 @@
 }
 
 @media (max-width: $breakpoint-xl) {
-  .statsContainer {
+  .itemsContainer {
+    display: flex;
+    flex-direction: column;
     width: 100%;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .statsContainer {
+    min-height: 150px;
+    max-height: 200px;
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+    align-items: center;
   }
 
   .statsWrapper {
-    height: 180px;
-    width: 20%;
+    height: 150px;
+    width: 275px;
+    margin-top: 1%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5%;
+    background-color: $tiertiary-bg-colour;
+    border: 1px solid gray;
   }
 
   .searchBar_NewItemBtn {
-    flex-direction: column;
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .itemTable {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 

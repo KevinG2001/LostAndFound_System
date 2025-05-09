@@ -1,5 +1,6 @@
 //Main App file
 //Holds all routes to other files
+import "react-datepicker/dist/react-datepicker.css";
 
 import "./App.css";
 import Navbar from "./components/Navbar";

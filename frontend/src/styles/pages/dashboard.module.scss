@@ -58,6 +58,13 @@
   min-height: 30%;
 }
 
+@media (max-width: $breakpoint-xxl) {
+  .bubbleBox {
+    max-width: 100%;
+    max-height: 350px;
+  }
+}
+
 @media (max-width: $breakpoint-lg) {
   .dashboardContainer {
     flex-direction: column;

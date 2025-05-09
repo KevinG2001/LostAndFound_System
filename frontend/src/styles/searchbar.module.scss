@@ -1,3 +1,5 @@
+@import "../styles/variables/breakpoints.module.scss";
+
 .searchbarContainer {
   width: 100%;
   display: flex;
@@ -10,7 +12,7 @@
   align-items: center;
   background-color: grey;
   width: 95%;
-  border-radius: 25px;
+  border-radius: 20px;
   padding: 1%;
 }
 
@@ -39,4 +41,61 @@
 
 .dateBar {
   display: flex;
+}
+
+.dateContainer {
+  display: flex;
+  width: 100%;
+  height: 50px;
+  margin: 2% 0;
+  background-color: white;
+  border-radius: 4px;
+}
+
+.dateInput {
+  width: 50%;
+  height: 100%;
+  padding: 0 8px;
+  box-sizing: border-box;
+  border: none;
+  background: transparent;
+}
+
+.dateInput:first-child {
+  border-right: 1px solid #ddd;
+}
+
+.searchBtn {
+  width: 100%;
+  height: 50px;
+  margin: 2% 0;
+  padding: 0 8px;
+  font-size: 16px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.searchBtn:hover {
+  background-color: #45a049;
+}
+
+@media (max-width: $breakpoint-xl) {
+  .searchbarContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    height: 15%;
+  }
+
+  .inputCol {
+    display: flex;
+    flex-direction: column;
+    min-width: 15%;
+    max-width: 15%;
+    height: 100%;
+    margin: 1%;
+  }
 }
