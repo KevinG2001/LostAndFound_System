@@ -1,4 +1,3 @@
-import React from "react";
 import Styles from "../../../styles/modals/moreDetails.module.scss";
 import TicketChat from "../../TicketChat";
 

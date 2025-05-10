@@ -1,12 +1,14 @@
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
+import * as url from "url";
 
-let mainWindow: BrowserWindow;
+let mainWindow: BrowserWindow | null;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1920,
+    height: 1080,
+    title: "TrackItDown",
     autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -15,7 +17,15 @@ function createWindow() {
     },
   });
 
-  mainWindow.loadURL("http://localhost:5173");
+  if (app.isPackaged) {
+    mainWindow.loadFile(path.join(app.getAppPath(), "dist", "index.html"));
+  } else {
+    mainWindow.loadURL("http://localhost:5173");
+  }
+
+  mainWindow.on("closed", () => {
+    mainWindow = null;
+  });
 }
 
 app.whenReady().then(() => {

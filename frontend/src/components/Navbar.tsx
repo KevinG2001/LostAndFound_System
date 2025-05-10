@@ -1,6 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import Styles from "../Styles/navStyles.module.scss";
-import { useState } from "react";
 import TicketIcon from "./Icons/TicketIcon";
 import BackpackIcon from "./Icons/BackpackIcon";
 import PieChartIcon from "./Icons/PieChartIcon";
@@ -8,9 +7,6 @@ import PieChartIcon from "./Icons/PieChartIcon";
 function Navbar() {
   const navigate = useNavigate();
   const url = useLocation();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [isNewItemModalOpen, setIsNewItemModalOpen] = useState(false);
 
   const goToDashboardPage = () => {
     navigate("/");

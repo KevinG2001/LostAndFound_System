@@ -1,3 +1,4 @@
+// Barchart.tsx
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -8,6 +9,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { BarchartProps, ChartItem } from "../../util/types/chartTypes";
 
 // Registering the required chart components
 ChartJS.register(
@@ -19,7 +21,7 @@ ChartJS.register(
   Legend
 );
 
-function Barchart({ data, error, loading }) {
+const Barchart: React.FC<BarchartProps> = ({ data, error, loading }) => {
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -33,13 +35,13 @@ function Barchart({ data, error, loading }) {
   }
 
   const chartData = {
-    labels: data.map((item) => item.label),
+    labels: data.map((item: ChartItem) => item.label),
     datasets: [
       {
         label: "Items by Type",
-        data: data.map((item) => item.value),
+        data: data.map((item: ChartItem) => item.value),
         backgroundColor: [
-          "#FF6384", // Use fallback color if undefined
+          "#FF6384",
           "#36A2EB",
           "#FFCE56",
           "#4BC0C0",
@@ -81,6 +83,6 @@ function Barchart({ data, error, loading }) {
   };
 
   return <Bar data={chartData} options={chartOptions} />;
-}
+};
 
 export default Barchart;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Styles from "../../../styles/modals/moreDetails.module.scss";
 import useEdit from "../../../util/useEdit";
 
@@ -19,9 +19,9 @@ const ItemDetailsTab = ({ data }: { data: any }) => {
 
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const imageUrlRef = useRef<string | null>(null);
 
-  const { loading, error, success, editItem } = useEdit(data?.itemID);
+  const { loading, editItem } = useEdit(data?.itemID);
 
   useEffect(() => {
     if (data) {
@@ -38,7 +38,7 @@ const ItemDetailsTab = ({ data }: { data: any }) => {
         dateClaimed: data.dateClaimed || "",
       });
 
-      setImageUrl(data.imageUrl || null);
+      imageUrlRef.current = data.imageUrl || null;
     }
   }, [data]);
 
@@ -87,7 +87,8 @@ const ItemDetailsTab = ({ data }: { data: any }) => {
       if (!response.ok) throw new Error("Failed to upload image");
 
       const result = await response.json();
-      setImageUrl(result.imageUrl);
+
+      imageUrlRef.current = result.imageUrl;
     } catch (err) {
       console.error("Upload error:", err);
     } finally {

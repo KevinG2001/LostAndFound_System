@@ -10,6 +10,7 @@ import {
   Legend,
 } from "chart.js";
 import variables from "../../styles/variables/colours.module.scss";
+import { LineChartProps } from "../../util/types/chartTypes";
 
 // Registering the required chart components
 ChartJS.register(
@@ -22,7 +23,7 @@ ChartJS.register(
   Legend
 );
 
-function LineChart({ data, error, loading }) {
+const LineChart = ({ data, error, loading }: LineChartProps) => {
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -82,7 +83,7 @@ function LineChart({ data, error, loading }) {
         text: "Items Lost per Month",
       },
       tooltip: {
-        mode: "index",
+        mode: "index" as const,
         intersect: false,
       },
     },
@@ -104,6 +105,6 @@ function LineChart({ data, error, loading }) {
   };
 
   return <Line data={chartData} options={chartOptions} />;
-}
+};
 
 export default LineChart;

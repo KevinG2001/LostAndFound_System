@@ -2,7 +2,7 @@
   "name": "frontend",
   "private": true,
   "version": "0.0.0",
-  "main": "main.ts",
+  "main": "build/electron/main.js",
   "scripts": {
     "dev": "vite --host",
     "build": "tsc -b && vite build",
@@ -10,10 +10,14 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "electron": "npm run build-electron && electron build/electron/main.js",
-    "electron-dev": "concurrently \"vite\" \"npm run electron\""
+    "electron-dev": "concurrently \"vite\" \"npm run electron\"",
+    "start": "electron-forge start",
+    "package": "npm run build-electron && electron-forge package",
+    "make": "npm run build && npm run build-electron && electron-forge make"
   },
   "dependencies": {
     "chart.js": "^4.4.7",
+    "electron-squirrel-startup": "^1.0.1",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.3.0",
     "react-datepicker": "^8.3.0",
@@ -22,6 +26,14 @@
     "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^7.8.1",
+    "@electron-forge/maker-deb": "^7.8.1",
+    "@electron-forge/maker-rpm": "^7.8.1",
+    "@electron-forge/maker-squirrel": "^7.8.1",
+    "@electron-forge/maker-zip": "^7.8.1",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.8.1",
+    "@electron-forge/plugin-fuses": "^7.8.1",
+    "@electron/fuses": "^1.8.0",
     "@eslint/js": "^9.9.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

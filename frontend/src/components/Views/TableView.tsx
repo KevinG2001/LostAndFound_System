@@ -28,13 +28,19 @@ const TableView = ({ columns, data, onRowClick }: TableViewProps) => {
     setCurrentPage(pageNumber);
   };
 
-  const statusMapping = {
+  const statusMapping: Record<string, string> = {
     Claimed: Style.claimedStatus,
     Unclaimed: Style.unclaimedStatus,
     Expired: Style.expiredStatus,
     "To Collect": Style.tocollectStatus,
     Open: Style.openStatus,
     Closed: Style.closedStatus,
+  };
+
+  const isValidStatus = (
+    status: string
+  ): status is keyof typeof statusMapping => {
+    return status in statusMapping;
   };
 
   return (
@@ -57,7 +63,7 @@ const TableView = ({ columns, data, onRowClick }: TableViewProps) => {
               {columns.map((col, colIndex) => {
                 const cellData = row[col.accessor] || "";
                 const statusClass =
-                  col.accessor === "status"
+                  col.accessor === "status" && isValidStatus(cellData)
                     ? statusMapping[cellData] || ""
                     : "";
 

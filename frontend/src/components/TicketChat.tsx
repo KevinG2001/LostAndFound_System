@@ -1,6 +1,7 @@
 import { useChat } from "../util/useChat";
 import { useEffect, useState } from "react";
 import Styles from "../styles/chat.module.scss";
+import { Message } from "../util/types/ticketType";
 
 interface TicketChatProps {
   ticketId: string;
@@ -12,11 +13,11 @@ const TicketChat = ({ ticketId, description }: TicketChatProps) => {
   const { messages, newMessage, setNewMessage, handleSendMessage, error } =
     useChat(ticketId, senderName);
 
-  const [initialMessages, setInitialMessages] = useState([]);
+  const [initialMessages, setInitialMessages] = useState<Message[]>([]);
 
   useEffect(() => {
     if (description) {
-      const descriptionMessage = {
+      const descriptionMessage: Message = {
         sender: "Customer",
         message: description,
         timestamp: new Date().toISOString(),

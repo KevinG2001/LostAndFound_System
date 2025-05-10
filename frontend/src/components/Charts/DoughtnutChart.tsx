@@ -1,10 +1,11 @@
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import Styles from "../../styles/charts/doughnutStyles.module.scss";
+import { DoughnutChartProps } from "../../util/types/chartTypes";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-function DoughnutChart({ data, error }) {
+const DoughnutChart = ({ data, error }: DoughnutChartProps) => {
   if (error) {
     return <p>{error}</p>;
   }
@@ -44,6 +45,6 @@ function DoughnutChart({ data, error }) {
       />
     </div>
   );
-}
+};
 
 export default DoughnutChart;

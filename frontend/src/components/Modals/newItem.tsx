@@ -29,7 +29,7 @@ const NewItemModal = ({ onClose, onCreate }: NewItemModalProps) => {
   const [showTypeDropdown, setShowTypeDropdown] = useState(false);
   const [showGarageDropdown, setShowGarageDropdown] = useState(false);
 
-  const { createItem, loading, error } = useNewItem();
+  const { loading, error } = useNewItem();
 
   const categoryDropdownRef = useRef<HTMLDivElement | null>(null);
   const typeDropdownRef = useRef<HTMLDivElement | null>(null);

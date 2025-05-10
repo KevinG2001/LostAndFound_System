@@ -6,39 +6,58 @@ import TotalCount from "../components/StatBubbles/TotalCount";
 import ReturnPercent from "../components/StatBubbles/ReturnPercent";
 import TopItem from "../components/StatBubbles/TopItem";
 import ItemsToday from "../components/StatBubbles/ItemsToday";
+import { LineChartItem, DoughnutChartItem } from "../util/types/chartTypes";
 
 function Dashboard() {
-  const [lineData, setLineData] = useState([]);
-  const [doughnutData, setDoughnutData] = useState([]);
+  const [lineData, setLineData] = useState<LineChartItem[]>([]);
+  const [doughnutData, setDoughnutData] = useState<DoughnutChartItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [lineError, setLineError] = useState("");
-  const [doughnutError, setDoughnutError] = useState("");
+  const [lineError, setLineError] = useState<string>("");
+  const [doughnutError, setDoughnutError] = useState<string>("");
 
-  useEffect(() => {
-    async function fetchData(url, setData, setError) {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}${url}`);
-        if (!response.ok) throw new Error(`Failed to fetch data from ${url}`);
+  async function fetchData<T>(
+    url: string,
+    setData: React.Dispatch<React.SetStateAction<T>>,
+    setError: React.Dispatch<React.SetStateAction<string>>
+  ) {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}${url}`);
+      if (!response.ok) throw new Error(`Failed to fetch data from ${url}`);
 
-        const result = await response.json();
+      const result: T = await response.json();
 
+      if (Array.isArray(result)) {
         if (url === "/stats/items-by-type") {
-          const formattedData = result.map((item) => ({
+          const formattedData = (
+            result as { category: string; count: number }[]
+          ).map((item) => ({
             label: item.category,
             value: item.count,
           }));
-          setData(formattedData);
+          setData(formattedData as T);
         } else {
           setData(result);
         }
-      } catch (error) {
-        console.error(`Error fetching data from ${url}:`, error);
-        setError(`Error fetching data. Please try again later.`);
+      } else {
+        setData(result);
       }
+    } catch (error) {
+      console.error(`Error fetching data from ${url}:`, error);
+      setError(`Error fetching data. Please try again later.`);
     }
+  }
 
-    fetchData("/stats/lost-per-month", setLineData, setLineError);
-    fetchData("/stats/typeLost", setDoughnutData, setDoughnutError);
+  useEffect(() => {
+    fetchData<LineChartItem[]>(
+      "/stats/lost-per-month",
+      setLineData,
+      setLineError
+    );
+    fetchData<DoughnutChartItem[]>(
+      "/stats/typeLost",
+      setDoughnutData,
+      setDoughnutError
+    );
 
     setLoading(false);
   }, []);

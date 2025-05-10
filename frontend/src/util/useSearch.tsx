@@ -2,10 +2,10 @@ import { useState } from "react";
 
 const useSearch = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<any[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
 
-  const searchDB = async (searchFields: any) => {
+  const searchDB = async (searchFields: Record<string, string>) => {
     try {
       const filters: Record<string, string> = {};
 

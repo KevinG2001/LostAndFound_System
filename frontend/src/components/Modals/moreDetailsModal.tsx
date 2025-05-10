@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Styles from "../../styles/modals/moreDetails.module.scss";
 import ItemDetailsTab from "./tabs/itemDetails";
 import TicketDetailsTab from "./tabs/ticketDetails";
