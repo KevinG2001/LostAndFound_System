@@ -5,6 +5,14 @@ const express = require("express");
 const router = require("../routes/items");
 const Item = require("../models/Item");
 
+jest.mock("../util/s3Uploader", () => ({
+  uploadFileToS3: jest.fn().mockResolvedValue("https://mock-s3-url/image.png"),
+}));
+
+jest.mock("../util/idGenerator", () => ({
+  getNextId: jest.fn().mockResolvedValue("ITEM123"),
+}));
+
 const app = express();
 app.use(express.json());
 app.use("/", router);
@@ -36,9 +44,9 @@ beforeEach(async () => {
 });
 
 describe("Items API", () => {
-  // 1. Test for creating an item
   test("POST /create should create a new item", async () => {
     const newItem = {
+      article: "Wallet",
       description: "Lost wallet",
       category: "Personal Items",
       type: "Wallet",
@@ -56,9 +64,9 @@ describe("Items API", () => {
     expect(response.body.itemID).toBeDefined();
   });
 
-  // 2. Test for getting the list of items
   test("GET /list should return all items", async () => {
     const item1 = new Item({
+      article: "Wallet",
       description: "Lost wallet",
       category: "Personal Items",
       type: "Wallet",
@@ -70,6 +78,7 @@ describe("Items API", () => {
       itemID: "ITEM123",
     });
     const item2 = new Item({
+      article: "Phone",
       description: "Lost phone",
       category: "Electronics",
       type: "Phone",
@@ -90,9 +99,9 @@ describe("Items API", () => {
     expect(response.body[1].description).toBe("Lost phone");
   });
 
-  // 3. Test for updating an item
   test("PUT /update/:itemID should update an item", async () => {
     const item = new Item({
+      article: "Wallet",
       description: "Lost wallet",
       category: "Personal Items",
       type: "Wallet",
@@ -106,6 +115,7 @@ describe("Items API", () => {
     await item.save();
 
     const updatedItem = {
+      article: "Wallet",
       description: "Lost black wallet",
       category: "Personal Items",
       type: "Wallet",
@@ -125,9 +135,9 @@ describe("Items API", () => {
     expect(response.body.status).toBe("Claimed");
   });
 
-  // 4. Test for updating an item that does not exist
   test("PUT /update/:itemID should return 404 if item not found", async () => {
     const updatedItem = {
+      article: "Wallet",
       description: "Lost black wallet",
       category: "Personal Items",
       type: "Wallet",
@@ -146,7 +156,6 @@ describe("Items API", () => {
     expect(response.body.message).toBe("Item not found");
   });
 
-  // 5. Test for invalid create item request (missing required fields)
   test("POST /create should return 400 if required fields are missing", async () => {
     const invalidItem = {
       category: "Personal Items",
@@ -159,13 +168,13 @@ describe("Items API", () => {
     const response = await request(app).post("/create").send(invalidItem);
     expect(response.statusCode).toBe(400);
     expect(response.body.message).toBe(
-      "Validation failed: description, dateLost"
+      "Validation failed: article, description, and dateLost are required"
     );
   });
 
-  // 6. Test for creating an item with missing dateLost
   test("POST /create should return 400 if dateLost is missing", async () => {
     const invalidItem = {
+      article: "Wallet",
       description: "Lost wallet",
       category: "Personal Items",
       type: "Wallet",

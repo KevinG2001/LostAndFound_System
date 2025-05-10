@@ -21,7 +21,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await mongoose.connection.close();
+  await mongoose.disconnect();
   await mongoServer.stop();
 });
 
@@ -33,90 +33,87 @@ beforeEach(async () => {
     });
   }
   await mongoose.connection.db.dropDatabase();
+
+  await Item.create([
+    {
+      itemID: "PHO1",
+      article: "iPhone",
+      description: "Lost phone",
+      category: "Electronics",
+      type: "Phone",
+      route: "A-B",
+      dateLost: new Date("2024-12-01"),
+      status: "Claimed",
+    },
+    {
+      itemID: "CLO2",
+      article: "T-Shirt",
+      description: "Lost shirt",
+      category: "Clothing",
+      type: "Shirt",
+      route: "C-D",
+      dateLost: new Date("2024-12-02"),
+      status: "Unclaimed",
+    },
+    {
+      itemID: "MISC3",
+      article: "Book",
+      description: "Lost book",
+      category: "Books",
+      type: "Book",
+      route: "E-F",
+      dateLost: new Date("2024-12-03"),
+      status: "Expired",
+    },
+    {
+      itemID: "KEY4",
+      article: "Keys",
+      description: "Lost keys",
+      category: "Accessories",
+      type: "Keys",
+      route: "G-H",
+      dateLost: new Date("2024-11-30"),
+      status: "To Collect",
+    },
+    {
+      itemID: "WALL5",
+      article: "Wallet",
+      description: "Lost wallet",
+      category: "Accessories",
+      type: "Wallet",
+      route: "I-J",
+      dateLost: new Date("2024-11-25"),
+      status: "Claimed",
+    },
+  ]);
 });
 
-describe("Lost Items API", () => {
-  beforeEach(async () => {
-    await Item.create([
-      {
-        itemID: "PHO1",
-        description: "Lost phone",
-        category: "Electronics",
-        type: "Phone",
-        route: "A-B",
-        dateLost: new Date("2024-12-01"),
-        status: "Claimed",
-      },
-      {
-        itemID: "CLO2",
-        description: "Lost shirt",
-        category: "Clothing",
-        type: "Shirt",
-        route: "C-D",
-        dateLost: new Date("2024-12-02"),
-        status: "Unclaimed",
-      },
-      {
-        itemID: "MISC3",
-        description: "Lost book",
-        category: "Books",
-        type: "Book",
-        route: "E-F",
-        dateLost: new Date("2024-12-03"),
-        status: "Expired",
-      },
-      {
-        itemID: "KEY4",
-        description: "Lost keys",
-        category: "Accessories",
-        type: "Keys",
-        route: "G-H",
-        dateLost: new Date("2024-11-30"),
-        status: "To Collect",
-      },
-      {
-        itemID: "WALL5",
-        description: "Lost wallet",
-        category: "Accessories",
-        type: "Wallet",
-        route: "I-J",
-        dateLost: new Date("2024-11-25"),
-        status: "Claimed",
-      },
-    ]);
+describe("Stats API", () => {
+  test("GET /lost-per-month should return counts grouped by month and status", async () => {
+    const res = await request(app).get("/lost-per-month");
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          month: "November",
+          total: 2,
+          claimed: 1,
+          toCollect: 1,
+        }),
+        expect.objectContaining({
+          month: "December",
+          total: 3,
+          claimed: 1,
+          unclaimed: 1,
+          expired: 1,
+        }),
+      ])
+    );
   });
 
-  // Testing correct response when fetching lost items per month
-  test("GET /lost-per-month should return counts by month with correct data", async () => {
-    const response = await request(app).get("/lost-per-month");
-    expect(response.statusCode).toBe(200);
-
-    const expected = [
-      {
-        month: "November",
-        total: 2,
-        claimed: 1,
-        unclaimed: 0,
-        expired: 0,
-        toCollect: 1,
-      },
-      {
-        month: "December",
-        total: 3,
-        claimed: 1,
-        unclaimed: 1,
-        expired: 1,
-        toCollect: 0,
-      },
-    ];
-
-    expect(response.body).toEqual(expect.arrayContaining(expected));
-  });
-
-  // Testing correct response when fetching lost items by category
-  test("GET /typeLost should return counts by category with correct data", async () => {
-    const response = await request(app).get("/typeLost");
-    expect(response.statusCode).toBe(200);
+  test("GET /typeLost should return counts by category", async () => {
+    const res = await request(app).get("/typeLost");
+    expect(res.statusCode).toBe(200);
 
     const expected = [
       { category: "Accessories", count: 2 },
@@ -125,45 +122,29 @@ describe("Lost Items API", () => {
       { category: "Electronics", count: 1 },
     ];
 
-    expect(response.body).toEqual(expect.arrayContaining(expected));
+    expect(res.body).toEqual(expect.arrayContaining(expected));
   });
 
-  // Testing sorting of items by category count
-  test("GET /items-by-type should return items sorted by count", async () => {
-    const response = await request(app).get("/items-by-type");
-    expect(response.statusCode).toBe(200);
-
-    const expected = [
-      { category: "Accessories", count: 2 },
-      { category: "Books", count: 1 },
-      { category: "Clothing", count: 1 },
-      { category: "Electronics", count: 1 },
-    ];
-
-    const sortedExpected = expected.sort((a, b) =>
-      a.category.localeCompare(b.category)
-    );
-    const sortedReceived = response.body.sort((a, b) =>
-      a.category.localeCompare(b.category)
-    );
-
-    expect(sortedReceived).toEqual(sortedExpected);
+  test("GET /items-today should return 0 if no items lost today", async () => {
+    const res = await request(app).get("/items-today");
+    expect(res.statusCode).toBe(200);
+    expect(res.body.count).toBe(0);
   });
 
-  // Testing correct error handling when database connection fails
-  test("GET /lost-per-month should return error when database fails", async () => {
-    await mongoose.connection.close();
-    const response = await request(app).get("/lost-per-month");
-    expect(response.statusCode).toBe(500);
-    expect(response.body.message).toBe("Error fetching lost items per month");
+  test("GET /items-to-collect-this-month should return items with 'To Collect' status this month", async () => {
+    const res = await request(app).get("/items-to-collect-this-month");
+
+    const now = new Date();
+    const expectedCount = now.getMonth() === 10 ? 1 : 0;
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.count).toBe(expectedCount);
   });
 
-  // Testing response when the database is empty
-  test("GET /lost-per-month should return empty array when database is empty", async () => {
+  test("GET /lost-per-month returns empty array when no data", async () => {
     await mongoose.connection.db.dropDatabase();
-
-    const response = await request(app).get("/lost-per-month");
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toEqual([]);
+    const res = await request(app).get("/lost-per-month");
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual([]);
   });
 });

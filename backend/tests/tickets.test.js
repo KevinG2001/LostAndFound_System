@@ -1,4 +1,3 @@
-// tests/tickets.test.js
 const { MongoMemoryServer } = require("mongodb-memory-server");
 const mongoose = require("mongoose");
 const request = require("supertest");
@@ -37,8 +36,7 @@ beforeEach(async () => {
 });
 
 describe("Tickets API", () => {
-  // Testing correct response when fetching all tickets
-  test("GET /list should return all tickets with correct data", async () => {
+  test("GET /list should return all tickets", async () => {
     const ticket = new Ticket({
       ticketId: "TICKET1",
       description: "Lost phone",
@@ -52,18 +50,17 @@ describe("Tickets API", () => {
     const response = await request(app).get("/list");
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveLength(1);
-    expect(response.body[0].ticketId).toBe(ticket.ticketId);
-    expect(response.body[0].description).toBe(ticket.description);
+    expect(response.body[0].ticketId).toBe("TICKET1");
+    expect(response.body[0].description).toBe("Lost phone");
   });
 
-  // Testing correct response when submitting a ticket
   test("POST /submitTicket should create a new ticket", async () => {
     const newTicket = {
       description: "Lost wallet",
       contactInfo: {
         name: "John Doe",
-        email: "contact@domain.com", // Ensure email is provided
-        phone: "123-456-7890", // Optional
+        email: "contact@domain.com",
+        phone: "123-456-7890",
       },
       firstName: "John",
       surname: "Doe",
@@ -73,36 +70,48 @@ describe("Tickets API", () => {
     const response = await request(app).post("/submitTicket").send(newTicket);
     expect(response.statusCode).toBe(201);
     expect(response.body).toHaveProperty("ticketId");
-    expect(response.body.ticketId).toHaveLength(6); // Random ticket ID should be 6 characters
+    expect(response.body.ticketId).toHaveLength(6);
   });
 
-  // Testing correct response when fetching a specific ticket by ticketId
+  test("POST /submitTicket should return 400 if required fields are missing", async () => {
+    const incompleteTicket = {
+      contactInfo: { email: "missing@info.com" },
+      dateLost: "2024-12-02",
+    };
+
+    const response = await request(app)
+      .post("/submitTicket")
+      .send(incompleteTicket);
+    expect(response.statusCode).toBe(400);
+    expect(response.body.error).toBe(
+      "Description, Contact Info, and Date Lost are required."
+    );
+  });
+
   test("GET /:ticketId should return the correct ticket", async () => {
     const ticket = new Ticket({
-      ticketId: "TICKET1",
-      description: "Lost phone charger",
-      contactInfo: { email: "contact@domain.com" },
+      ticketId: "TICKET2",
+      description: "Lost headphones",
+      contactInfo: { email: "user@domain.com" },
       status: "Open",
       dateCreated: new Date(),
       dateLost: new Date("2024-12-03"),
     });
     await ticket.save();
 
-    const response = await request(app).get(`/TICKET1`);
+    const response = await request(app).get("/TICKET2");
     expect(response.statusCode).toBe(200);
-    expect(response.body.ticketId).toBe(ticket.ticketId);
-    expect(response.body.description).toBe(ticket.description);
+    expect(response.body.ticketId).toBe("TICKET2");
+    expect(response.body.description).toBe("Lost headphones");
   });
 
-  // Testing correct error handling when ticket is not found
-  test("GET /:ticketId should return 404 if ticket is not found", async () => {
-    const response = await request(app).get("/NONEXISTENTID");
+  test("GET /:ticketId should return 404 if ticket not found", async () => {
+    const response = await request(app).get("/NONEXISTENT");
     expect(response.statusCode).toBe(404);
     expect(response.body.error).toBe("Ticket not found");
   });
 
-  // Testing correct response when adding a message to a ticket
-  test("POST /:ticketId/addMessage should add a message to the ticket", async () => {
+  test("POST /:ticketId/addMessage should add a support message", async () => {
     const ticket = new Ticket({
       ticketId: "TICKET3",
       description: "Lost umbrella",
@@ -113,25 +122,24 @@ describe("Tickets API", () => {
     });
     await ticket.save();
 
-    const newMessage = {
+    const message = {
       sender: "support",
-      message: "We are looking into your issue.",
+      message: "We're looking into it.",
     };
 
     const response = await request(app)
-      .post(`/TICKET3/addMessage`)
-      .send(newMessage);
+      .post("/TICKET3/addMessage")
+      .send(message);
     expect(response.statusCode).toBe(200);
     expect(response.body.sender).toBe("Support");
-    expect(response.body.message).toBe(newMessage.message);
+    expect(response.body.message).toBe(message.message);
     expect(response.body.timestamp).toBeDefined();
   });
 
-  // Testing correct error handling when adding a message without required fields
-  test("POST /:ticketId/addMessage should return 400 if sender or message is missing", async () => {
+  test("POST /:ticketId/addMessage should return 400 if sender or message missing", async () => {
     const ticket = new Ticket({
       ticketId: "TICKET4",
-      description: "Lost keys",
+      description: "Lost ID card",
       contactInfo: { email: "contact@domain.com" },
       status: "Open",
       dateCreated: new Date(),
@@ -139,18 +147,20 @@ describe("Tickets API", () => {
     });
     await ticket.save();
 
-    const response = await request(app)
-      .post(`/TICKET4/addMessage`)
-      .send({ sender: "", message: "" });
+    const response = await request(app).post("/TICKET4/addMessage").send({
+      sender: "",
+      message: "",
+    });
+
     expect(response.statusCode).toBe(400);
     expect(response.body.error).toBe("Sender and message are required");
   });
 
-  // Testing correct error handling when ticket is not found for adding a message
-  test("POST /:ticketId/addMessage should return 404 if ticket is not found", async () => {
+  test("POST /:ticketId/addMessage should return 404 if ticket not found", async () => {
     const response = await request(app)
-      .post("/NONEXISTENTID/addMessage")
-      .send({ sender: "support", message: "Message content" });
+      .post("/NONEXISTENT/addMessage")
+      .send({ sender: "support", message: "Checking in on your report." });
+
     expect(response.statusCode).toBe(404);
     expect(response.body.error).toBe("Ticket not found");
   });

@@ -214,11 +214,22 @@ router.post("/search", async (req, res) => {
   try {
     let criteria = {};
 
+    if (filters.startDate) {
+      criteria["dateLost"] = { $gte: new Date(filters.startDate) };
+    }
+
+    if (filters.endDate) {
+      const endDate = new Date(filters.endDate);
+      endDate.setHours(23, 59, 59, 999);
+      criteria["dateLost"] = {
+        ...criteria["dateLost"],
+        $lte: endDate,
+      };
+    }
+
     for (const [key, value] of Object.entries(filters)) {
-      if (value.trim() !== "") {
-        criteria[key] = {
-          $regex: new RegExp(value, "i"),
-        };
+      if (value.trim() !== "" && key !== "startDate" && key !== "endDate") {
+        criteria[key] = { $regex: new RegExp(value, "i") };
       }
     }
 
