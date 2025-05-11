@@ -12,7 +12,7 @@ function CollectionDetailsTab({ data }: { data: any }) {
     phone: "",
   });
 
-  const { loading, editItem } = useEdit(data?.itemID);
+  const { loading, editItem } = useEdit(data?.itemID, "item");
 
   useEffect(() => {
     if (data?.collectionDetails) {
