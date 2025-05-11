@@ -1,0 +1,44 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.EC2_SECRET }}
+
+      - name: Deploy to EC2 - WebPortal
+        run: |
+          EC2_USER=ec2-user
+          EC2_HOST=your-ec2-ip
+          EC2_PATH=/home/ec2-user/LostAndFound_System
+
+          ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
+            cd $EC2_PATH/webPortal || exit 1
+            git pull origin main || exit 1
+            npm install || exit 1
+            npm run build || exit 1
+          EOF
+
+      - name: Deploy to EC2 - Backend
+        run: |
+          EC2_USER=ec2-user
+          EC2_HOST=your-ec2-ip
+          EC2_PATH=/home/ec2-user/LostAndFound_System
+
+          ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
+            cd $EC2_PATH/backend || exit 1
+            git pull origin main || exit 1
+            npm install || exit 1
+            pm2 restart backend || exit 1
+          EOF
