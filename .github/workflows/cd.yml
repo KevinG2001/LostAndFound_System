@@ -19,8 +19,8 @@ jobs:
 
       - name: Deploy to EC2 - WebPortal
         run: |
-          EC2_USER=ec2-user
-          EC2_HOST=your-ec2-ip
+          EC2_USER=${{ secrets.EC2_USER }}
+          EC2_HOST=${{ secrets.EC2_IP }}
           EC2_PATH=/home/ec2-user/LostAndFound_System
 
           ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
@@ -32,8 +32,8 @@ jobs:
 
       - name: Deploy to EC2 - Backend
         run: |
-          EC2_USER=ec2-user
-          EC2_HOST=your-ec2-ip
+          EC2_USER=${{ secrets.EC2_USER }}
+          EC2_HOST=${{ secrets.EC2_IP }}
           EC2_PATH=/home/ec2-user/LostAndFound_System
 
           ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
