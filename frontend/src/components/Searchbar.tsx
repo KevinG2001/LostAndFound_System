@@ -104,16 +104,14 @@ function Searchbar({ searchDB }: any) {
         </div>
 
         <div className={Style.inputCol}>
-          <div className={Style.dateWrapper}>
-            <DatePicker
-              selected={searchFields.startDate}
-              onChange={(date) => handleChange("startDate", date)}
-              placeholderText="From"
-              className={`${Style.dateInput} custom-datepicker`}
-              calendarClassName="custom-datepicker-calendar"
-              dateFormat="dd-MM-yyyy"
-            />
-          </div>
+          <DatePicker
+            selected={searchFields.startDate}
+            onChange={(date) => handleChange("startDate", date)}
+            placeholderText="From"
+            className={`${Style.inputBar} ${Style.dateBtn}`}
+            calendarClassName="custom-datepicker-calendar"
+            dateFormat="dd-MM-yyyy"
+          />
           <input
             type="text"
             placeholder="Status"
@@ -125,16 +123,17 @@ function Searchbar({ searchDB }: any) {
         </div>
 
         <div className={Style.inputCol}>
-          <div className={Style.dateWrapper}>
-            <DatePicker
-              selected={searchFields.endDate}
-              onChange={(date) => handleChange("endDate", date)}
-              placeholderText="To"
-              className={Style.dateInput}
-              dateFormat="dd-MM-yyyy"
-            />
-          </div>
-          <button onClick={handleSearch} className={Style.searchBtn}>
+          <DatePicker
+            selected={searchFields.endDate}
+            onChange={(date) => handleChange("endDate", date)}
+            placeholderText="To"
+            className={`${Style.inputBar} ${Style.dateBtn}`}
+            dateFormat="dd-MM-yyyy"
+          />
+          <button
+            onClick={handleSearch}
+            className={`${Style.inputBar} ${Style.btn}`}
+          >
             Search
           </button>
         </div>

@@ -1,4 +1,5 @@
 @import "../styles/variables/breakpoints.module.scss";
+@import "../styles/variables/colours.module.scss";
 
 .searchbarContainer {
   width: 100%;
@@ -10,7 +11,7 @@
 .searchbarWrapper {
   display: flex;
   align-items: center;
-  background-color: grey;
+  background-color: $primary-bg-colour;
   width: 95%;
   border-radius: 20px;
   padding: 1%;
@@ -80,6 +81,18 @@
 
 .searchBtn:hover {
   background-color: #45a049;
+}
+
+.inputBar.btn {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  background-color: $secondary-text-colour;
+  &:hover {
+    background-color: $button-hover-bg-colour;
+    transition: ease-in-out 0.2s;
+  }
 }
 
 @media (max-width: $breakpoint-xl) {
