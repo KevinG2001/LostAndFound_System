@@ -24,10 +24,17 @@ jobs:
           EC2_PATH=/home/ec2-user/LostAndFound_System
 
           ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
-            cd webPortal || exit 1
-            git pull origin main || exit 1
-            npm install || exit 1
-            npm run build || exit 1
+            echo "Checking if webPortal directory exists..."
+            if [ -d "$EC2_PATH/webPortal" ]; then
+              echo "Directory webPortal exists, pulling latest changes."
+              cd $EC2_PATH/webPortal || exit 1
+              git pull origin main || exit 1
+              npm install || exit 1
+              npm run build || exit 1
+            else
+              echo "Directory webPortal does not exist. Please check the directory structure."
+              exit 1
+            fi
           EOF
 
       - name: Deploy to EC2 - Backend
@@ -37,8 +44,15 @@ jobs:
           EC2_PATH=/home/ec2-user/LostAndFound_System
 
           ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
-            cd $EC2_PATH/backend || exit 1
-            git pull origin main || exit 1
-            npm install || exit 1
-            pm2 restart backend || exit 1
+            echo "Checking if backend directory exists..."
+            if [ -d "$EC2_PATH/backend" ]; then
+              echo "Directory backend exists, pulling latest changes."
+              cd $EC2_PATH/backend || exit 1
+              git pull origin main || exit 1
+              npm install || exit 1
+              pm2 restart backend || exit 1
+            else
+              echo "Directory backend does not exist. Please check the directory structure."
+              exit 1
+            fi
           EOF
