@@ -21,7 +21,7 @@ const ItemDetailsTab = ({ data }: { data: any }) => {
   const [uploading, setUploading] = useState(false);
   const imageUrlRef = useRef<string | null>(null);
 
-  const { loading, editItem } = useEdit(data?.itemID);
+  const { loading, editItem } = useEdit(data?.itemID, "item");
 
   useEffect(() => {
     if (data) {

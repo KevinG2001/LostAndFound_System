@@ -48,6 +48,27 @@ router.post("/submitTicket", async (req, res) => {
   }
 });
 
+router.put("/update/:ticketId", async (req, res) => {
+  console.log("Update ticket route hit with ID:", req.params.ticketId);
+  console.log("Update body:", req.body);
+  try {
+    const updatedTicket = await Ticket.findOneAndUpdate(
+      { ticketId: req.params.ticketId },
+      req.body,
+      { new: true }
+    );
+
+    if (!updatedTicket) {
+      return res.status(404).json({ message: "Ticket not found" });
+    }
+
+    res.json(updatedTicket);
+  } catch (error) {
+    console.error("Error updating ticket:", error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 router.get("/:ticketId", async (req, res) => {
   try {
     const ticket = await Ticket.findOne({ ticketId: req.params.ticketId });
