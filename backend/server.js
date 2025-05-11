@@ -6,8 +6,7 @@ const errorHandler = require("./middleware/errorHandler");
 const corsOptions = require("./middleware/corsOptions");
 const io = require("./socket/chat");
 require("dotenv").config({
-  path:
-    process.env.NODE_ENV === "production" ? ".env.production" : ".env.local",
+  path: process.env.NODE_ENV === "production" ? ".env" : ".env.local",
 });
 const path = require("path");
 
