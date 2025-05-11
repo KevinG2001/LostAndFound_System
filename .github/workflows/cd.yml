@@ -43,5 +43,5 @@ jobs:
             cd /home/ec2-user/LostAndFound_System/backend || exit 1
             git pull origin main || exit 1
             npm install || exit 1
-            pm2 restart backend || exit 1
+            pm2 restart Backend || exit 1
           EOF
