@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import Styles from "../Styles/navStyles.module.scss";
+import Styles from "../styles/navStyles.module.scss";
 import TicketIcon from "./Icons/TicketIcon";
 import BackpackIcon from "./Icons/BackpackIcon";
 import PieChartIcon from "./Icons/PieChartIcon";

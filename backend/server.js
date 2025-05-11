@@ -6,6 +6,7 @@ const errorHandler = require("./middleware/errorHandler");
 const corsOptions = require("./middleware/corsOptions");
 const io = require("./socket/chat");
 require("dotenv").config();
+const path = require("path");
 
 const app = express();
 const server = http.createServer(app);
@@ -14,7 +15,15 @@ const server = http.createServer(app);
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// Routes
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "dist")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "dist", "index.html"));
+  });
+}
+
+// API Routes
 const itemRoutes = require("./routes/items");
 const ticketRoutes = require("./routes/tickets");
 const countsRoutes = require("./routes/counts");
@@ -22,7 +31,6 @@ const searchRoutes = require("./routes/search");
 const statRoutes = require("./routes/stats");
 const garageRoutes = require("./routes/garages");
 
-// Use routes
 app.use("/items", itemRoutes);
 app.use("/tickets", ticketRoutes);
 app.use("/counts", countsRoutes);
