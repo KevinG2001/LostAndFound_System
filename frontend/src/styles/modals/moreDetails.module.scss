@@ -1,4 +1,5 @@
 @import "../variables/colours.module.scss";
+@import "../variables/breakpoints.module.scss";
 
 .modalOverlay {
   display: flex;
@@ -18,13 +19,13 @@
   background: #fff;
   border-radius: 8px;
   width: 90%;
-  max-width: 600px;
+  max-width: 800px;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
-  min-height: 750px;
-  max-height: 90vh;
+  min-height: 600px;
+  max-height: 85vh;
   background-color: $secondary-bg-colour;
   overflow: hidden;
 }
@@ -113,7 +114,7 @@
 
 .flexItem {
   flex: 1;
-  min-width: 45%;
+  min-width: 25%;
   display: flex;
   flex-direction: row;
   margin-bottom: 12px;
@@ -337,4 +338,132 @@ button {
 .valueText {
   font-style: italic;
   color: #ccc;
+}
+
+@media (min-width: 1921px) {
+  .modalContent {
+    max-width: 900px;
+    min-height: 650px;
+    max-height: 80vh;
+  }
+
+  .tabContent {
+    min-height: 550px;
+  }
+
+  .detailsContainer {
+    font-size: 16px;
+  }
+
+  .itemImage {
+    max-width: 350px;
+    max-height: 250px;
+  }
+}
+
+@media (max-width: $breakpoint-xxl) {
+  .modalOverlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    overflow: hidden;
+  }
+
+  .modalContent {
+    background: #fff;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    min-height: 600px;
+    height: 100%;
+    max-height: 90vh;
+    background-color: $secondary-bg-colour;
+    overflow: hidden;
+  }
+
+  .tabContent {
+    width: 100%;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    background-color: $primary-bg-colour;
+    min-height: 0%;
+    height: 100%;
+  }
+
+  .detailsContainer {
+    gap: 0px;
+    font-size: 12px;
+    margin: 0px;
+    height: inherit;
+  }
+
+  .itemImage {
+    max-width: 250px;
+    max-height: 150px;
+    object-fit: contain;
+    border-radius: 4px;
+    margin: 2%;
+  }
+
+  .detailsRow {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2px;
+    height: 60px;
+    width: 100%;
+    flex-wrap: wrap;
+    margin-top: 2%;
+  }
+
+  .inputField {
+    padding: 0px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%;
+  }
+
+  .detailLabel {
+    display: flex;
+    min-width: 100px;
+    justify-content: center;
+    align-items: center;
+    text-align: right;
+    margin-bottom: 0;
+    margin-right: 8px;
+    font-weight: 500;
+    color: $tiertiary-text-colour;
+  }
+
+  .uploadSection {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+  }
+
+  .editActions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    margin: 2%;
+  }
 }

@@ -234,9 +234,6 @@ const ItemDetailsTab = ({ data }: { data: any }) => {
             onChange={handleFileChange}
             className={Styles.detailLabel}
           />
-          <button onClick={handleUpload} disabled={uploading}>
-            {uploading ? "Uploading..." : "Upload"}
-          </button>
         </div>
       )}
       <div className={Styles.editActions}>
@@ -248,6 +245,9 @@ const ItemDetailsTab = ({ data }: { data: any }) => {
               disabled={loading}
             >
               {loading ? "Saving..." : "Save"}
+            </button>
+            <button onClick={handleUpload} disabled={uploading}>
+              {uploading ? "Uploading..." : "Upload"}
             </button>
             <button
               className={Styles.cancelBtn}
