@@ -4,6 +4,7 @@ const corsOptions = {
     "http://localhost:5174",
     "http://192.168.0.197:5173",
     "http://192.168.0.197:5174",
+    "http://trackitdown.org:4000",
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type"],
