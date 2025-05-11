@@ -12,6 +12,12 @@ const useContactForm = () => {
     status: "Open",
     dateLost: "",
     dateCreated: "",
+    messages: [],
+    contactInfo: {
+      name: "",
+      email: "",
+      phone: "",
+    },
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,6 +73,12 @@ const useContactForm = () => {
         status: "Open",
         dateLost: "",
         dateCreated: "",
+        messages: [],
+        contactInfo: {
+          name: "",
+          email: "",
+          phone: "",
+        },
       });
 
       return responseData.ticketId;

@@ -8,6 +8,7 @@ import Style from "./styles/home.module.scss";
 function App() {
   const [ticketId, setTicketId] = useState<string | null>(null);
   const [inputTicketId, setInputTicketId] = useState<string>("");
+  const [view, setView] = useState<"initial" | "reopen" | "create">("initial");
 
   const handleTicketCreated = (id: string) => {
     setTicketId(id);
@@ -15,6 +16,8 @@ function App() {
 
   const handleResetTicket = () => {
     setTicketId(null);
+    setInputTicketId("");
+    setView("initial");
   };
 
   const handleTicketIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,33 +33,61 @@ function App() {
   return (
     <div className={Style.container}>
       <About />
-      <div>This is my web portal</div>
       <div>
         {ticketId ? (
           <div>
-            <button
-              onClick={handleResetTicket}
-              style={{ marginBottom: "10px" }}
-            >
-              Create New Ticket
+            <button onClick={handleResetTicket} className={Style.btn}>
+              Back to Menu
             </button>
             <TicketChat ticketId={ticketId} />
           </div>
         ) : (
-          <div>
-            <div>
-              <h3>Reopen Your Ticket</h3>
-              <input
-                type="text"
-                value={inputTicketId}
-                onChange={handleTicketIdChange}
-                placeholder="Enter your ticket ID"
-                style={{ marginRight: "10px" }}
-              />
-              <button onClick={handleTicketIdSubmit}>Reopen Ticket</button>
-            </div>
-            <Contact onTicketCreated={handleTicketCreated} />
-          </div>
+          <>
+            {view === "initial" && (
+              <div className={Style.btnWrapper}>
+                <button onClick={() => setView("reopen")} className={Style.btn}>
+                  Go to Chat
+                </button>
+                <button onClick={() => setView("create")} className={Style.btn}>
+                  Create Ticket
+                </button>
+              </div>
+            )}
+
+            {view === "reopen" && (
+              <div>
+                <h3>Reopen Your Ticket</h3>
+                <input
+                  type="text"
+                  value={inputTicketId}
+                  onChange={handleTicketIdChange}
+                  placeholder="Enter your ticket ID"
+                  style={{ marginRight: "10px" }}
+                />
+                <button onClick={handleTicketIdSubmit}>Reopen Ticket</button>
+                <div>
+                  <button
+                    onClick={() => setView("initial")}
+                    className={Style.btn}
+                  >
+                    Back
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {view === "create" && (
+              <div>
+                <Contact onTicketCreated={handleTicketCreated} />
+                <button
+                  onClick={() => setView("initial")}
+                  className={Style.btn}
+                >
+                  Back
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

@@ -1,21 +1,11 @@
 import { useState, useCallback } from "react";
+import { Message } from "../types/message";
+import { Ticket } from "../types/ticket";
 
-interface Message {
-  sender: string;
-  message: string;
-  timestamp: string;
-}
-
-interface UseTicketMessagesResult {
-  messages: Message[];
-  customerName: string | null;
-  error: string | null;
-  fetchMessages: () => Promise<void>;
-}
-
-const useTicketMessages = (ticketId: string): UseTicketMessagesResult => {
+const useTicketMessages = (ticketId: string) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [customerName, setCustomerName] = useState<string | null>(null);
+  const [description, setDescription] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const fetchMessages = useCallback(async () => {
@@ -25,9 +15,10 @@ const useTicketMessages = (ticketId: string): UseTicketMessagesResult => {
       );
       if (!response.ok) throw new Error("Failed to fetch messages");
 
-      const ticket = await response.json();
+      const ticket: Ticket = await response.json();
       setMessages(ticket.messages || []);
       setCustomerName(ticket.contactInfo?.name || "User");
+      setDescription(ticket.description || null);
       setError(null);
     } catch (err: any) {
       console.error("Error fetching messages:", err.message);
@@ -35,7 +26,7 @@ const useTicketMessages = (ticketId: string): UseTicketMessagesResult => {
     }
   }, [ticketId]);
 
-  return { messages, customerName, error, fetchMessages };
+  return { messages, customerName, description, error, fetchMessages };
 };
 
 export default useTicketMessages;

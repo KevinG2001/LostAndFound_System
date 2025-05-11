@@ -1,3 +1,4 @@
+import { useState } from "react";
 import useContactForm from "../util/useContactForm";
 import Styles from "../styles/contact.module.scss";
 
@@ -15,10 +16,16 @@ const Contact = ({
     handleSubmit,
   } = useContactForm();
 
+  const [newTicketId, setNewTicketId] = useState<string | null>(null);
+
   const handleSubmitWithCallback = async () => {
     const responseId = await handleSubmit();
     if (responseId) {
-      onTicketCreated(responseId);
+      setNewTicketId(responseId);
+
+      setTimeout(() => {
+        onTicketCreated(responseId);
+      }, 3000);
     }
   };
 
@@ -127,7 +134,14 @@ const Contact = ({
 
       {/* Error or Success Messages */}
       {error && <div className={Styles.error}>{error}</div>}
-      {successMessage && <div className={Styles.success}>{successMessage}</div>}
+
+      {successMessage && newTicketId && (
+        <div className={Styles.success}>
+          {successMessage}
+          <br />
+          <strong>Opening your chat now...</strong>
+        </div>
+      )}
     </div>
   );
 };

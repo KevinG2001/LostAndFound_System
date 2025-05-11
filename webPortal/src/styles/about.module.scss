@@ -1,7 +1,10 @@
+@use "../styles/variables/colours.scss" as *;
+
 .container {
   display: flex;
   flex-direction: column;
-  background-color: #ffe600;
+  background-color: $primary-bg-colour;
+
   width: 100%;
 
   .header {
@@ -10,10 +13,14 @@
     width: 100%;
     padding: 20px 0;
     font-weight: bold;
+    color: white;
     font-size: 32px;
   }
 }
 
+.highlight {
+  color: $primary-colour;
+}
 .wrapper {
   background-color: white;
   width: 100%;
@@ -21,9 +28,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: #f0f0f0;
   .contentWrapper {
     width: 60%;
     padding: 20px 0px;
+
     .subHeader {
       font-weight: 600;
       font-size: 20px;

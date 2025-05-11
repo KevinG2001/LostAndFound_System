@@ -2,15 +2,10 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
 import Styles from "../styles/ticketchat.module.scss";
 import useTicketMessages from "../util/useTicketMessage";
-
-interface Message {
-  sender: string;
-  message: string;
-  timestamp: string;
-}
+import { Message } from "../types/message";
 
 const TicketChat = ({ ticketId }: { ticketId: string }) => {
-  const { messages, customerName, error, fetchMessages } =
+  const { messages, customerName, description, error, fetchMessages } =
     useTicketMessages(ticketId);
 
   const [newMessage, setNewMessage] = useState("");
@@ -51,15 +46,24 @@ const TicketChat = ({ ticketId }: { ticketId: string }) => {
     };
   }, [fetchMessages, ticketId]);
 
-  const allMessages = [...messages, ...localMessages];
-
   const formatTime = (timestamp: string) =>
     new Date(timestamp).toLocaleString();
+
+  const descriptionMessage: Message | null = description
+    ? {
+        sender: customerName || "User",
+        message: description,
+        timestamp: new Date().toISOString(),
+      }
+    : null;
+
+  const allMessages = descriptionMessage
+    ? [descriptionMessage, ...messages, ...localMessages]
+    : [...messages, ...localMessages];
 
   return (
     <div className={Styles.chatContainer}>
       <h3 className={Styles.chatTitle}>Chat</h3>
-
       <div className={Styles.chatBox}>
         {allMessages.map(({ sender, message, timestamp }, idx) => (
           <div
@@ -74,7 +78,6 @@ const TicketChat = ({ ticketId }: { ticketId: string }) => {
           </div>
         ))}
       </div>
-
       <textarea
         rows={3}
         value={newMessage}
@@ -82,12 +85,10 @@ const TicketChat = ({ ticketId }: { ticketId: string }) => {
         placeholder="Type your message here..."
         className={Styles.textInput}
       />
-
       <button onClick={handleSendMessage} className={Styles.sendButton}>
         Send
       </button>
-
-      {error && <p className={Styles.errorMessage}>{error}</p>}
+      {error && <p className={Styles.errorMessage}>{error}</p>}{" "}
     </div>
   );
 };
