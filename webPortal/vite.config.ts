@@ -5,6 +5,7 @@ import path from "path";
 
 export default defineConfig({
   plugins: [react(), svgr()],
+  base: "/webPortal/",
   build: {
     outDir: path.resolve(__dirname, "../backend/dist"),
   },
