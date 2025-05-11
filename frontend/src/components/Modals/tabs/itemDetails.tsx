@@ -79,10 +79,13 @@ const ItemDetailsTab = ({ data }: { data: any }) => {
     setUploading(true);
 
     try {
-      const response = await fetch("http://localhost:4000/file/upload", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/file/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (!response.ok) throw new Error("Failed to upload image");
 
