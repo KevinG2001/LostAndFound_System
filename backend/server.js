@@ -5,7 +5,10 @@ const http = require("http");
 const errorHandler = require("./middleware/errorHandler");
 const corsOptions = require("./middleware/corsOptions");
 const io = require("./socket/chat");
-require("dotenv").config();
+require("dotenv").config({
+  path:
+    process.env.NODE_ENV === "production" ? ".env.production" : ".env.local",
+});
 const path = require("path");
 
 const app = express();
