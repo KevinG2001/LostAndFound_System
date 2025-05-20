@@ -1,8 +1,15 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
-import Styles from "../styles/ticketchat.module.scss";
 import useTicketMessages from "../util/useTicketMessage";
 import { Message } from "../types/message";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Paper,
+  Divider,
+} from "@mui/material";
 
 const TicketChat = ({ ticketId }: { ticketId: string }) => {
   const { messages, customerName, description, error, fetchMessages } =
@@ -62,34 +69,92 @@ const TicketChat = ({ ticketId }: { ticketId: string }) => {
     : [...messages, ...localMessages];
 
   return (
-    <div className={Styles.chatContainer}>
-      <h3 className={Styles.chatTitle}>Chat</h3>
-      <div className={Styles.chatBox}>
-        {allMessages.map(({ sender, message, timestamp }, idx) => (
-          <div
-            key={idx}
-            className={`${Styles.chatMessage} ${
-              sender === customerName ? Styles.userMessage : Styles.staffMessage
-            }`}
-          >
-            <strong>{sender}</strong>
-            <p>{message}</p>
-            <small>{formatTime(timestamp)}</small>
-          </div>
-        ))}
-      </div>
-      <textarea
-        rows={3}
+    <Box
+      sx={{
+        maxWidth: 700,
+        mx: "auto",
+        p: 2,
+        display: "flex",
+        flexDirection: "column",
+        height: "80vh",
+        border: "1px solid",
+        borderColor: "divider",
+        borderRadius: 2,
+        backgroundColor: "background.paper",
+      }}
+    >
+      <Typography variant="h5" mb={2} align="center">
+        Chat
+      </Typography>
+
+      <Box
+        sx={{
+          flexGrow: 1,
+          overflowY: "auto",
+          mb: 2,
+          px: 1,
+          display: "flex",
+          flexDirection: "column",
+          gap: 1.5,
+        }}
+      >
+        {allMessages.map(({ sender, message, timestamp }, idx) => {
+          const isUser = sender === customerName;
+          return (
+            <Paper
+              key={idx}
+              elevation={2}
+              sx={{
+                alignSelf: isUser ? "flex-end" : "flex-start",
+                maxWidth: "75%",
+                p: 1.5,
+                bgcolor: isUser ? "primary.light" : "grey.200",
+              }}
+            >
+              <Typography
+                variant="subtitle2"
+                fontWeight="bold"
+                color={isUser ? "primary.dark" : "text.primary"}
+              >
+                {sender}
+              </Typography>
+              <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
+                {message}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {formatTime(timestamp)}
+              </Typography>
+            </Paper>
+          );
+        })}
+      </Box>
+
+      <Divider sx={{ mb: 2 }} />
+
+      <TextField
+        multiline
+        minRows={3}
+        placeholder="Type your message here..."
         value={newMessage}
         onChange={(e) => setNewMessage(e.target.value)}
-        placeholder="Type your message here..."
-        className={Styles.textInput}
+        fullWidth
+        sx={{ mb: 1 }}
       />
-      <button onClick={handleSendMessage} className={Styles.sendButton}>
+
+      <Button
+        variant="contained"
+        onClick={handleSendMessage}
+        disabled={!newMessage.trim()}
+      >
         Send
-      </button>
-      {error && <p className={Styles.errorMessage}>{error}</p>}{" "}
-    </div>
+      </Button>
+
+      {error && (
+        <Typography color="error" mt={2} align="center">
+          {error}
+        </Typography>
+      )}
+    </Box>
   );
 };
 
