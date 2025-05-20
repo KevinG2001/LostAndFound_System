@@ -2,6 +2,15 @@ const express = require("express");
 const Ticket = require("../models/Tickets");
 const router = express.Router();
 const { formatItemDates } = require("../util/dateFormatter");
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.USER,
+    pass: process.env.PASS,
+  },
+});
 
 router.get("/list", async (req, res) => {
   try {
@@ -41,10 +50,28 @@ router.post("/submitTicket", async (req, res) => {
     });
 
     await newTicket.save();
+
+    const mailOptions = {
+      from: process.env.USER,
+      to: contactInfo.email,
+      subject: `Your Ticket ${newTicket.ticketId} has been created`,
+      text: `Hello ${contactInfo.name},
+
+Thank you for submitting your lost item report. Your ticket ID is ${newTicket.ticketId}.
+
+You can reopen the chat with that ID!
+
+Best regards,
+Lost & Found Team
+`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
     res.status(201).json({ ticketId: newTicket.ticketId });
   } catch (error) {
-    console.error("Error submitting ticket:", error);
-    res.status(500).json({ error: "Failed to create ticket" });
+    console.error("Error submitting ticket or sending email:", error);
+    res.status(500).json({ error: "Failed to create ticket and send email" });
   }
 });
 
