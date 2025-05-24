@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import Styles from "../../../styles/modals/moreDetails.module.scss";
+import {
+  Box,
+  Typography,
+  Collapse,
+  Grid,
+  Divider,
+  Paper,
+  Stack,
+} from "@mui/material";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 function HistoryDetails({ data }: { data: any }) {
   const history = data?.historyDetails || [];
@@ -13,85 +23,160 @@ function HistoryDetails({ data }: { data: any }) {
     setExpandedIndex((prev) => (prev === index ? null : index));
   };
 
+  if (sortedHistory.length === 0) {
+    return (
+      <Box sx={{ p: 2 }}>
+        <Typography>No history available.</Typography>
+      </Box>
+    );
+  }
+
   return (
-    <div className={Styles.detailsContainer}>
-      {sortedHistory.length === 0 ? (
-        <p>No history available.</p>
-      ) : (
-        <div className={Styles.historyTable}>
-          <div className={`${Styles.row} ${Styles.headerRow}`}>
-            <div className={Styles.cell}>Date</div>
-            <div className={Styles.cell}>Action</div>
-            <div className={Styles.cell}>By</div>
-          </div>
+    <Box sx={{ p: 2 }}>
+      {/* Header Row */}
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          fontWeight: "bold",
+          borderBottom: "1px solid",
+          borderColor: "divider",
+          pb: 1,
+          mb: 1,
+        }}
+      >
+        <Grid item xs={4}>
+          Date
+        </Grid>
+        <Grid item xs={4}>
+          Action
+        </Grid>
+        <Grid item xs={3}>
+          By
+        </Grid>
+        <Grid item xs={1} />
+      </Grid>
 
-          {sortedHistory.map((entry: any, index: number) => (
-            <React.Fragment key={index}>
-              <div className={Styles.row} onClick={() => toggleExpand(index)}>
-                <div className={Styles.cell}>
+      {sortedHistory.map((entry: any, index: number) => {
+        const isExpanded = expandedIndex === index;
+
+        return (
+          <Paper
+            key={index}
+            variant="outlined"
+            sx={{ mb: 1, cursor: "pointer" }}
+            onClick={() => toggleExpand(index)}
+          >
+            <Grid container spacing={2} alignItems="center" sx={{ p: 1 }}>
+              <Grid item xs={4}>
+                <Typography variant="body2">
                   {new Date(entry.date).toLocaleString()}
-                </div>
-                <div className={Styles.cell}>{entry.action}</div>
-                <div className={Styles.cell}>{entry.by || "System"}</div>
-              </div>
+                </Typography>
+              </Grid>
+              <Grid item xs={4}>
+                <Typography variant="body2">{entry.action}</Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography variant="body2">{entry.by || "System"}</Typography>
+              </Grid>
+              <Grid item xs={1} sx={{ textAlign: "right" }}>
+                {isExpanded ? (
+                  <KeyboardArrowUpIcon />
+                ) : (
+                  <KeyboardArrowDownIcon />
+                )}
+              </Grid>
+            </Grid>
 
-              {expandedIndex === index && entry.changes && (
-                <div className={`${Styles.row} ${Styles.expandedRow}`}>
-                  <div className={Styles.cell}>
-                    <div className={Styles.changesHeader}>From:</div>
-                    {entry.action === "Created"
-                      ? Object.entries(entry.changes).map(
-                          ([field, value]: [string, any], i) => (
-                            <div key={i} className={Styles.changeLine}>
-                              <div className={Styles.fieldName}>{field}:</div>
-                              <div className={Styles.valueText}>
-                                {value.to?.toString() || "N/A"}
-                              </div>
-                            </div>
-                          )
+            <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+              <Divider />
+              <Grid container spacing={2} sx={{ p: 2 }}>
+                <Grid item xs={6}>
+                  <Typography variant="subtitle2" gutterBottom>
+                    From:
+                  </Typography>
+                  {entry.action === "Created"
+                    ? Object.entries(entry.changes).map(
+                        ([field, value]: [string, any], i) => (
+                          <Stack
+                            key={i}
+                            direction="row"
+                            justifyContent="space-between"
+                            sx={{ mb: 0.5 }}
+                          >
+                            <Typography color="text.secondary">
+                              {field}:
+                            </Typography>
+                            <Typography>
+                              {value.to?.toString() || "N/A"}
+                            </Typography>
+                          </Stack>
                         )
-                      : Object.entries(entry.changes).map(
-                          ([field, value]: [string, any], i) => (
-                            <div key={i} className={Styles.changeLine}>
-                              <div className={Styles.fieldName}>{field}:</div>
-                              <div className={Styles.valueText}>
-                                {value.from?.toString() || "N/A"}
-                              </div>
-                            </div>
-                          )
-                        )}
-                  </div>
-                  <div className={Styles.cell}>
-                    <div className={Styles.changesHeader}>To:</div>
-                    {entry.action === "Created"
-                      ? Object.entries(entry.changes).map(
-                          ([field, value]: [string, any], i) => (
-                            <div key={i} className={Styles.changeLine}>
-                              <div className={Styles.fieldName}>{field}:</div>
-                              <div className={Styles.valueText}>
-                                {value.to?.toString() || "N/A"}
-                              </div>
-                            </div>
-                          )
+                      )
+                    : Object.entries(entry.changes).map(
+                        ([field, value]: [string, any], i) => (
+                          <Stack
+                            key={i}
+                            direction="row"
+                            justifyContent="space-between"
+                            sx={{ mb: 0.5 }}
+                          >
+                            <Typography color="text.secondary">
+                              {field}:
+                            </Typography>
+                            <Typography>
+                              {value.from?.toString() || "N/A"}
+                            </Typography>
+                          </Stack>
                         )
-                      : Object.entries(entry.changes).map(
-                          ([field, value]: [string, any], i) => (
-                            <div key={i} className={Styles.changeLine}>
-                              <div className={Styles.fieldName}>{field}:</div>
-                              <div className={Styles.valueText}>
-                                {value.to?.toString() || "N/A"}
-                              </div>
-                            </div>
-                          )
-                        )}
-                  </div>
-                </div>
-              )}
-            </React.Fragment>
-          ))}
-        </div>
-      )}
-    </div>
+                      )}
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="subtitle2" gutterBottom>
+                    To:
+                  </Typography>
+                  {entry.action === "Created"
+                    ? Object.entries(entry.changes).map(
+                        ([field, value]: [string, any], i) => (
+                          <Stack
+                            key={i}
+                            direction="row"
+                            justifyContent="space-between"
+                            sx={{ mb: 0.5 }}
+                          >
+                            <Typography color="text.secondary">
+                              {field}:
+                            </Typography>
+                            <Typography>
+                              {value.to?.toString() || "N/A"}
+                            </Typography>
+                          </Stack>
+                        )
+                      )
+                    : Object.entries(entry.changes).map(
+                        ([field, value]: [string, any], i) => (
+                          <Stack
+                            key={i}
+                            direction="row"
+                            justifyContent="space-between"
+                            sx={{ mb: 0.5 }}
+                          >
+                            <Typography color="text.secondary">
+                              {field}:
+                            </Typography>
+                            <Typography>
+                              {value.to?.toString() || "N/A"}
+                            </Typography>
+                          </Stack>
+                        )
+                      )}
+                </Grid>
+              </Grid>
+            </Collapse>
+          </Paper>
+        );
+      })}
+    </Box>
   );
 }
 

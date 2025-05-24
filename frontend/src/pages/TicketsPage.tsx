@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { Box, Container, useTheme, useMediaQuery } from "@mui/material";
 import useList from "../util/useList";
-import Styles from "../styles/pages/itemsPage.module.scss";
 import TableView from "../components/Views/TableView";
 import MoreDetailsModal from "../components/Modals/moreDetailsModal";
 import TotalTickets from "../components/StatBubbles/tickets/TotalTickets";
@@ -9,9 +9,11 @@ import OpenTickets from "../components/StatBubbles/tickets/OpenTickets";
 
 function TicketsPage() {
   const { items: tickets } = useList("tickets", "list");
-
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const theme = useTheme();
+  const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleRowClick = (ticket: any) => {
     setSelectedTicket(ticket);
@@ -32,34 +34,64 @@ function TicketsPage() {
   ];
 
   return (
-    <div className={Styles.itemsContainer}>
-      <div className={Styles.statsContainer}>
-        <div className={Styles.statsWrapper}>
-          <TotalTickets />
-        </div>
-        <div className={Styles.statsWrapper}>
-          <ClosedTickets />
-        </div>
-        <div className={Styles.statsWrapper}>
-          <OpenTickets />
-        </div>
-      </div>
+    <Container
+      maxWidth={false}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+        bgcolor: "grey.100",
+        pb: 2,
+      }}
+    >
+      {/* Stat Bubbles */}
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: isSmDown ? "wrap" : "nowrap",
+          gap: 2,
+          mt: 1,
+          mb: 2,
+        }}
+      >
+        {[TotalTickets, ClosedTickets, OpenTickets].map((Component, i) => (
+          <Box
+            key={i}
+            sx={{
+              flex: "1 1 0",
+              minWidth: 0,
+              bgcolor: "background.paper",
+              borderRadius: 2,
+              boxShadow: 1,
+              p: 2,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: isSmDown ? "100%" : "auto",
+            }}
+          >
+            <Component />
+          </Box>
+        ))}
+      </Box>
 
-      <div className={Styles.itemTable}>
+      {/* Table */}
+      <Box sx={{ flexGrow: 1, mb: 4 }}>
         <TableView
           columns={columns}
           data={tickets.length > 0 ? tickets : []}
           onRowClick={handleRowClick}
         />
-      </div>
+      </Box>
 
+      {/* Modal */}
       <MoreDetailsModal
         isOpen={isModalOpen}
         onClose={closeModal}
         data={selectedTicket}
         type="ticket"
       />
-    </div>
+    </Container>
   );
 }
 

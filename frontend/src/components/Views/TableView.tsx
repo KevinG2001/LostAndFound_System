@@ -1,128 +1,132 @@
 import { useState } from "react";
-import Style from "../../styles/views/tableView.module.scss";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TablePagination,
+  Chip,
+  useTheme,
+} from "@mui/material";
 
 interface TableViewProps {
   columns: { header: string; accessor: string }[];
-  data: any[];
+  data: Record<string, any>[];
   onRowClick?: (item: any) => void;
 }
 
 const TableView = ({ columns, data, onRowClick }: TableViewProps) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 10;
+  const theme = useTheme();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const totalPages = Math.ceil(data.length / rowsPerPage);
+  const handleChangePage = (_: unknown, newPage: number) => setPage(newPage);
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   const paginatedData = data.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
   );
 
-  // Empty row for styling
-  const emptyRows = Array.from(
-    { length: rowsPerPage - paginatedData.length },
-    () => ({})
-  );
-
-  const goToPage = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
+  const statusColorMap: Record<string, string> = {
+    Expired: theme.palette.error.main,
+    "To Collect": theme.palette.info.main,
+    Claimed: theme.palette.success.main,
+    Unclaimed: theme.palette.grey[500],
+    Open: theme.palette.error.main,
+    Closed: theme.palette.success.main,
   };
 
-  const statusMapping: Record<string, string> = {
-    Claimed: Style.claimedStatus,
-    Unclaimed: Style.unclaimedStatus,
-    Expired: Style.expiredStatus,
-    "To Collect": Style.tocollectStatus,
-    Open: Style.openStatus,
-    Closed: Style.closedStatus,
-  };
-
-  const isValidStatus = (
-    status: string
-  ): status is keyof typeof statusMapping => {
-    return status in statusMapping;
+  const renderCell = (col: string, value: any) => {
+    if (col === "status" && value in statusColorMap) {
+      const bg = statusColorMap[value];
+      return (
+        <Chip
+          label={value}
+          size="small"
+          sx={{
+            bgcolor: bg,
+            color: theme.palette.getContrastText(bg),
+          }}
+        />
+      );
+    }
+    return value?.toString() ?? "";
   };
 
   return (
-    <div className={Style.container}>
-      <table className={Style.tableContainer}>
-        <thead className={Style.tableHeader}>
-          <tr>
-            {columns.map((col, index) => (
-              <th key={index}>{col.header}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className={Style.tableBody}>
-          {paginatedData.map((row, rowIndex) => (
-            <tr
-              key={rowIndex}
-              className={Style.tableRow}
-              onClick={() => onRowClick && onRowClick(row)}
-            >
-              {columns.map((col, colIndex) => {
-                const cellData = row[col.accessor] || "";
-                const statusClass =
-                  col.accessor === "status" && isValidStatus(cellData)
-                    ? statusMapping[cellData] || ""
-                    : "";
-
-                return (
-                  <td key={colIndex} className={Style.tableCell}>
-                    {col.accessor === "status" ? (
-                      <span className={`${Style.statusBubble} ${statusClass}`}>
-                        {cellData}
-                      </span>
-                    ) : (
-                      cellData
-                    )}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-
-          {/* Filling empty space with empty rows to keep clean look */}
-          {emptyRows.map((_, index) => (
-            <tr key={`empty-${index}`} className={Style.tableRow}>
-              {columns.map((_, colIndex) => (
-                <td key={colIndex}>&nbsp;</td>
+    <Paper sx={{ width: "100%", mb: 4 }}>
+      <TableContainer>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              {columns.map((col) => (
+                <TableCell
+                  key={col.accessor}
+                  sx={{ fontWeight: "bold", fontSize: "0.85rem", py: 1 }}
+                >
+                  {col.header}
+                </TableCell>
               ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {paginatedData.map((row, rowIndex) => (
+              <TableRow
+                hover
+                key={rowIndex}
+                onClick={() => onRowClick?.(row)}
+                sx={{
+                  cursor: onRowClick ? "pointer" : "default",
+                  fontSize: "0.85rem",
+                }}
+              >
+                {columns.map((col) => (
+                  <TableCell
+                    key={col.accessor}
+                    sx={{ py: 0.5, fontSize: "0.85rem" }}
+                  >
+                    {renderCell(col.accessor, row[col.accessor])}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
 
-      <div className={Style.pageBtnWrapper}>
-        <button
-          className={Style.pageBtn}
-          disabled={currentPage === 1}
-          onClick={() => goToPage(currentPage - 1)}
-        >
-          Previous
-        </button>
-
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index}
-            className={`${Style.pageBtn} ${
-              currentPage === index + 1 ? Style.activePage : ""
-            }`}
-            onClick={() => goToPage(index + 1)}
-          >
-            {index + 1}
-          </button>
-        ))}
-
-        <button
-          className={Style.pageBtn}
-          disabled={currentPage === totalPages}
-          onClick={() => goToPage(currentPage + 1)}
-        >
-          Next
-        </button>
-      </div>
-    </div>
+            {/* Fill empty rows */}
+            {Array.from({ length: rowsPerPage - paginatedData.length }).map(
+              (_, idx) => (
+                <TableRow key={`empty-${idx}`}>
+                  {columns.map((col) => (
+                    <TableCell
+                      key={col.accessor}
+                      sx={{ py: 0.5, fontSize: "0.85rem" }}
+                    />
+                  ))}
+                </TableRow>
+              )
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        component="div"
+        count={data.length}
+        page={page}
+        onPageChange={handleChangePage}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        rowsPerPageOptions={[10]}
+      />
+    </Paper>
   );
 };
 

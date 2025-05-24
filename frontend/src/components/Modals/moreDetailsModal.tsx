@@ -1,5 +1,15 @@
-import { useState, useEffect } from "react";
-import Styles from "../../styles/modals/moreDetails.module.scss";
+import React, { useState, useEffect } from "react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Tabs,
+  Tab,
+  IconButton,
+  Box,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import ItemDetailsTab from "./tabs/itemDetails";
 import TicketDetailsTab from "./tabs/ticketDetails";
 import CollectionDetailsTab from "./tabs/collectionDetails";
@@ -21,12 +31,14 @@ const MoreDetailsModal = ({
   const [activeTab, setActiveTab] = useState("details");
 
   useEffect(() => {
-    if (type === "item" || type === "ticket") {
-      setActiveTab("details");
-    }
+    setActiveTab("details");
   }, [type]);
 
-  if (!isOpen || !data) return null;
+  const handleTabChange = (_: React.SyntheticEvent, newValue: string) => {
+    setActiveTab(newValue);
+  };
+
+  if (!data) return null;
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -46,59 +58,42 @@ const MoreDetailsModal = ({
   };
 
   return (
-    <div className={Styles.modalOverlay} onClick={onClose}>
-      <div className={Styles.modalContent} onClick={(e) => e.stopPropagation()}>
-        <button className={Styles.closeButton} onClick={onClose}>
-          X
-        </button>
+    <Dialog open={isOpen} onClose={onClose} fullWidth maxWidth="md">
+      <DialogTitle>
+        {type === "item" ? `Item ID: ${data.itemID}` : "Details"}
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{ position: "absolute", right: 8, top: 8 }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
 
+      <DialogContent dividers>
         {data.imageUrl && (
-          <div className={Styles.imageWrapper}>
-            <img src={data.imageUrl} alt="Item" className={Styles.itemImage} />
-          </div>
+          <Box sx={{ mb: 2, textAlign: "center" }}>
+            <img
+              src={data.imageUrl}
+              alt="Item"
+              style={{ maxHeight: 200, maxWidth: "100%" }}
+            />
+          </Box>
         )}
 
         {type === "item" && (
-          <>
-            <div className={Styles.detailsTitle}>
-              <div className={Styles.articleWrapper}>
-                <div className={Styles.itemIdLabel}>Item ID:</div>
-                <div className={Styles.itemIdValue}>{data.itemID}</div>
-              </div>
-            </div>
-
-            <div className={Styles.tabHeader}>
-              <button
-                className={`${Styles.tabButton} ${
-                  activeTab === "details" ? Styles.activeTab : ""
-                }`}
-                onClick={() => setActiveTab("details")}
-              >
-                Details
-              </button>
-              <button
-                className={`${Styles.tabButton} ${
-                  activeTab === "collection" ? Styles.activeTab : ""
-                }`}
-                onClick={() => setActiveTab("collection")}
-              >
-                Collection Details
-              </button>
-              <button
-                className={`${Styles.tabButton} ${
-                  activeTab === "history" ? Styles.activeTab : ""
-                }`}
-                onClick={() => setActiveTab("history")}
-              >
-                History
-              </button>
-            </div>
-          </>
+          <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+            <Tabs value={activeTab} onChange={handleTabChange}>
+              <Tab label="Details" value="details" />
+              <Tab label="Collection Details" value="collection" />
+              <Tab label="History" value="history" />
+            </Tabs>
+          </Box>
         )}
 
-        <div className={Styles.tabContent}>{renderTabContent()}</div>
-      </div>
-    </div>
+        <Box>{renderTabContent()}</Box>
+      </DialogContent>
+    </Dialog>
   );
 };
 

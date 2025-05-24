@@ -1,7 +1,8 @@
 import { useState } from "react";
-import DatePicker from "react-datepicker";
 import { format } from "date-fns";
-import Style from "../styles/searchbar.module.scss";
+import { Box, TextField, Button, Paper } from "@mui/material";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 function Searchbar({ searchDB }: any) {
   const [searchFields, setSearchFields] = useState({
@@ -11,8 +12,8 @@ function Searchbar({ searchDB }: any) {
     type: "",
     route: "",
     garage: "",
-    startDate: null,
-    endDate: null,
+    startDate: null as Date | null,
+    endDate: null as Date | null,
     status: "",
   });
 
@@ -37,108 +38,166 @@ function Searchbar({ searchDB }: any) {
     searchDB(formattedFields);
   };
 
-  const handleKeyDown = (event: any) => {
+  const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === "Enter") {
       handleSearch();
     }
   };
 
   return (
-    <div className={Style.searchbarContainer}>
-      <div className={Style.searchbarWrapper}>
-        <div className={Style.inputCol}>
-          <input
-            type="text"
-            placeholder="Item ID"
-            value={searchFields.itemID}
-            onChange={(e) => handleChange("itemID", e.target.value)}
-            onKeyDown={handleKeyDown}
-            className={Style.inputBar}
-          />
-          <input
-            type="text"
-            placeholder="Description"
-            value={searchFields.description}
-            onChange={(e) => handleChange("description", e.target.value)}
-            onKeyDown={handleKeyDown}
-            className={Style.inputBar}
-          />
-        </div>
-
-        <div className={Style.inputCol}>
-          <input
-            type="text"
-            placeholder="Category"
-            value={searchFields.category}
-            onChange={(e) => handleChange("category", e.target.value)}
-            onKeyDown={handleKeyDown}
-            className={Style.inputBar}
-          />
-          <input
-            type="text"
-            placeholder="Type"
-            value={searchFields.type}
-            onChange={(e) => handleChange("type", e.target.value)}
-            onKeyDown={handleKeyDown}
-            className={Style.inputBar}
-          />
-        </div>
-
-        <div className={Style.inputCol}>
-          <input
-            type="text"
-            placeholder="Route"
-            value={searchFields.route}
-            onChange={(e) => handleChange("route", e.target.value)}
-            onKeyDown={handleKeyDown}
-            className={Style.inputBar}
-          />
-          <input
-            type="text"
-            placeholder="Garage"
-            value={searchFields.garage}
-            onChange={(e) => handleChange("garage", e.target.value)}
-            onKeyDown={handleKeyDown}
-            className={Style.inputBar}
-          />
-        </div>
-
-        <div className={Style.inputCol}>
-          <DatePicker
-            selected={searchFields.startDate}
-            onChange={(date) => handleChange("startDate", date)}
-            placeholderText="From"
-            className={`${Style.inputBar} ${Style.dateBtn}`}
-            calendarClassName="custom-datepicker-calendar"
-            dateFormat="dd-MM-yyyy"
-          />
-          <input
-            type="text"
-            placeholder="Status"
-            value={searchFields.status}
-            onChange={(e) => handleChange("status", e.target.value)}
-            onKeyDown={handleKeyDown}
-            className={Style.inputBar}
-          />
-        </div>
-
-        <div className={Style.inputCol}>
-          <DatePicker
-            selected={searchFields.endDate}
-            onChange={(date) => handleChange("endDate", date)}
-            placeholderText="To"
-            className={`${Style.inputBar} ${Style.dateBtn}`}
-            dateFormat="dd-MM-yyyy"
-          />
-          <button
-            onClick={handleSearch}
-            className={`${Style.inputBar} ${Style.btn}`}
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <Paper sx={{ p: 1 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 2,
+            mb: 2,
+          }}
+        >
+          {/* First Column */}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              flex: 1,
+              minWidth: 150,
+            }}
           >
-            Search
-          </button>
-        </div>
-      </div>
-    </div>
+            <TextField
+              label="Item ID"
+              value={searchFields.itemID}
+              onChange={(e) => handleChange("itemID", e.target.value)}
+              onKeyDown={handleKeyDown}
+              size="small"
+              fullWidth
+            />
+            <TextField
+              label="Description"
+              value={searchFields.description}
+              onChange={(e) => handleChange("description", e.target.value)}
+              onKeyDown={handleKeyDown}
+              size="small"
+              fullWidth
+            />
+          </Box>
+
+          {/* Second Column */}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              flex: 1,
+              minWidth: 150,
+            }}
+          >
+            <TextField
+              label="Category"
+              value={searchFields.category}
+              onChange={(e) => handleChange("category", e.target.value)}
+              onKeyDown={handleKeyDown}
+              size="small"
+              fullWidth
+            />
+            <TextField
+              label="Type"
+              value={searchFields.type}
+              onChange={(e) => handleChange("type", e.target.value)}
+              onKeyDown={handleKeyDown}
+              size="small"
+              fullWidth
+            />
+          </Box>
+
+          {/* Third Column */}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              flex: 1,
+              minWidth: 150,
+            }}
+          >
+            <TextField
+              label="Route"
+              value={searchFields.route}
+              onChange={(e) => handleChange("route", e.target.value)}
+              onKeyDown={handleKeyDown}
+              size="small"
+              fullWidth
+            />
+            <TextField
+              label="Garage"
+              value={searchFields.garage}
+              onChange={(e) => handleChange("garage", e.target.value)}
+              onKeyDown={handleKeyDown}
+              size="small"
+              fullWidth
+            />
+          </Box>
+
+          {/* Fourth Column */}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              flex: 1,
+              minWidth: 150,
+            }}
+          >
+            <DatePicker
+              label="From"
+              value={searchFields.startDate}
+              onChange={(date) => handleChange("startDate", date)}
+              format="dd-MM-yyyy"
+              slotProps={{
+                textField: { size: "small", fullWidth: true },
+              }}
+            />
+            <TextField
+              label="Status"
+              value={searchFields.status}
+              onChange={(e) => handleChange("status", e.target.value)}
+              onKeyDown={handleKeyDown}
+              size="small"
+              fullWidth
+            />
+          </Box>
+
+          {/* Fifth Column */}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              flex: 1,
+              minWidth: 150,
+            }}
+          >
+            <DatePicker
+              label="To"
+              value={searchFields.endDate}
+              onChange={(date) => handleChange("endDate", date)}
+              format="dd-MM-yyyy"
+              slotProps={{
+                textField: { size: "small", fullWidth: true },
+              }}
+            />
+            <Button
+              variant="contained"
+              onClick={handleSearch}
+              sx={{ height: 40 }}
+            >
+              Search
+            </Button>
+          </Box>
+        </Box>
+      </Paper>
+    </LocalizationProvider>
   );
 }
 

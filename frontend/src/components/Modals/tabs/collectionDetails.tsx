@@ -1,6 +1,13 @@
 // src/components/CollectionDetailsTab.tsx
 import React, { useState, useEffect } from "react";
-import Styles from "../../../styles/modals/moreDetails.module.scss";
+import {
+  TextField,
+  Button,
+  Typography,
+  Box,
+  Divider,
+  Stack,
+} from "@mui/material";
 import useEdit from "../../../util/useEdit";
 
 function CollectionDetailsTab({ data }: { data: any }) {
@@ -42,95 +49,102 @@ function CollectionDetailsTab({ data }: { data: any }) {
   };
 
   return (
-    <div className={Styles.detailsContainer}>
-      <div className={Styles.detailsRow}>
-        <div className={Styles.flexItem}>
-          <div className={Styles.detailLabel}>Firstname:</div>
+    <Box
+      sx={{
+        maxWidth: 600,
+        margin: "0 auto",
+        px: 2,
+        mt: 3,
+      }}
+    >
+      <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 3 }}>
+        <Box>
+          <Typography variant="subtitle2">Firstname:</Typography>
           {isEditing ? (
-            <input
-              type="text"
+            <TextField
+              fullWidth
               name="firstName"
               value={editedData.firstName}
               onChange={handleInputChange}
-              className={Styles.inputField}
+              variant="outlined"
+              size="small"
             />
           ) : (
-            <div className={Styles.detailValue}>{editedData.firstName}</div>
+            <Typography>{editedData.firstName}</Typography>
           )}
-        </div>
+        </Box>
 
-        <div className={Styles.flexItem}>
-          <div className={Styles.detailLabel}>Surname:</div>
+        <Box>
+          <Typography variant="subtitle2">Surname:</Typography>
           {isEditing ? (
-            <input
-              type="text"
+            <TextField
+              fullWidth
               name="surname"
               value={editedData.surname}
               onChange={handleInputChange}
-              className={Styles.inputField}
+              variant="outlined"
+              size="small"
             />
           ) : (
-            <div className={Styles.detailValue}>{editedData.surname}</div>
+            <Typography>{editedData.surname}</Typography>
           )}
-        </div>
-      </div>
+        </Box>
 
-      <div className={Styles.detailsRow}>
-        <div className={Styles.flexItem}>
-          <div className={Styles.detailLabel}>Email:</div>
+        <Box>
+          <Typography variant="subtitle2">Email:</Typography>
           {isEditing ? (
-            <input
-              type="text"
+            <TextField
+              fullWidth
               name="email"
               value={editedData.email}
               onChange={handleInputChange}
-              className={Styles.inputField}
+              variant="outlined"
+              size="small"
             />
           ) : (
-            <div className={Styles.detailValue}>{editedData.email}</div>
+            <Typography>{editedData.email}</Typography>
           )}
-        </div>
+        </Box>
 
-        <div className={Styles.flexItem}>
-          <div className={Styles.detailLabel}>Phone Number:</div>
+        <Box>
+          <Typography variant="subtitle2">Phone Number:</Typography>
           {isEditing ? (
-            <input
-              type="text"
+            <TextField
+              fullWidth
               name="phone"
               value={editedData.phone}
               onChange={handleInputChange}
-              className={Styles.inputField}
+              variant="outlined"
+              size="small"
             />
           ) : (
-            <div className={Styles.detailValue}>{editedData.phone}</div>
+            <Typography>{editedData.phone}</Typography>
           )}
-        </div>
-      </div>
+        </Box>
+      </Box>
 
-      <div className={Styles.editActions}>
+      <Box sx={{ mt: 3 }}>
         {isEditing ? (
-          <>
-            <button
-              className={Styles.saveBtn}
+          <Stack direction="row" spacing={2}>
+            <Button
+              variant="contained"
+              color="primary"
               onClick={handleSave}
               disabled={loading}
             >
               Save
-            </button>
-            <button
-              className={Styles.cancelBtn}
-              onClick={() => setIsEditing(false)}
-            >
+            </Button>
+            <Button variant="outlined" onClick={() => setIsEditing(false)}>
               Cancel
-            </button>
-          </>
+            </Button>
+          </Stack>
         ) : (
-          <button className={Styles.editBtn} onClick={() => setIsEditing(true)}>
+          <Button variant="outlined" onClick={() => setIsEditing(true)}>
             Edit
-          </button>
+          </Button>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
 

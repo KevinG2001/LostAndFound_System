@@ -1,5 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
-import Styles from "../../../styles/modals/moreDetails.module.scss";
+import {
+  Box,
+  TextField,
+  Select,
+  MenuItem,
+  Button,
+  InputLabel,
+  FormControl,
+  Typography,
+  Stack,
+} from "@mui/material";
+import { useSnackbar } from "notistack"; // ✅ Import snackbar
 import useEdit from "../../../util/useEdit";
 
 const ItemDetailsTab = ({ data }: { data: any }) => {
@@ -22,6 +33,7 @@ const ItemDetailsTab = ({ data }: { data: any }) => {
   const imageUrlRef = useRef<string | null>(null);
 
   const { loading, editItem } = useEdit(data?.itemID, "item");
+  const { enqueueSnackbar } = useSnackbar(); // ✅ Hook
 
   useEffect(() => {
     if (data) {
@@ -37,232 +49,175 @@ const ItemDetailsTab = ({ data }: { data: any }) => {
         status: data.status || "",
         dateClaimed: data.dateClaimed || "",
       });
-
       imageUrlRef.current = data.imageUrl || null;
     }
   }, [data]);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>
   ) => {
     const { name, value } = e.target;
-    setEditedData((prev) => ({ ...prev, [name]: value }));
+    setEditedData((prev) => ({ ...prev, [name as string]: value }));
   };
 
   const handleSave = async () => {
+    const updatedData = { ...editedData };
+    if (data.status !== "Claimed" && editedData.status === "Claimed") {
+      updatedData.dateClaimed = new Date().toISOString();
+    }
+
     try {
-      const updatedData = { ...editedData };
-
-      if (data.status !== "Claimed" && editedData.status === "Claimed") {
-        updatedData.dateClaimed = new Date().toISOString();
-      }
-
       await editItem(updatedData);
+      enqueueSnackbar("Item updated successfully", { variant: "success" }); // ✅ Success
       setIsEditing(false);
     } catch (err) {
-      console.error("Error saving item:", err);
+      enqueueSnackbar("Failed to update item", { variant: "error" }); // ❌ Error
+      console.error(err);
     }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0] || null;
-    setFile(selectedFile);
+    setFile(e.target.files?.[0] || null);
   };
 
   const handleUpload = async () => {
     if (!file) return;
-
     const formData = new FormData();
     formData.append("image", file);
     formData.append("itemID", editedData.itemID);
-
     setUploading(true);
-
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/file/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to upload image");
-
-      const result = await response.json();
-
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/file/upload`, {
+        method: "POST",
+        body: formData,
+      });
+      const result = await res.json();
       imageUrlRef.current = result.imageUrl;
-    } catch (err) {
-      console.error("Upload error:", err);
+      enqueueSnackbar("Image uploaded successfully", { variant: "success" }); // ✅ Optional
+    } catch (e) {
+      enqueueSnackbar("Image upload failed", { variant: "error" }); // ❌ Optional
+      console.error(e);
     } finally {
       setUploading(false);
     }
   };
 
   return (
-    <div className={Styles.detailsContainer}>
-      <div className={Styles.detailsRow}>
-        <div className={Styles.detailLabel}>Article:</div>
-        {isEditing ? (
-          <input
-            type="text"
-            name="article"
-            value={editedData.article}
+    <Box component="form" noValidate autoComplete="off">
+      <Stack spacing={2}>
+        <TextField
+          label="Article"
+          name="article"
+          value={editedData.article}
+          onChange={handleInputChange}
+          fullWidth
+          disabled={!isEditing}
+        />
+
+        <TextField
+          label="Description"
+          name="description"
+          value={editedData.description}
+          onChange={handleInputChange}
+          fullWidth
+          disabled={!isEditing}
+        />
+
+        <Stack direction="row" spacing={2}>
+          <TextField
+            label="Category"
+            name="category"
+            value={editedData.category}
             onChange={handleInputChange}
-            className={Styles.inputField}
+            fullWidth
+            disabled={!isEditing}
           />
-        ) : (
-          <div className={Styles.detailValue}>{editedData.article}</div>
-        )}
-      </div>
-      <div className={Styles.detailsRow}>
-        <div className={Styles.detailLabel}>Description:</div>
-        {isEditing ? (
-          <input
-            type="text"
-            name="description"
-            value={editedData.description}
+          <TextField
+            label="Type"
+            name="type"
+            value={editedData.type}
             onChange={handleInputChange}
-            className={Styles.inputField}
+            fullWidth
+            disabled={!isEditing}
           />
-        ) : (
-          <div className={Styles.detailValue}>{editedData.description}</div>
-        )}
-      </div>
+        </Stack>
 
-      <div className={Styles.detailsRow}>
-        <div className={Styles.flexItem}>
-          <div className={Styles.detailLabel}>Category:</div>
-          {isEditing ? (
-            <input
-              type="text"
-              name="category"
-              value={editedData.category}
-              onChange={handleInputChange}
-              className={Styles.inputField}
-            />
-          ) : (
-            <div className={Styles.detailValue}>{editedData.category}</div>
-          )}
-        </div>
-        <div className={Styles.flexItem}>
-          <div className={Styles.detailLabel}>Type:</div>
-          {isEditing ? (
-            <input
-              type="text"
-              name="type"
-              value={editedData.type}
-              onChange={handleInputChange}
-              className={Styles.inputField}
-            />
-          ) : (
-            <div className={Styles.detailValue}>{editedData.type}</div>
-          )}
-        </div>
-      </div>
+        <Stack direction="row" spacing={2}>
+          <TextField
+            label="Route"
+            name="route"
+            value={editedData.route}
+            onChange={handleInputChange}
+            fullWidth
+            disabled={!isEditing}
+          />
+          <TextField
+            label="Garage"
+            name="garage"
+            value={editedData.garage}
+            onChange={handleInputChange}
+            fullWidth
+            disabled={!isEditing}
+          />
+        </Stack>
 
-      <div className={Styles.detailsRow}>
-        <div className={Styles.flexItem}>
-          <div className={Styles.detailLabel}>Route:</div>
-          {isEditing ? (
-            <input
-              type="text"
-              name="route"
-              value={editedData.route}
-              onChange={handleInputChange}
-              className={Styles.inputField}
-            />
-          ) : (
-            <div className={Styles.detailValue}>{editedData.route}</div>
-          )}
-        </div>
-        <div className={Styles.flexItem}>
-          <div className={Styles.detailLabel}>Garage:</div>
-          {isEditing ? (
-            <input
-              type="text"
-              name="garage"
-              value={editedData.garage}
-              onChange={handleInputChange}
-              className={Styles.inputField}
-            />
-          ) : (
-            <div className={Styles.detailValue}>{editedData.garage}</div>
-          )}
-        </div>
-      </div>
-
-      <div className={Styles.detailsRow}>
-        <div className={Styles.flexItem}>
-          <div className={Styles.detailLabel}>Date Lost:</div>
-          {isEditing ? (
-            <input
-              type="date"
-              name="dateLost"
-              value={editedData.dateLost}
-              onChange={handleInputChange}
-              className={Styles.inputField}
-            />
-          ) : (
-            <div className={Styles.detailValue}>{editedData.dateLost}</div>
-          )}
-        </div>
-        <div className={Styles.flexItem}>
-          <div className={Styles.detailLabel}>Status:</div>
-          {isEditing ? (
-            <select
+        <Stack direction="row" spacing={2}>
+          <TextField
+            type="date"
+            label="Date Lost"
+            name="dateLost"
+            value={editedData.dateLost}
+            onChange={handleInputChange}
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            disabled={!isEditing}
+          />
+          <FormControl fullWidth disabled={!isEditing}>
+            <InputLabel>Status</InputLabel>
+            <Select
               name="status"
               value={editedData.status}
               onChange={handleInputChange}
-              className={Styles.selectField}
+              label="Status"
             >
-              <option value="Unclaimed">Unclaimed</option>
-              <option value="Claimed">Claimed</option>
-              <option value="Expired">Expired</option>
-              <option value="To Collect">To Collect</option>
-            </select>
-          ) : (
-            <div className={Styles.detailValue}>{editedData.status}</div>
-          )}
-        </div>
-      </div>
-      {isEditing && (
-        <div className={Styles.uploadSection}>
-          <div className={Styles.detailLabel}>Upload Image:</div>
-          <input
-            type="file"
-            onChange={handleFileChange}
-            className={Styles.detailLabel}
-          />
-        </div>
-      )}
-      <div className={Styles.editActions}>
-        {isEditing ? (
+              <MenuItem value="Unclaimed">Unclaimed</MenuItem>
+              <MenuItem value="Claimed">Claimed</MenuItem>
+              <MenuItem value="Expired">Expired</MenuItem>
+              <MenuItem value="To Collect">To Collect</MenuItem>
+            </Select>
+          </FormControl>
+        </Stack>
+
+        {isEditing && (
           <>
-            <button
-              className={Styles.saveBtn}
-              onClick={handleSave}
-              disabled={loading}
-            >
-              {loading ? "Saving..." : "Save"}
-            </button>
-            <button onClick={handleUpload} disabled={uploading}>
-              {uploading ? "Uploading..." : "Upload"}
-            </button>
-            <button
-              className={Styles.cancelBtn}
-              onClick={() => setIsEditing(false)}
-            >
-              Cancel
-            </button>
+            <Typography variant="subtitle2">Upload Image</Typography>
+            <input type="file" onChange={handleFileChange} />
           </>
-        ) : (
-          <button className={Styles.editBtn} onClick={() => setIsEditing(true)}>
-            Edit
-          </button>
         )}
-      </div>
-    </div>
+
+        <Box mt={2} display="flex" gap={2}>
+          {isEditing ? (
+            <>
+              <Button
+                onClick={handleSave}
+                variant="contained"
+                disabled={loading}
+              >
+                {loading ? "Saving..." : "Save"}
+              </Button>
+              <Button onClick={handleUpload} disabled={uploading}>
+                {uploading ? "Uploading..." : "Upload"}
+              </Button>
+              <Button onClick={() => setIsEditing(false)}>Cancel</Button>
+            </>
+          ) : (
+            <Button onClick={() => setIsEditing(true)} variant="outlined">
+              Edit
+            </Button>
+          )}
+        </Box>
+      </Stack>
+    </Box>
   );
 };
 
