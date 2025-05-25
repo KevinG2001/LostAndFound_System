@@ -21,20 +21,27 @@ const DoughnutChart = ({ data, error }: DoughnutChartProps) => {
     );
   }
 
+  if (!data || data.length === 0) {
+    return (
+      <Box
+        sx={{
+          height: 300,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography>No data available</Typography>
+      </Box>
+    );
+  }
+
   const chartData = {
-    labels: data.map((item) => item.category),
+    labels: data.map((item) => item.label),
     datasets: [
       {
-        data: data.map((item) => item.count),
+        data: data.map((item) => item.value),
         backgroundColor: [
-          "#FF6384",
-          "#36A2EB",
-          "#FFCE56",
-          "#4BC0C0",
-          "#9966FF",
-          "#FF9F40",
-        ],
-        hoverBackgroundColor: [
           "#FF6384",
           "#36A2EB",
           "#FFCE56",
@@ -47,37 +54,14 @@ const DoughnutChart = ({ data, error }: DoughnutChartProps) => {
   };
 
   return (
-    <Box
-      sx={{
-        height: 350,
-        maxWidth: 400,
-        margin: "0 auto",
-        padding: 2,
-        boxSizing: "border-box",
-      }}
-    >
+    <Box sx={{ height: 350, maxWidth: 400, margin: "0 auto", padding: 4 }}>
       <Doughnut
         data={chartData}
         options={{
           maintainAspectRatio: false,
           responsive: true,
-          layout: {
-            padding: 20,
-          },
           plugins: {
-            legend: {
-              position: "right",
-              labels: {
-                boxWidth: 12,
-                padding: 15,
-                font: {
-                  size: 14,
-                },
-              },
-            },
-            tooltip: {
-              enabled: true,
-            },
+            legend: { position: "bottom" },
           },
         }}
       />

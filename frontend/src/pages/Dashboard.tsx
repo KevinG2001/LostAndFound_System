@@ -1,90 +1,83 @@
-import { useEffect, useState } from "react";
-import { Box } from "@mui/material";
+import { Container, Box } from "@mui/material";
 import LineChart from "../components/Charts/LineChart";
 import DoughnutChart from "../components/Charts/DoughtnutChart";
+import BarChart from "../components/Charts/Barchart";
 import TotalCount from "../components/StatBubbles/TotalCount";
 import ReturnPercent from "../components/StatBubbles/ReturnPercent";
 import TopItem from "../components/StatBubbles/TopItem";
 import ItemsToday from "../components/StatBubbles/ItemsToday";
-import { LineChartItem, DoughnutChartItem } from "../util/types/chartTypes";
+import useStatistics from "../util/useStatistics";
 
 function Dashboard() {
-  const [lineData, setLineData] = useState<LineChartItem[]>([]);
-  const [doughnutData, setDoughnutData] = useState<DoughnutChartItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [lineError, setLineError] = useState<string>("");
-  const [doughnutError, setDoughnutError] = useState<string>("");
-
-  async function fetchData<T>(
-    url: string,
-    setData: React.Dispatch<React.SetStateAction<T>>,
-    setError: React.Dispatch<React.SetStateAction<string>>
-  ) {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}${url}`);
-      if (!response.ok) throw new Error(`Failed to fetch data from ${url}`);
-      const result: T = await response.json();
-
-      if (Array.isArray(result) && url === "/stats/items-by-type") {
-        const formattedData = (
-          result as { category: string; count: number }[]
-        ).map((item) => ({
-          label: item.category,
-          value: item.count,
-        }));
-        setData(formattedData as T);
-      } else {
-        setData(result);
-      }
-    } catch (error) {
-      console.error(`Error fetching data from ${url}:`, error);
-      setError("Error fetching data. Please try again later.");
-    }
-  }
-
-  useEffect(() => {
-    fetchData("/stats/lost-per-month", setLineData, setLineError);
-    fetchData("/stats/typeLost", setDoughnutData, setDoughnutError);
-    setLoading(false);
-  }, []);
+  const {
+    lineData,
+    doughnutData,
+    statusData,
+    loading,
+    lineError,
+    statusError,
+  } = useStatistics();
 
   return (
     <Box
       sx={{
-        width: "100%",
-        minHeight: "100vh",
         display: "flex",
-        bgcolor: "grey.100",
-        boxSizing: "border-box",
-        p: 3,
         gap: 2,
         flexWrap: "nowrap",
+        width: "100%",
+        boxSizing: "border-box",
+        bgcolor: "grey.100",
+        height: "100%",
+        p: 2,
       }}
     >
-      {/* Line chart and stats  */}
+      {/* Left side: Line chart + Doughnut side-by-side + Stats */}
       <Box
         sx={{
-          flexBasis: "70%",
-          flexShrink: 1,
+          flex: 1,
           display: "flex",
           flexDirection: "column",
           gap: 2,
           minWidth: 0,
         }}
       >
-        {/* Line Chart */}
-        <Box
-          sx={{
-            flex: "1 1 auto",
-            bgcolor: "background.paper",
-            borderRadius: 2,
-            p: 2,
-            boxShadow: 3,
-            overflow: "hidden",
-            minHeight: 300,
-          }}
-        >
-          <LineChart data={lineData} error={lineError} loading={loading} />
+        {/* Top charts container: line + doughnut */}
+        <Box sx={{ display: "flex", gap: 2, flexGrow: 1, minHeight: 300 }}>
+          <Box
+            sx={{
+              flex: 1,
+              bgcolor: "background.paper",
+              borderRadius: 2,
+              p: 2,
+              boxShadow: 3,
+              overflow: "hidden",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <LineChart data={lineData} error={lineError} loading={loading} />
+          </Box>
+
+          <Box
+            sx={{
+              bgcolor: "background.paper",
+              boxShadow: 3,
+              borderRadius: 2,
+              p: 2,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minWidth: 260,
+              flexBasis: "30%",
+              flexShrink: 0,
+            }}
+          >
+            <DoughnutChart
+              data={statusData}
+              error={statusError}
+              loading={loading}
+            />
+          </Box>
         </Box>
 
         {/* Stat Bubbles */}
@@ -101,7 +94,7 @@ function Dashboard() {
               <Box
                 key={i}
                 sx={{
-                  flex: "1 1 0",
+                  flex: "1 1 250px",
                   minWidth: 0,
                   bgcolor: "background.paper",
                   borderRadius: 2,
@@ -119,7 +112,7 @@ function Dashboard() {
         </Box>
       </Box>
 
-      {/*  Doughnut chart */}
+      {/* Right side: Bar chart */}
       <Box
         sx={{
           flexBasis: "30%",
@@ -127,15 +120,13 @@ function Dashboard() {
           bgcolor: "background.paper",
           boxShadow: 3,
           borderRadius: 2,
+          p: 2,
           display: "flex",
           flexDirection: "column",
-          gap: 2,
           minWidth: 0,
-          p: 2,
-          mr: 2,
         }}
       >
-        <DoughnutChart data={doughnutData} error={doughnutError} />
+        <BarChart data={doughnutData} error={statusError} loading={loading} />
       </Box>
     </Box>
   );
