@@ -23,7 +23,7 @@ function Dashboard() {
       sx={{
         display: "flex",
         gap: 2,
-        flexWrap: "nowrap",
+        flexWrap: "wrap",
         width: "100%",
         boxSizing: "border-box",
         bgcolor: "grey.100",
