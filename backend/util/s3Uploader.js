@@ -31,4 +31,21 @@ const uploadFileToS3 = (fileBuffer, originalName, itemID, mimeType) => {
   });
 };
 
-module.exports = { uploadFileToS3 };
+const deleteFileFromS3 = (imageUrl) => {
+  return new Promise((resolve, reject) => {
+    const urlParts = imageUrl.split("/");
+    const key = urlParts.slice(3).join("/");
+
+    const params = {
+      Bucket: bucketName,
+      Key: key,
+    };
+
+    s3.deleteObject(params, (err, data) => {
+      if (err) return reject(err);
+      resolve(data);
+    });
+  });
+};
+
+module.exports = { uploadFileToS3, deleteFileFromS3 };

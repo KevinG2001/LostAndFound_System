@@ -20,67 +20,7 @@ interface Garage {
   [key: string]: any;
 }
 
-interface UseNewItemReturn {
-  article: string;
-  setArticle: (value: string) => void;
-  description: string;
-  setDescription: (value: string) => void;
-  category: string;
-  setCategory: (value: string) => void;
-  type: string;
-  setType: (value: string) => void;
-  route: string;
-  setRoute: (value: string) => void;
-  garage: string;
-  setGarage: (value: string) => void;
-  notes: string;
-  setNotes: (value: string) => void;
-  dateLost: string;
-  setDateLost: (value: string) => void;
-  imageFile: File | null;
-  setImageFile: (file: File | null) => void;
-
-  garages: Garage[];
-  routes: string[];
-  categoryOptions: string[];
-  typeOptions: string[];
-
-  filteredGarages: Garage[];
-  filteredRoutes: string[];
-  filteredCategories: string[];
-  filteredTypes: string[];
-
-  showRouteDropdown: boolean;
-  setShowRouteDropdown: (show: boolean) => void;
-  showCategoryDropdown: boolean;
-  setShowCategoryDropdown: (show: boolean) => void;
-  showTypeDropdown: boolean;
-  setShowTypeDropdown: (show: boolean) => void;
-  showGarageDropdown: boolean;
-  setShowGarageDropdown: (show: boolean) => void;
-
-  categoryDropdownRef: React.RefObject<HTMLDivElement>;
-  typeDropdownRef: React.RefObject<HTMLDivElement>;
-  routeDropdownRef: React.RefObject<HTMLDivElement>;
-  garageDropdownRef: React.RefObject<HTMLDivElement>;
-
-  handleRouteChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleRouteSelect: (value: string) => void;
-  handleCategoryChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleCategorySelect: (value: string) => void;
-  handleTypeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleTypeSelect: (value: string) => void;
-  handleGarageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleGarageSelect: (value: string) => void;
-  handleImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-
-  createItem: () => Promise<NewItem | null>;
-  createdItem: NewItem | null;
-  loading: boolean;
-  error: string | null;
-}
-
-const useNewItem = (): UseNewItemReturn => {
+const useNewItem = () => {
   const [article, setArticle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [category, setCategory] = useState<string>("");
@@ -204,23 +144,18 @@ const useNewItem = (): UseNewItemReturn => {
     }
   };
 
-  const handleDropdownFilter = (value: string, options: string[]) => {
-    return options.filter((opt) =>
-      opt.toLowerCase().includes(value.toLowerCase())
-    );
-  };
+  const handleDropdownFilter = (value: string, options: string[]) =>
+    options.filter((opt) => opt.toLowerCase().includes(value.toLowerCase()));
 
-  const handleGarageFilter = (value: string, garageList: Garage[]) => {
-    return garageList.filter((garage) =>
+  const handleGarageFilter = (value: string, garageList: Garage[]) =>
+    garageList.filter((garage) =>
       garage.garageName.toLowerCase().includes(value.toLowerCase())
     );
-  };
 
   const handleRouteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setRoute(value);
-    const filtered = handleDropdownFilter(value, routes);
-    setFilteredRoutes(filtered);
+    setFilteredRoutes(handleDropdownFilter(value, routes));
     setShowRouteDropdown(true);
   };
 
@@ -230,8 +165,7 @@ const useNewItem = (): UseNewItemReturn => {
   };
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setCategory(value);
+    setCategory(e.target.value);
     setShowCategoryDropdown(true);
   };
 
@@ -241,8 +175,7 @@ const useNewItem = (): UseNewItemReturn => {
   };
 
   const handleTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setType(value);
+    setType(e.target.value);
     setShowTypeDropdown(true);
   };
 
@@ -254,8 +187,7 @@ const useNewItem = (): UseNewItemReturn => {
   const handleGarageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setGarage(value);
-    const filtered = handleGarageFilter(value, garages);
-    setFilteredGarages(filtered);
+    setFilteredGarages(handleGarageFilter(value, garages));
     setShowGarageDropdown(true);
   };
 
@@ -310,61 +242,48 @@ const useNewItem = (): UseNewItemReturn => {
   };
 
   return {
-    article,
-    setArticle,
-    description,
-    setDescription,
-    category,
-    setCategory,
-    type,
-    setType,
-    route,
-    setRoute,
-    garage,
-    setGarage,
-    notes,
-    setNotes,
-    dateLost,
-    setDateLost,
-    imageFile,
-    setImageFile,
-
-    garages,
-    routes,
-    categoryOptions,
-    typeOptions,
-
-    filteredGarages,
-    filteredRoutes,
-    filteredCategories,
-    filteredTypes,
-
-    showRouteDropdown,
-    setShowRouteDropdown,
-    showCategoryDropdown,
-    setShowCategoryDropdown,
-    showTypeDropdown,
-    setShowTypeDropdown,
-    showGarageDropdown,
-    setShowGarageDropdown,
-
-    categoryDropdownRef,
-    typeDropdownRef,
-    routeDropdownRef,
-    garageDropdownRef,
-
-    handleRouteChange,
-    handleRouteSelect,
-    handleCategoryChange,
-    handleCategorySelect,
-    handleTypeChange,
-    handleTypeSelect,
-    handleGarageChange,
-    handleGarageSelect,
-    handleImageChange,
-
-    createItem,
-    createdItem,
+    state: {
+      article,
+      description,
+      category,
+      type,
+      route,
+      garage,
+      notes,
+      dateLost,
+    },
+    filtered: {
+      filteredGarages,
+      filteredRoutes,
+      filteredCategories,
+      filteredTypes,
+    },
+    dropdowns: {
+      showRouteDropdown,
+      showCategoryDropdown,
+      showTypeDropdown,
+      showGarageDropdown,
+      categoryDropdownRef,
+      typeDropdownRef,
+      routeDropdownRef,
+      garageDropdownRef,
+    },
+    handlers: {
+      handleRouteChange,
+      handleRouteSelect,
+      handleCategoryChange,
+      handleCategorySelect,
+      handleTypeChange,
+      handleTypeSelect,
+      handleGarageChange,
+      handleGarageSelect,
+      handleImageChange,
+      setArticle,
+      setDescription,
+      setNotes,
+      setDateLost,
+      createItem,
+    },
     loading,
     error,
   };

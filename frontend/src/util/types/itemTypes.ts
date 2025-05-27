@@ -9,6 +9,8 @@ export interface ItemData {
   dateLost: string;
   status: string;
   dateClaimed: string;
+  imageUrl?: string;
+  notes: string;
 }
 
 export interface ItemDetailsTabProps {

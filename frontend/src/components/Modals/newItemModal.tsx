@@ -22,49 +22,54 @@ interface NewItemModalProps {
 const NewItemModal = ({ onClose, onCreate }: NewItemModalProps) => {
   const { enqueueSnackbar } = useSnackbar();
 
+  const newItem = useNewItem();
+
   const {
-    article,
-    description,
-    category,
-    type,
-    route,
-    garage,
-    notes,
-    dateLost,
-
-    filteredGarages,
-    filteredRoutes,
-    filteredCategories,
-    filteredTypes,
-
-    showRouteDropdown,
-    showCategoryDropdown,
-    showTypeDropdown,
-    showGarageDropdown,
-
-    categoryDropdownRef,
-    typeDropdownRef,
-    routeDropdownRef,
-    garageDropdownRef,
-
-    handleRouteChange,
-    handleRouteSelect,
-    handleCategoryChange,
-    handleCategorySelect,
-    handleTypeChange,
-    handleTypeSelect,
-    handleGarageChange,
-    handleGarageSelect,
-    handleImageChange,
-    setArticle,
-    setDescription,
-    setNotes,
-    setDateLost,
-
-    createItem,
+    state: {
+      article,
+      description,
+      category,
+      type,
+      route,
+      garage,
+      notes,
+      dateLost,
+    },
+    filtered: {
+      filteredGarages,
+      filteredRoutes,
+      filteredCategories,
+      filteredTypes,
+    },
+    dropdowns: {
+      showRouteDropdown,
+      showCategoryDropdown,
+      showTypeDropdown,
+      showGarageDropdown,
+      categoryDropdownRef,
+      typeDropdownRef,
+      routeDropdownRef,
+      garageDropdownRef,
+    },
+    handlers: {
+      handleRouteChange,
+      handleRouteSelect,
+      handleCategoryChange,
+      handleCategorySelect,
+      handleTypeChange,
+      handleTypeSelect,
+      handleGarageChange,
+      handleGarageSelect,
+      handleImageChange,
+      setArticle,
+      setDescription,
+      setNotes,
+      setDateLost,
+      createItem,
+    },
     loading,
     error,
-  } = useNewItem();
+  } = newItem;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

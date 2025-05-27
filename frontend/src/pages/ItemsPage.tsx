@@ -136,12 +136,14 @@ function ItemsPage() {
           onCreate={handleCreateNewItem}
         />
       )}
-      <MoreDetailsModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        data={selectedItem}
-        type="item"
-      />
+      {isModalOpen && selectedItem && (
+        <MoreDetailsModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          data={selectedItem}
+          type="item"
+        />
+      )}
     </Container>
   );
 }
