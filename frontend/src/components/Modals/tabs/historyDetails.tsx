@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Box,
   Typography,
   Collapse,
-  Grid,
   Divider,
   Paper,
   Stack,
 } from "@mui/material";
+import Grid from "@mui/material/Grid";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
@@ -45,16 +45,10 @@ function HistoryDetails({ data }: { data: any }) {
           mb: 1,
         }}
       >
-        <Grid item xs={4}>
-          Date
-        </Grid>
-        <Grid item xs={4}>
-          Action
-        </Grid>
-        <Grid item xs={3}>
-          By
-        </Grid>
-        <Grid item xs={1} />
+        <Grid>Date</Grid>
+        <Grid>Action</Grid>
+        <Grid>By</Grid>
+        <Grid />
       </Grid>
 
       {sortedHistory.map((entry: any, index: number) => {
@@ -68,18 +62,18 @@ function HistoryDetails({ data }: { data: any }) {
             onClick={() => toggleExpand(index)}
           >
             <Grid container spacing={2} alignItems="center" sx={{ p: 1 }}>
-              <Grid item xs={4}>
+              <Grid>
                 <Typography variant="body2">
                   {new Date(entry.date).toLocaleString()}
                 </Typography>
               </Grid>
-              <Grid item xs={4}>
+              <Grid>
                 <Typography variant="body2">{entry.action}</Typography>
               </Grid>
-              <Grid item xs={3}>
+              <Grid>
                 <Typography variant="body2">{entry.by || "System"}</Typography>
               </Grid>
-              <Grid item xs={1} sx={{ textAlign: "right" }}>
+              <Grid>
                 {isExpanded ? (
                   <KeyboardArrowUpIcon />
                 ) : (
@@ -91,7 +85,7 @@ function HistoryDetails({ data }: { data: any }) {
             <Collapse in={isExpanded} timeout="auto" unmountOnExit>
               <Divider />
               <Grid container spacing={2} sx={{ p: 2 }}>
-                <Grid item xs={6}>
+                <Grid>
                   <Typography variant="subtitle2" gutterBottom>
                     From:
                   </Typography>
@@ -131,7 +125,7 @@ function HistoryDetails({ data }: { data: any }) {
                         )
                       )}
                 </Grid>
-                <Grid item xs={6}>
+                <Grid>
                   <Typography variant="subtitle2" gutterBottom>
                     To:
                   </Typography>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Container, useTheme } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import TableView from "../components/Views/TableView";
 import useList from "../util/useList";
 import MoreDetailsModal from "../components/Modals/moreDetailsModal";
@@ -29,7 +29,6 @@ function ItemsPage() {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const theme = useTheme();
 
   useEffect(() => {
     if (location.state?.openNewItemModal) {

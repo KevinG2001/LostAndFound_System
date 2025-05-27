@@ -9,7 +9,7 @@ import OpenTickets from "../components/StatBubbles/tickets/OpenTickets";
 
 function TicketsPage() {
   const { items: tickets } = useList("tickets", "list");
-  const [selectedTicket, setSelectedTicket] = useState(null);
+  const [selectedTicket, setSelectedTicket] = useState<any | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const theme = useTheme();
@@ -85,12 +85,14 @@ function TicketsPage() {
       </Box>
 
       {/* Modal */}
-      <MoreDetailsModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        data={selectedTicket}
-        type="ticket"
-      />
+      {selectedTicket && (
+        <MoreDetailsModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          data={selectedTicket}
+          type="ticket"
+        />
+      )}
     </Container>
   );
 }

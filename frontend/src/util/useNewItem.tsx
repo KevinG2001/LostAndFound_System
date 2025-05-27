@@ -286,6 +286,7 @@ const useNewItem = () => {
     },
     loading,
     error,
+    createdItem,
   };
 };
 

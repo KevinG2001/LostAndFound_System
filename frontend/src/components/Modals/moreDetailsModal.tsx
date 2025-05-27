@@ -23,7 +23,7 @@ import TicketDetailsTab from "./tabs/ticketDetails";
 import CollectionDetailsTab from "./tabs/collectionDetails";
 import HistoryTab from "./tabs/historyDetails";
 
-import { ItemData, ItemDetailsTabProps } from "../../util/types/itemTypes";
+import { ItemData } from "../../util/types/itemTypes";
 import { Ticket } from "../../util/types/ticketType";
 
 interface MoreDetailsModalPropsItem {

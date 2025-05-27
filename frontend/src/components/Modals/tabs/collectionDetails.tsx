@@ -1,13 +1,6 @@
 // src/components/CollectionDetailsTab.tsx
 import React, { useState, useEffect } from "react";
-import {
-  TextField,
-  Button,
-  Typography,
-  Box,
-  Divider,
-  Stack,
-} from "@mui/material";
+import { TextField, Button, Typography, Box, Stack } from "@mui/material";
 import useEdit from "../../../util/useEdit";
 
 function CollectionDetailsTab({ data }: { data: any }) {
