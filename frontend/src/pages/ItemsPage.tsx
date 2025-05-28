@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Styles from "../styles/pages/itemsPage.module.scss";
+import { Box, Container } from "@mui/material";
 import TableView from "../components/Views/TableView";
 import useList from "../util/useList";
 import MoreDetailsModal from "../components/Modals/moreDetailsModal";
@@ -48,10 +48,7 @@ function ItemsPage() {
   };
 
   const closeNewItemModal = () => setIsNewItemModalOpen(false);
-
-  const handleCreateNewItem = () => {
-    closeNewItemModal();
-  };
+  const handleCreateNewItem = () => closeNewItemModal();
 
   const columns = [
     { header: "ID", accessor: "itemID" },
@@ -64,35 +61,62 @@ function ItemsPage() {
     { header: "Status", accessor: "status" },
   ];
 
-  // Reverse the list of items (most recent first)
-  const reversedItems = (items: any[]) => {
-    return items.slice().reverse(); // Make sure to create a copy of the array before reversing
-  };
+  const reversedItems = (items: any[]) => items.slice().reverse();
 
   return (
-    <div className={Styles.itemsContainer}>
-      <div className={Styles.statsContainer}>
-        <div className={`${Styles.statsWrapper} ${Styles.itemsLost}`}>
-          <ItemsToday />
-        </div>
-        <div className={`${Styles.statsWrapper} ${Styles.itemsReturned}`}>
-          <ItemsReturned />
-        </div>
-        <div className={`${Styles.statsWrapper} ${Styles.itemsExpired}`}>
-          <LostThisMonth />
-        </div>
-        <div className={Styles.statsWrapper}>
-          <ItemsToCollectThisMonth />
-        </div>
-      </div>
+    <Container
+      maxWidth={false}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+        bgcolor: "grey.100",
+        pb: 2,
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          gap: 2,
+          mt: 1,
+          mb: 2,
+          flexWrap: "wrap",
+        }}
+      >
+        {[
+          ItemsToday,
+          ItemsReturned,
+          LostThisMonth,
+          ItemsToCollectThisMonth,
+        ].map((Component, i) => (
+          <Box
+            key={i}
+            sx={{
+              flex: "1 1 0",
+              minWidth: 0,
+              bgcolor: "background.paper",
+              borderRadius: 2,
+              boxShadow: 1,
+              p: 1.5,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Component />
+          </Box>
+        ))}
+      </Box>
 
-      <Searchbar
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        searchDB={searchDB}
-      />
+      <Box mb={2}>
+        <Searchbar
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          searchDB={searchDB}
+        />
+      </Box>
 
-      <div className={Styles.itemTable}>
+      <Box sx={{ flexGrow: 1 }}>
         <TableView
           columns={columns}
           data={
@@ -102,22 +126,24 @@ function ItemsPage() {
           }
           onRowClick={handleRowClick}
         />
-      </div>
+      </Box>
 
+      {/* Modals */}
       {isNewItemModalOpen && (
         <NewItemModal
           onClose={closeNewItemModal}
           onCreate={handleCreateNewItem}
         />
       )}
-
-      <MoreDetailsModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        data={selectedItem}
-        type="item"
-      />
-    </div>
+      {isModalOpen && selectedItem && (
+        <MoreDetailsModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          data={selectedItem}
+          type="item"
+        />
+      )}
+    </Container>
   );
 }
 

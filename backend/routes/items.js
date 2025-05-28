@@ -4,7 +4,7 @@ const Item = require("../models/Item");
 const router = express.Router();
 const { getNextId } = require("../util/idGenerator");
 const { formatItemDates } = require("../util/dateFormatter");
-const { uploadFileToS3 } = require("../util/s3Uploader");
+const { uploadFileToS3, deleteFileFromS3 } = require("../util/s3Uploader");
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -260,6 +260,97 @@ router.get("/metadata", async (req, res) => {
     res
       .status(500)
       .json({ message: "Error fetching metadata", error: err.message });
+  }
+});
+
+// Upload an image and update imageUrl for a specific item
+router.post("/file/upload", upload.single("image"), async (req, res) => {
+  const { itemID } = req.body;
+
+  if (!itemID) {
+    return res.status(400).json({ message: "Missing itemID in request body" });
+  }
+
+  try {
+    const item = await Item.findOne({ itemID }); // ✅ custom ID
+
+    if (!item) {
+      return res
+        .status(404)
+        .json({ message: "Item not found with itemID: " + itemID });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ message: "No image file provided" });
+    }
+
+    const imageUrl = await uploadFileToS3(
+      req.file.buffer,
+      req.file.originalname,
+      itemID,
+      req.file.mimetype
+    );
+
+    item.imageUrl = imageUrl;
+
+    item.historyDetails.push({
+      action: "Image Uploaded",
+      date: new Date(),
+      by: "System",
+      changes: {
+        imageUrl: { from: null, to: imageUrl },
+      },
+    });
+
+    await item.save();
+
+    res.status(200).json({ success: true, imageUrl });
+  } catch (err) {
+    console.error("Image upload error:", err);
+    res
+      .status(500)
+      .json({ message: "Image upload failed", error: err.message });
+  }
+});
+
+router.delete("/file/delete/:itemID", async (req, res) => {
+  const { itemID } = req.params;
+
+  try {
+    const item = await Item.findOne({ itemID });
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    if (!item.imageUrl) {
+      return res.status(400).json({ message: "No image to delete" });
+    }
+
+    // Delete from S3
+    await deleteFileFromS3(item.imageUrl);
+
+    const oldImageUrl = item.imageUrl;
+
+    // Remove imageUrl from the item
+    item.imageUrl = null;
+    item.historyDetails.push({
+      action: "Image Deleted",
+      date: new Date(),
+      by: "System",
+      changes: {
+        imageUrl: { from: oldImageUrl, to: null },
+      },
+    });
+
+    await item.save();
+
+    res.status(200).json({ success: true, message: "Image deleted" });
+  } catch (error) {
+    console.error("Error deleting image:", error);
+    res.status(500).json({
+      message: "Error deleting image",
+      error: error.message,
+    });
   }
 });
 

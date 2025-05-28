@@ -1,5 +1,16 @@
-import React, { useState, useEffect } from "react";
-import Styles from "../../../styles/modals/moreDetails.module.scss";
+import { useState, useEffect } from "react";
+import {
+  Box,
+  Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Button,
+  Grid,
+  Divider,
+  SelectChangeEvent,
+} from "@mui/material";
 import TicketChat from "../../TicketChat";
 import useEdit from "../../../util/useEdit";
 
@@ -12,7 +23,7 @@ const TicketDetailsTab = ({ data }: { data: any }) => {
     setEditedStatus(data.status || "");
   }, [data]);
 
-  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleStatusChange = (e: SelectChangeEvent) => {
     setEditedStatus(e.target.value);
   };
 
@@ -26,73 +37,80 @@ const TicketDetailsTab = ({ data }: { data: any }) => {
   };
 
   return (
-    <div className={Styles.detailsContainer}>
-      <h2 className={Styles.detailsTitle}>Ticket Details</h2>
+    <Box sx={{ p: 3, maxWidth: 900, mx: "auto" }}>
+      <Typography variant="h4" gutterBottom>
+        Ticket Details
+      </Typography>
 
-      <div className={Styles.detailsRow}>
-        <div className={Styles.flexItem}>
-          <div className={Styles.detailLabel}>Ticket ID:</div>
-          <div className={Styles.detailValue}>{data.ticketId}</div>
-        </div>
-        <div className={Styles.flexItem}>
-          <div className={Styles.detailLabel}>Ticket Status:</div>
+      <Grid container spacing={2} mb={2}>
+        <Grid>
+          <Typography variant="subtitle2" color="text.secondary">
+            Ticket ID:
+          </Typography>
+          <Typography variant="body1">{data.ticketId}</Typography>
+        </Grid>
+
+        <Grid>
+          <Typography variant="subtitle2" color="text.secondary" mb={1}>
+            Ticket Status:
+          </Typography>
           {isEditing ? (
-            <select
-              name="status"
-              value={editedStatus}
-              onChange={handleStatusChange}
-              className={Styles.selectField}
-            >
-              <option value="Open">Open</option>
-              <option value="Closed">Closed</option>
-            </select>
+            <FormControl fullWidth>
+              <InputLabel id="status-label">Status</InputLabel>
+              <Select
+                labelId="status-label"
+                value={editedStatus}
+                label="Status"
+                onChange={handleStatusChange}
+              >
+                <MenuItem value="Open">Open</MenuItem>
+                <MenuItem value="Closed">Closed</MenuItem>
+              </Select>
+            </FormControl>
           ) : (
-            <div className={Styles.detailValue}>{data.status}</div>
+            <Typography variant="body1">{data.status}</Typography>
           )}
-        </div>
-      </div>
+        </Grid>
+      </Grid>
 
-      <div className={Styles.detailsRow}>
-        <div className={Styles.flexItem}>
-          <div className={Styles.detailLabel}>Date Lost:</div>
-          <div className={Styles.detailValue}>{data.dateLost}</div>
-        </div>
-        <div className={Styles.flexItem}>
-          <div className={Styles.detailLabel}>Date Created:</div>
-          <div className={Styles.detailValue}>{data.dateCreated}</div>
-        </div>
-      </div>
+      <Grid container spacing={2} mb={2}>
+        <Grid>
+          <Typography variant="subtitle2" color="text.secondary">
+            Date Lost:
+          </Typography>
+          <Typography variant="body1">{data.dateLost}</Typography>
+        </Grid>
+        <Grid>
+          <Typography variant="subtitle2" color="text.secondary">
+            Date Created:
+          </Typography>
+          <Typography variant="body1">{data.dateCreated}</Typography>
+        </Grid>
+      </Grid>
 
-      {isEditing && (
-        <div className={Styles.editActions}>
-          <button
-            onClick={handleSave}
-            disabled={loading}
-            className={Styles.saveBtn}
-          >
+      <Divider sx={{ my: 2 }} />
+
+      {isEditing ? (
+        <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+          <Button variant="contained" onClick={handleSave} disabled={loading}>
             {loading ? "Saving..." : "Save"}
-          </button>
-          <button
-            onClick={() => setIsEditing(false)}
-            className={Styles.cancelBtn}
-          >
+          </Button>
+          <Button variant="outlined" onClick={() => setIsEditing(false)}>
             Cancel
-          </button>
-        </div>
-      )}
-
-      {!isEditing && (
-        <div className={Styles.editActions}>
-          <button onClick={() => setIsEditing(true)} className={Styles.editBtn}>
+          </Button>
+        </Box>
+      ) : (
+        <Box sx={{ mb: 2 }}>
+          <Button variant="contained" onClick={() => setIsEditing(true)}>
             Edit
-          </button>
-        </div>
+          </Button>
+        </Box>
       )}
 
-      <div className={Styles.chatWrapper}>
+      <Box>
         <TicketChat ticketId={data.ticketId} description={data.description} />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

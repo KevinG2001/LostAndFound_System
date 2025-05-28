@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Styles from "../../styles/stats/bubbleStat.module.scss";
+import StatBubble from "./StatBubble";
 import CalenderIcon from "../../assets/calenderIcon.svg?react";
 
 function ItemsToday() {
@@ -27,15 +27,11 @@ function ItemsToday() {
   }, []);
 
   return (
-    <div className={Styles.statBubble}>
-      <CalenderIcon className={`${Styles.bubbleIcon} ${Styles.lost}`} />
-      <div className={Styles.statDescription}>
-        <div className={Styles.statTitle}>Items Lost Today</div>
-        <div className={Styles.statValue}>
-          {error ? error : count !== null ? count : "Loading..."}
-        </div>
-      </div>
-    </div>
+    <StatBubble
+      title="Items Lost Today"
+      value={error ? error : count ?? "Loading..."}
+      icon={CalenderIcon}
+    />
   );
 }
 

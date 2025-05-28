@@ -1,21 +1,45 @@
-import Styles from "../styles/about.module.scss";
+import { Box, Typography, Container } from "@mui/material";
 
 function About() {
   return (
     <>
-      <div className={Styles.container}>
-        <div className={Styles.header}>
-          Track<span className={Styles.highlight}>It</span>Down
-        </div>
-        <div className={Styles.wrapper}>
-          <div className={Styles.contentWrapper}>
-            <div className={Styles.para}>Have you lost an item?</div>
-            <div className={Styles.para}>
-              Submit a ticket here and someone will contact you about it!
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Navbar */}
+      <Box
+        sx={{
+          width: "100%",
+          bgcolor: "background.default",
+          py: 2,
+          display: "flex",
+          justifyContent: "center",
+          userSelect: "none",
+        }}
+      >
+        <Typography
+          variant="h4"
+          component="div"
+          sx={{ color: "common.white", fontWeight: "bold" }}
+        >
+          Track
+          <Box
+            component="span"
+            sx={{ color: "success.main", mx: 1, fontWeight: "bold" }}
+          >
+            It
+          </Box>
+          Down
+        </Typography>
+      </Box>
+
+      {/* Hero section */}
+      <Container sx={{ py: 1, textAlign: "center", color: "text.primary" }}>
+        <Typography variant="body1" mb={0.5}>
+          Did you lose something on one of our services?
+        </Typography>
+        <Typography variant="body1" mb={0}>
+          Submit a ticket here and someone will contact you about how we can
+          Track It Down!
+        </Typography>
+      </Container>
     </>
   );
 }

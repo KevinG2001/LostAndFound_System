@@ -1,9 +1,8 @@
 import { useState } from "react";
-import "./App.css";
 import About from "./components/About";
 import Contact from "./components/Contact";
 import TicketChat from "./components/TicketChat";
-import Style from "./styles/home.module.scss";
+import { Box, Button, TextField, Typography, Stack } from "@mui/material";
 
 function App() {
   const [ticketId, setTicketId] = useState<string | null>(null);
@@ -25,72 +24,81 @@ function App() {
   };
 
   const handleTicketIdSubmit = () => {
-    if (inputTicketId) {
-      setTicketId(inputTicketId);
+    if (inputTicketId.trim()) {
+      setTicketId(inputTicketId.trim());
     }
   };
 
   return (
-    <div className={Style.container}>
+    <>
       <About />
-      <div>
-        {ticketId ? (
-          <div>
-            <button onClick={handleResetTicket} className={Style.btn}>
-              Back to Menu
-            </button>
-            <TicketChat ticketId={ticketId} />
-          </div>
-        ) : (
-          <>
-            {view === "initial" && (
-              <div className={Style.btnWrapper}>
-                <button onClick={() => setView("reopen")} className={Style.btn}>
-                  Go to Chat
-                </button>
-                <button onClick={() => setView("create")} className={Style.btn}>
-                  Create Ticket
-                </button>
-              </div>
-            )}
+      <Box sx={{ maxWidth: 800, mx: "auto", p: 3, pt: 0 }}>
+        <Box sx={{ mt: 1 }}>
+          {ticketId ? (
+            <Box>
+              <Button
+                variant="outlined"
+                onClick={handleResetTicket}
+                sx={{ mb: 2 }}
+              >
+                Back to Menu
+              </Button>
+              <TicketChat ticketId={ticketId} />
+            </Box>
+          ) : (
+            <>
+              {view === "initial" && (
+                <Stack direction="row" spacing={2} justifyContent="center">
+                  <Button variant="contained" onClick={() => setView("reopen")}>
+                    Go to Chat
+                  </Button>
+                  <Button variant="contained" onClick={() => setView("create")}>
+                    Create Ticket
+                  </Button>
+                </Stack>
+              )}
 
-            {view === "reopen" && (
-              <div>
-                <h3>Reopen Your Ticket</h3>
-                <input
-                  type="text"
-                  value={inputTicketId}
-                  onChange={handleTicketIdChange}
-                  placeholder="Enter your ticket ID"
-                  style={{ marginRight: "10px" }}
-                />
-                <button onClick={handleTicketIdSubmit}>Reopen Ticket</button>
-                <div>
-                  <button
+              {view === "reopen" && (
+                <Box textAlign="center">
+                  <Typography variant="h5" gutterBottom>
+                    Reopen Your Ticket
+                  </Typography>
+                  <Box
+                    sx={{ display: "flex", justifyContent: "center", mb: 2 }}
+                  >
+                    <TextField
+                      label="Ticket ID"
+                      value={inputTicketId}
+                      onChange={handleTicketIdChange}
+                      sx={{ mr: 2 }}
+                    />
+                    <Button variant="contained" onClick={handleTicketIdSubmit}>
+                      Reopen Ticket
+                    </Button>
+                  </Box>
+                  <Button variant="outlined" onClick={() => setView("initial")}>
+                    Back
+                  </Button>
+                </Box>
+              )}
+
+              {view === "create" && (
+                <Box>
+                  <Contact onTicketCreated={handleTicketCreated} />
+                  <Button
+                    variant="outlined"
                     onClick={() => setView("initial")}
-                    className={Style.btn}
+                    sx={{ mt: 2 }}
                   >
                     Back
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {view === "create" && (
-              <div>
-                <Contact onTicketCreated={handleTicketCreated} />
-                <button
-                  onClick={() => setView("initial")}
-                  className={Style.btn}
-                >
-                  Back
-                </button>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    </div>
+                  </Button>
+                </Box>
+              )}
+            </>
+          )}
+        </Box>
+      </Box>
+    </>
   );
 }
 

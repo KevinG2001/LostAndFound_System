@@ -1,3 +1,4 @@
+import { Box, Typography } from "@mui/material";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -12,7 +13,7 @@ import {
 import variables from "../../styles/variables/colours.module.scss";
 import { LineChartProps } from "../../util/types/chartTypes";
 
-// Registering the required chart components
+// Register ChartJS components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -25,11 +26,33 @@ ChartJS.register(
 
 const LineChart = ({ data, error, loading }: LineChartProps) => {
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <Box
+        sx={{
+          height: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography>Loading...</Typography>
+      </Box>
+    );
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return (
+      <Box
+        sx={{
+          height: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography color="error">{error}</Typography>
+      </Box>
+    );
   }
 
   const chartData = {
@@ -86,6 +109,9 @@ const LineChart = ({ data, error, loading }: LineChartProps) => {
         mode: "index" as const,
         intersect: false,
       },
+      legend: {
+        position: "top" as const,
+      },
     },
     scales: {
       x: {
@@ -104,7 +130,16 @@ const LineChart = ({ data, error, loading }: LineChartProps) => {
     },
   };
 
-  return <Line data={chartData} options={chartOptions} />;
+  return (
+    <Box
+      sx={{
+        height: "100%",
+        width: "100%",
+      }}
+    >
+      <Line data={chartData} options={chartOptions} />
+    </Box>
+  );
 };
 
 export default LineChart;

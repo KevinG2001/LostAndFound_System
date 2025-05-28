@@ -176,4 +176,32 @@ router.get("/items-to-collect-this-month", async (req, res) => {
   }
 });
 
+router.get("/items-by-status", async (req, res) => {
+  try {
+    const model = require("../models/Item");
+
+    const result = await model.aggregate([
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const formattedData = result.map((item) => ({
+      category: item._id,
+      count: item.count,
+    }));
+
+    res.json(formattedData);
+  } catch (error) {
+    console.error("Error fetching item status distribution:", error);
+    res.status(500).json({
+      message: "Error fetching item status distribution",
+      error: error.message,
+    });
+  }
+});
+
 module.exports = router;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import Styles from "../../styles/stats/bubbleStat.module.scss";
-import CalenderIcon from "../../assets/calenderIcon.svg?react";
+import EventIcon from "@mui/icons-material/Event";
+import StatBubble from "./StatBubble";
 
 function ItemsToCollectThisMonth() {
   const [count, setCount] = useState<number | null>(null);
@@ -26,15 +26,12 @@ function ItemsToCollectThisMonth() {
   }, []);
 
   return (
-    <div className={Styles.statBubble}>
-      <CalenderIcon className={`${Styles.bubbleIcon} ${Styles.toCollect}`} />
-      <div className={Styles.statDescription}>
-        <div className={Styles.statTitle}>To Collect This Month</div>
-        <div className={Styles.statValue}>
-          {error ? error : count !== null ? count : "Loading..."}
-        </div>
-      </div>
-    </div>
+    <StatBubble
+      title="To Collect This Month"
+      value={error || count === null ? "Loading..." : count}
+      icon={EventIcon}
+      iconColor="warning.main"
+    />
   );
 }
 

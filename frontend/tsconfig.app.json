@@ -21,7 +21,7 @@
     "noFallthroughCasesInSwitch": true, // Prevent fallthrough in switch statements
 
     /* Additional settings for Electron + Vite */
-    "types": ["vite/client", "node"], // Include Vite and Node.js types (in case you interact with Electron)
+    "types": ["vite/client", "node", "react", "react-dom"],
     "allowJs": false // Prevent importing `.js` files to avoid inconsistencies
   },
   "include": ["src"], // Include all source files in the `src` directory

@@ -1,88 +1,111 @@
-// Barchart.tsx
+import { Box, Typography } from "@mui/material";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   BarElement,
-  Title,
   Tooltip,
   Legend,
 } from "chart.js";
-import { BarchartProps, ChartItem } from "../../util/types/chartTypes";
+import { BarchartProps } from "../../util/types/chartTypes";
 
-// Registering the required chart components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
-const Barchart: React.FC<BarchartProps> = ({ data, error, loading }) => {
+const BarChart = ({ data, error, loading }: BarchartProps) => {
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: 200,
+        }}
+      >
+        <Typography>Loading...</Typography>
+      </Box>
+    );
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return (
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: 200,
+        }}
+      >
+        <Typography color="error">{error}</Typography>
+      </Box>
+    );
   }
 
   if (!data || data.length === 0) {
-    return <p>No data available</p>;
+    return (
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: 200,
+        }}
+      >
+        <Typography>No data available</Typography>
+      </Box>
+    );
   }
 
   const chartData = {
-    labels: data.map((item: ChartItem) => item.label),
+    labels: data.map((item) => item.label),
     datasets: [
       {
-        label: "Items by Type",
-        data: data.map((item: ChartItem) => item.value),
-        backgroundColor: [
-          "#FF6384",
-          "#36A2EB",
-          "#FFCE56",
-          "#4BC0C0",
-          "#9966FF",
-          "#FF9F40",
-        ],
-        borderWidth: 1,
+        label: "Items by Category",
+        data: data.map((item) => item.value),
+        backgroundColor: "#36A2EB",
       },
     ],
   };
 
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      title: {
-        display: true,
-        text: "Items by Type",
-      },
-      legend: {
-        display: false,
-      },
-    },
-    scales: {
-      x: {
-        title: {
-          display: true,
-          text: "Item Type",
-        },
-      },
-      y: {
-        title: {
-          display: true,
-          text: "Count",
-        },
-        beginAtZero: true,
-      },
-    },
-  };
-
-  return <Bar data={chartData} options={chartOptions} />;
+  return (
+    <Box sx={{ width: "100%", height: "100%" }}>
+      <Bar
+        data={chartData}
+        options={{
+          indexAxis: "y",
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: "Number of Items",
+              },
+              ticks: {
+                stepSize: 1,
+              },
+            },
+            y: {
+              title: {
+                display: true,
+                text: "Category",
+              },
+            },
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: true },
+          },
+        }}
+      />
+    </Box>
+  );
 };
 
-export default Barchart;
+export default BarChart;

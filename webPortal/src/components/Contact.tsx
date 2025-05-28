@@ -1,6 +1,13 @@
 import { useState } from "react";
 import useContactForm from "../util/useContactForm";
-import Styles from "../styles/contact.module.scss";
+import {
+  Paper,
+  Box,
+  Button,
+  TextField,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
 
 const Contact = ({
   onTicketCreated,
@@ -30,119 +37,148 @@ const Contact = ({
   };
 
   return (
-    <div className={Styles.formContainer}>
-      <div className={Styles.formHeader}>
-        <div className={Styles.headerTitle}>You lost an item?</div>
-        <div className={Styles.headerDescription}>
+    // Show affect from mui (Makes the box pop)
+    <Paper
+      elevation={8}
+      sx={{
+        maxWidth: 600,
+        mx: "auto",
+        p: 4,
+        borderRadius: 2,
+        backgroundColor: "background.paper",
+      }}
+    >
+      <Box
+        component="form"
+        onSubmit={async (e) => {
+          e.preventDefault();
+          await handleSubmitWithCallback();
+        }}
+        noValidate
+        autoComplete="off"
+      >
+        <Typography variant="h5" gutterBottom>
+          Lost Item Form
+        </Typography>
+        <Typography variant="body1" gutterBottom>
           Please fill out the form details correctly and accurately, and we will
-          try to help you get it back!
-        </div>
-      </div>
+          try to help you Track It Down!
+        </Typography>
 
-      <div className={Styles.formInputsContainer}>
-        {/* First Input Row */}
-        <div className={Styles.formInputRow}>
-          <div className={Styles.column}>
-            <div className={Styles.inputLabel}>First Name</div>
-            <input
-              className={Styles.inputField}
-              type="text"
-              value={formData.firstName}
-              onChange={(e) => handleChange("firstName", e.target.value)}
-            />
-          </div>
-          <div className={Styles.column}>
-            <div className={Styles.inputLabel}>Surname</div>
-            <input
-              className={Styles.inputField}
-              type="text"
-              value={formData.surname}
-              onChange={(e) => handleChange("surname", e.target.value)}
-            />
-          </div>
-        </div>
+        {/* First Name and Surname */}
+        <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+          <TextField
+            label="First Name"
+            value={formData.firstName}
+            onChange={(e) => handleChange("firstName", e.target.value)}
+            fullWidth
+            required
+          />
+          <TextField
+            label="Surname"
+            value={formData.surname}
+            onChange={(e) => handleChange("surname", e.target.value)}
+            fullWidth
+            required
+          />
+        </Box>
 
-        {/* Second Input Row */}
-        <div className={Styles.formInputRow}>
-          <div className={Styles.column}>
-            <div className={Styles.inputLabel}>Area</div>
-            <input
-              className={Styles.inputField}
-              type="text"
-              placeholder="Country Code"
-              value={formData.countryCode}
-              onChange={(e) => handleChange("countryCode", e.target.value)}
-            />
-          </div>
-          <div className={Styles.column}>
-            <div className={Styles.inputLabel}>Phone Number</div>
-            <input
-              className={Styles.inputField}
-              type="text"
-              value={formData.phoneNumber}
-              onChange={(e) => handleChange("phoneNumber", e.target.value)}
-            />
-          </div>
-        </div>
+        {/* Country Code and Phone Number */}
+        <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+          <TextField
+            label="Area (Country Code)"
+            value={formData.countryCode}
+            onChange={(e) => handleChange("countryCode", e.target.value)}
+            fullWidth
+            placeholder="+1"
+            required
+          />
+          <TextField
+            label="Phone Number"
+            value={formData.phoneNumber}
+            onChange={(e) => handleChange("phoneNumber", e.target.value)}
+            fullWidth
+            required
+          />
+        </Box>
 
-        {/* Email and Date Lost Input Row */}
-        <div className={Styles.formInputRow}>
-          <div className={Styles.column}>
-            <div className={Styles.inputLabel}>Email</div>
-            <input
-              className={Styles.inputField}
-              type="email"
-              value={formData.email}
-              onChange={(e) => handleChange("email", e.target.value)}
+        {/* Email and Date Lost */}
+        <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+          <TextField
+            label="Email"
+            type="email"
+            value={formData.email}
+            onChange={(e) => handleChange("email", e.target.value)}
+            fullWidth
+            required
+          />
+          <TextField
+            label="Date Lost"
+            type="date"
+            value={formData.dateLost}
+            onChange={(e) => handleChange("dateLost", e.target.value)}
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            required
+          />
+        </Box>
+
+        {/* Description */}
+        <TextField
+          label="Description"
+          placeholder="Describe the item you lost"
+          multiline
+          minRows={4}
+          value={formData.description}
+          onChange={(e) => handleChange("description", e.target.value)}
+          fullWidth
+          required
+          sx={{ mb: 3 }}
+        />
+
+        {/* Submit Button */}
+        <Box sx={{ position: "relative" }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={isSubmitting}
+            fullWidth
+          >
+            Submit
+          </Button>
+          {isSubmitting && (
+            <CircularProgress
+              size={24}
+              sx={{
+                color: "primary.main",
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                marginTop: "-12px",
+                marginLeft: "-12px",
+              }}
             />
-          </div>
-          <div className={Styles.column}>
-            <div className={Styles.inputLabel}>Date Lost</div>
-            <input
-              className={Styles.inputField}
-              type="date"
-              value={formData.dateLost}
-              onChange={(e) => handleChange("dateLost", e.target.value)}
-            />
-          </div>
-        </div>
+          )}
+        </Box>
 
-        {/* Description Input with Title */}
-        <div className={Styles.formInputRow}>
-          <div className={Styles.column}>
-            <div className={Styles.inputLabel}>Description</div>
-            <textarea
-              className={Styles.descriptionBox}
-              placeholder="Describe the item you lost"
-              value={formData.description}
-              onChange={(e) => handleChange("description", e.target.value)}
-            />
-          </div>
-        </div>
-      </div>
+        {/* Error Message */}
+        {error && (
+          <Typography color="error.main" mt={2}>
+            {error}
+          </Typography>
+        )}
 
-      {/* Submit Button */}
-      <div className={Styles.formBtn}>
-        <button
-          className={Styles.submitBtn}
-          onClick={handleSubmitWithCallback}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Submitting..." : "Submit"}
-        </button>
-      </div>
-
-      {/* Error or Success Messages */}
-      {error && <div className={Styles.error}>{error}</div>}
-
-      {successMessage && newTicketId && (
-        <div className={Styles.success}>
-          {successMessage}
-          <br />
-          <strong>Opening your chat now...</strong>
-        </div>
-      )}
-    </div>
+        {/* Success Message */}
+        {successMessage && newTicketId && (
+          <Typography color="success.main" mt={2}>
+            {successMessage}
+            <br />
+            <strong>Opening your chat now...</strong>
+          </Typography>
+        )}
+      </Box>
+    </Paper>
   );
 };
 

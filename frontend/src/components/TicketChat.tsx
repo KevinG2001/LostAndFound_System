@@ -1,61 +1,133 @@
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Paper,
+  Divider,
+} from "@mui/material";
 import { useChat } from "../util/useChat";
-import { useEffect, useState } from "react";
-import Styles from "../styles/chat.module.scss";
 import { Message } from "../util/types/ticketType";
 
 interface TicketChatProps {
   ticketId: string;
   description: string;
+  maxHeight?: number | string;
 }
 
-const TicketChat = ({ ticketId, description }: TicketChatProps) => {
+const TicketChat = ({
+  ticketId,
+  description,
+  maxHeight = "60vh",
+}: TicketChatProps) => {
   const senderName = "Support";
   const { messages, newMessage, setNewMessage, handleSendMessage, error } =
     useChat(ticketId, senderName);
 
-  const [initialMessages, setInitialMessages] = useState<Message[]>([]);
-
-  useEffect(() => {
-    if (description) {
-      const descriptionMessage: Message = {
+  const descriptionMessage: Message | null = description
+    ? {
         sender: "Customer",
         message: description,
         timestamp: new Date().toISOString(),
-      };
+      }
+    : null;
 
-      const updatedMessages = [descriptionMessage, ...messages];
-      setInitialMessages(updatedMessages);
-    } else {
-      setInitialMessages(messages);
-    }
-  }, [description, messages]);
+  const allMessages = descriptionMessage
+    ? [descriptionMessage, ...messages]
+    : messages;
+
+  const onSendMessage = () => {
+    if (!newMessage.trim()) return;
+    handleSendMessage();
+  };
 
   return (
-    <div className={Styles.chatContainer}>
-      <h3 className={Styles.chatTitle}>Chat</h3>
-      <div className={Styles.messagesContainer}>
-        {initialMessages.map((msg, index) => (
-          <div key={index} className={Styles.message}>
-            <strong className={Styles.messageSender}>{msg.sender}</strong>:{" "}
-            <span className={Styles.messageText}>{msg.message}</span> <br />
-            <small className={Styles.messageTimestamp}>
-              {new Date(msg.timestamp).toLocaleString()}
-            </small>
-          </div>
-        ))}
-      </div>
-      <textarea
-        className={Styles.messageInput}
-        rows={3}
+    <Box
+      sx={{
+        maxWidth: 700,
+        mx: "auto",
+        p: 2,
+        display: "flex",
+        flexDirection: "column",
+        height: maxHeight,
+        border: "1px solid",
+        borderColor: "divider",
+        borderRadius: 2,
+        backgroundColor: "background.paper",
+      }}
+    >
+      <Typography variant="h5" mb={2} align="center">
+        Chat
+      </Typography>
+
+      <Box
+        sx={{
+          flexGrow: 1,
+          overflowY: "auto",
+          mb: 2,
+          px: 1,
+          display: "flex",
+          flexDirection: "column",
+          gap: 1.5,
+        }}
+      >
+        {allMessages.map(({ sender, message, timestamp }, idx) => {
+          const isUser = sender === senderName;
+          return (
+            <Paper
+              key={idx}
+              elevation={2}
+              sx={{
+                alignSelf: isUser ? "flex-end" : "flex-start",
+                maxWidth: "75%",
+                p: 1.5,
+                bgcolor: isUser ? "primary.light" : "grey.200",
+              }}
+            >
+              <Typography
+                variant="subtitle2"
+                fontWeight="bold"
+                color={isUser ? "primary.dark" : "text.primary"}
+              >
+                {sender}
+              </Typography>
+              <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
+                {message}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {new Date(timestamp).toLocaleString()}
+              </Typography>
+            </Paper>
+          );
+        })}
+      </Box>
+
+      <Divider sx={{ mb: 2 }} />
+
+      <TextField
+        multiline
+        minRows={3}
+        placeholder="Type your message here..."
         value={newMessage}
         onChange={(e) => setNewMessage(e.target.value)}
-        placeholder="Type your message here..."
+        fullWidth
+        sx={{ mb: 1 }}
       />
-      <button className={Styles.sendButton} onClick={handleSendMessage}>
+
+      <Button
+        variant="contained"
+        onClick={onSendMessage}
+        disabled={!newMessage.trim()}
+      >
         Send
-      </button>
-      {error && <p className={Styles.errorText}>{error}</p>}
-    </div>
+      </Button>
+
+      {error && (
+        <Typography color="error" mt={2} align="center">
+          {error}
+        </Typography>
+      )}
+    </Box>
   );
 };
 

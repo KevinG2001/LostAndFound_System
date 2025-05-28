@@ -1,4 +1,5 @@
 // src/utils/types/chartTypes.ts
+
 export interface ChartItem {
   label: string;
   value: number;
@@ -10,9 +11,10 @@ export interface BarchartProps {
   loading: boolean;
 }
 
-export interface DoughnutChartItem {
-  category: string;
-  count: number;
+export interface DoughnutChartProps {
+  data: ChartItem[];
+  error: string | null;
+  loading?: boolean;
 }
 
 export interface LineChartItem {
@@ -21,11 +23,6 @@ export interface LineChartItem {
   unclaimed: number;
   expired: number;
   toCollect: number;
-}
-
-export interface DoughnutChartProps {
-  data: DoughnutChartItem[];
-  error: string | null;
 }
 
 export interface LineChartProps {
