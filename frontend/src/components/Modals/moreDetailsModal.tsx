@@ -60,7 +60,9 @@ const MoreDetailsModal = ({
   data,
   type,
 }: MoreDetailsModalProps) => {
-  const [activeTab, setActiveTab] = useState("details");
+  const [activeTab, setActiveTab] = useState<
+    "details" | "collection" | "history"
+  >("details");
   const [isEditing, setIsEditing] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -68,21 +70,28 @@ const MoreDetailsModal = ({
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(menuAnchorEl);
 
+  // Reset tab and editing state when modal or type changes
   useEffect(() => {
     setActiveTab("details");
     setIsEditing(false);
   }, [type, isOpen]);
 
+  // Set item image if type is item
   useEffect(() => {
     if (type === "item") {
-      setImageUrl(data.imageUrl ?? null);
+      setImageUrl((data as ItemData).imageUrl ?? null);
     } else {
       setImageUrl(null);
     }
   }, [data, type]);
 
-  const handleTabChange = (_: React.SyntheticEvent, newValue: string) =>
-    setActiveTab(newValue);
+  // Handle tab changes
+  const handleTabChange = (
+    _: React.SyntheticEvent,
+    newValue: string | number
+  ) => {
+    setActiveTab(newValue as string);
+  };
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMenuAnchorEl(event.currentTarget);
@@ -93,8 +102,7 @@ const MoreDetailsModal = ({
   };
 
   const handleUploadImage = async (file: File) => {
-    if (!file) return;
-    if (type !== "item") return;
+    if (!file || type !== "item") return;
 
     const formData = new FormData();
     formData.append("image", file);
@@ -106,10 +114,7 @@ const MoreDetailsModal = ({
     try {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/items/file/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
+        { method: "POST", body: formData }
       );
       const result = await res.json();
       setImageUrl(result.imageUrl);
@@ -141,9 +146,7 @@ const MoreDetailsModal = ({
     try {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/items/file/delete/${item.itemID}`,
-        {
-          method: "DELETE",
-        }
+        { method: "DELETE" }
       );
 
       if (!res.ok) throw new Error("Delete request failed");
@@ -172,12 +175,10 @@ const MoreDetailsModal = ({
             />
           );
         }
-        if (type === "ticket") {
+        if (type === "ticket")
           return <TicketDetailsTab data={data as Ticket} />;
-        }
-        if (type === "container") {
+        if (type === "container")
           return <ContainerDetailsTab data={data as ContainerData} />;
-        }
         return null;
 
       case "collection":
@@ -256,9 +257,7 @@ const MoreDetailsModal = ({
                   right: 4,
                   bgcolor: "rgba(0,0,0,0.5)",
                   color: "white",
-                  "&:hover": {
-                    bgcolor: "rgba(0,0,0,0.7)",
-                  },
+                  "&:hover": { bgcolor: "rgba(0,0,0,0.7)" },
                 }}
                 size="small"
               >
@@ -278,19 +277,12 @@ const MoreDetailsModal = ({
               anchorEl={menuAnchorEl}
               open={isMenuOpen}
               onClose={handleMenuClose}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "right",
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
             >
               <label htmlFor="image-upload-input" style={{ width: "100%" }}>
                 <MenuItem
                   disabled={uploading}
-                  onClick={() => {}}
                   sx={{ cursor: uploading ? "default" : "pointer" }}
                 >
                   <CloudUploadIcon fontSize="small" sx={{ mr: 1 }} />
@@ -312,17 +304,26 @@ const MoreDetailsModal = ({
           </Box>
         )}
 
-        {/* Tabs for items and containers */}
+        {/* Tabs */}
         {(type === "item" || type === "container") && (
           <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
-            <Tabs value={activeTab} onChange={handleTabChange}>
+            <Tabs
+              value={activeTab}
+              onChange={(_, newValue) => setActiveTab(newValue)}
+              textColor="primary"
+              indicatorColor="primary"
+            >
               <Tab label="Details" value="details" />
-              {type === "item" && (
-                <>
-                  <Tab label="Collection Details" value="collection" />
-                  <Tab label="History" value="history" />
-                </>
-              )}
+              <Tab
+                label="Collection Details"
+                value="collection"
+                sx={{ display: type === "item" ? "inline-flex" : "none" }}
+              />
+              <Tab
+                label="History"
+                value="history"
+                sx={{ display: type === "item" ? "inline-flex" : "none" }}
+              />
             </Tabs>
           </Box>
         )}
