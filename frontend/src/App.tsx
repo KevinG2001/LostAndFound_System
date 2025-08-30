@@ -9,6 +9,7 @@ import Tickets from "./pages/TicketsPage";
 import { SnackbarProvider } from "notistack";
 
 import { Box, CssBaseline } from "@mui/material";
+import Containers from "./pages/Containers";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/items" element={<Items />} />
               <Route path="/tickets" element={<Tickets />} />
+              <Route path="/containers" element={<Containers />} />
             </Routes>
           </SnackbarProvider>
         </Box>

@@ -3,6 +3,7 @@ import { Box, Button, Typography } from "@mui/material";
 import TicketIcon from "./Icons/TicketIcon";
 import BackpackIcon from "./Icons/BackpackIcon";
 import PieChartIcon from "./Icons/PieChartIcon";
+import BoxIcon from "./Icons/BoxIcon";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ function Navbar() {
     { label: "Dashboard", path: "/", icon: <PieChartIcon /> },
     { label: "Items", path: "/items", icon: <BackpackIcon /> },
     { label: "Tickets", path: "/tickets", icon: <TicketIcon /> },
+    { label: "Containers", path: "/containers", icon: <BoxIcon /> },
   ];
 
   return (
