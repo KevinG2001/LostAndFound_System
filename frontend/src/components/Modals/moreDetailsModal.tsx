@@ -90,7 +90,7 @@ const MoreDetailsModal = ({
     _: React.SyntheticEvent,
     newValue: string | number
   ) => {
-    setActiveTab(newValue as string);
+    setActiveTab(newValue as "details" | "collection" | "history");
   };
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -309,21 +309,17 @@ const MoreDetailsModal = ({
           <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
             <Tabs
               value={activeTab}
-              onChange={(_, newValue) => setActiveTab(newValue)}
+              onChange={(_, newValue) =>
+                setActiveTab(newValue as "details" | "collection" | "history")
+              }
               textColor="primary"
               indicatorColor="primary"
             >
               <Tab label="Details" value="details" />
-              <Tab
-                label="Collection Details"
-                value="collection"
-                sx={{ display: type === "item" ? "inline-flex" : "none" }}
-              />
-              <Tab
-                label="History"
-                value="history"
-                sx={{ display: type === "item" ? "inline-flex" : "none" }}
-              />
+              {type === "item" && (
+                <Tab label="Collection Details" value="collection" />
+              )}
+              {type === "item" && <Tab label="History" value="history" />}
             </Tabs>
           </Box>
         )}
