@@ -1,9 +1,9 @@
 {
   "name": "backend",
   "scripts": {
-    "dev": "nodemon server.js",
+    "dev": "cross-env NODE_ENV=local nodemon server.js",
     "test": "jest",
-    "start": "cross-env NODE_ENV=production node server.js"
+    "start": "cross-env NODE_ENV=development nodemon server.js"
   },
   "dependencies": {
     "aws-sdk": "^2.1692.0",

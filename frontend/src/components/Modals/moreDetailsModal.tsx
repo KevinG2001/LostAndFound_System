@@ -22,9 +22,11 @@ import ItemDetailsTab from "./tabs/itemDetails";
 import TicketDetailsTab from "./tabs/ticketDetails";
 import CollectionDetailsTab from "./tabs/collectionDetails";
 import HistoryTab from "./tabs/historyDetails";
+import ContainerDetailsTab from "./tabs/containerDetails";
 
 import { ItemData } from "../../util/types/itemTypes";
 import { Ticket } from "../../util/types/ticketType";
+import { ContainerData } from "../../util/types/containerType";
 
 interface MoreDetailsModalPropsItem {
   isOpen: boolean;
@@ -40,9 +42,17 @@ interface MoreDetailsModalPropsTicket {
   data: Ticket;
 }
 
+interface MoreDetailsModalPropsContainer {
+  isOpen: boolean;
+  onClose: () => void;
+  type: "container";
+  data: ContainerData;
+}
+
 type MoreDetailsModalProps =
   | MoreDetailsModalPropsItem
-  | MoreDetailsModalPropsTicket;
+  | MoreDetailsModalPropsTicket
+  | MoreDetailsModalPropsContainer;
 
 const MoreDetailsModal = ({
   isOpen,
@@ -50,7 +60,9 @@ const MoreDetailsModal = ({
   data,
   type,
 }: MoreDetailsModalProps) => {
-  const [activeTab, setActiveTab] = useState("details");
+  const [activeTab, setActiveTab] = useState<
+    "details" | "collection" | "history"
+  >("details");
   const [isEditing, setIsEditing] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -58,21 +70,28 @@ const MoreDetailsModal = ({
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(menuAnchorEl);
 
+  // Reset tab and editing state when modal or type changes
   useEffect(() => {
     setActiveTab("details");
     setIsEditing(false);
   }, [type, isOpen]);
 
+  // Set item image if type is item
   useEffect(() => {
     if (type === "item") {
-      setImageUrl(data.imageUrl ?? null);
+      setImageUrl((data as ItemData).imageUrl ?? null);
     } else {
       setImageUrl(null);
     }
   }, [data, type]);
 
-  const handleTabChange = (_: React.SyntheticEvent, newValue: string) =>
-    setActiveTab(newValue);
+  // Handle tab changes
+  const handleTabChange = (
+    _: React.SyntheticEvent,
+    newValue: string | number
+  ) => {
+    setActiveTab(newValue as "details" | "collection" | "history");
+  };
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMenuAnchorEl(event.currentTarget);
@@ -83,13 +102,11 @@ const MoreDetailsModal = ({
   };
 
   const handleUploadImage = async (file: File) => {
-    if (!file) return;
-
-    if (type !== "item") return;
+    if (!file || type !== "item") return;
 
     const formData = new FormData();
     formData.append("image", file);
-    formData.append("itemID", data.itemID);
+    formData.append("itemID", (data as ItemData).itemID);
 
     setUploading(true);
     handleMenuClose();
@@ -97,10 +114,7 @@ const MoreDetailsModal = ({
     try {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/items/file/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
+        { method: "POST", body: formData }
       );
       const result = await res.json();
       setImageUrl(result.imageUrl);
@@ -118,23 +132,21 @@ const MoreDetailsModal = ({
     if (!file) return;
 
     handleUploadImage(file);
-
     e.target.value = "";
   };
 
   const handleDeleteImage = async () => {
     if (type !== "item") return;
-    if (!data?.itemID || !imageUrl) return;
+    const item = data as ItemData;
+    if (!item?.itemID || !imageUrl) return;
 
     setUploading(true);
     handleMenuClose();
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/items/file/delete/${data.itemID}`,
-        {
-          method: "DELETE",
-        }
+        `${import.meta.env.VITE_API_URL}/items/file/delete/${item.itemID}`,
+        { method: "DELETE" }
       );
 
       if (!res.ok) throw new Error("Delete request failed");
@@ -154,19 +166,27 @@ const MoreDetailsModal = ({
   const renderTabContent = () => {
     switch (activeTab) {
       case "details":
-        return type === "item" ? (
-          <ItemDetailsTab
-            data={data}
-            isEditing={isEditing}
-            setIsEditing={setIsEditing}
-          />
-        ) : (
-          <TicketDetailsTab data={data} />
-        );
+        if (type === "item") {
+          return (
+            <ItemDetailsTab
+              data={data as ItemData}
+              isEditing={isEditing}
+              setIsEditing={setIsEditing}
+            />
+          );
+        }
+        if (type === "ticket")
+          return <TicketDetailsTab data={data as Ticket} />;
+        if (type === "container")
+          return <ContainerDetailsTab data={data as ContainerData} />;
+        return null;
+
       case "collection":
         return <CollectionDetailsTab data={data} />;
+
       case "history":
         return <HistoryTab data={data} />;
+
       default:
         return null;
     }
@@ -175,9 +195,10 @@ const MoreDetailsModal = ({
   return (
     <Dialog open={isOpen} onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle>
-        {type === "item"
-          ? `Item ID: ${data.itemID}`
-          : `Ticket ID: ${data.ticketId}`}
+        {type === "item" && `Item ID: ${(data as ItemData).itemID}`}
+        {type === "ticket" && `Ticket ID: ${(data as Ticket).ticketId}`}
+        {type === "container" &&
+          `Container ID: ${(data as ContainerData).containerID}`}
         <IconButton
           aria-label="close"
           onClick={onClose}
@@ -188,7 +209,7 @@ const MoreDetailsModal = ({
       </DialogTitle>
 
       <DialogContent dividers>
-        {/* Only items show image upload */}
+        {/* Image Upload only for items */}
         {type === "item" && (
           <Box
             sx={{
@@ -236,9 +257,7 @@ const MoreDetailsModal = ({
                   right: 4,
                   bgcolor: "rgba(0,0,0,0.5)",
                   color: "white",
-                  "&:hover": {
-                    bgcolor: "rgba(0,0,0,0.7)",
-                  },
+                  "&:hover": { bgcolor: "rgba(0,0,0,0.7)" },
                 }}
                 size="small"
               >
@@ -258,19 +277,12 @@ const MoreDetailsModal = ({
               anchorEl={menuAnchorEl}
               open={isMenuOpen}
               onClose={handleMenuClose}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "right",
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
             >
               <label htmlFor="image-upload-input" style={{ width: "100%" }}>
                 <MenuItem
                   disabled={uploading}
-                  onClick={() => {}}
                   sx={{ cursor: uploading ? "default" : "pointer" }}
                 >
                   <CloudUploadIcon fontSize="small" sx={{ mr: 1 }} />
@@ -292,13 +304,22 @@ const MoreDetailsModal = ({
           </Box>
         )}
 
-        {/* Tabs only for items */}
-        {type === "item" && (
+        {/* Tabs */}
+        {(type === "item" || type === "container") && (
           <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
-            <Tabs value={activeTab} onChange={handleTabChange}>
+            <Tabs
+              value={activeTab}
+              onChange={(_, newValue) =>
+                setActiveTab(newValue as "details" | "collection" | "history")
+              }
+              textColor="primary"
+              indicatorColor="primary"
+            >
               <Tab label="Details" value="details" />
-              <Tab label="Collection Details" value="collection" />
-              <Tab label="History" value="history" />
+              {type === "item" && (
+                <Tab label="Collection Details" value="collection" />
+              )}
+              {type === "item" && <Tab label="History" value="history" />}
             </Tabs>
           </Box>
         )}

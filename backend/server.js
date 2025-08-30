@@ -36,6 +36,7 @@ const countsRoutes = require("./routes/counts");
 const searchRoutes = require("./routes/search");
 const statRoutes = require("./routes/stats");
 const garageRoutes = require("./routes/garages");
+const containerRoutes = require("./routes/containers");
 
 app.use("/items", itemRoutes);
 app.use("/tickets", ticketRoutes);
@@ -43,6 +44,7 @@ app.use("/counts", countsRoutes);
 app.use("/search", searchRoutes);
 app.use("/stats", statRoutes);
 app.use("/garages", garageRoutes);
+app.use("/containers", containerRoutes);
 
 // Use error handler middleware
 app.use(errorHandler);

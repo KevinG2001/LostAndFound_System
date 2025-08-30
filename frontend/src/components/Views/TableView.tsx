@@ -1,5 +1,6 @@
-import { useState } from "react";
 import {
+  useTheme,
+  Checkbox,
   Table,
   TableBody,
   TableCell,
@@ -9,33 +10,36 @@ import {
   Paper,
   TablePagination,
   Chip,
-  useTheme,
 } from "@mui/material";
+import { useState } from "react";
+import { useItemSelection } from "../../util/useItemSelection";
 
 interface TableViewProps {
   columns: { header: string; accessor: string }[];
   data: Record<string, any>[];
   onRowClick?: (item: any) => void;
+  selectedItems?: string[];
+  setSelectedItems?: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const TableView = ({ columns, data, onRowClick }: TableViewProps) => {
   const theme = useTheme();
+  const { selectedItems, setSelectedItems } = useItemSelection();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const handleChangePage = (_: unknown, newPage: number) => setPage(newPage);
+  const paginatedData = data.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
+  const handleChangePage = (_: unknown, newPage: number) => setPage(newPage);
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
-  const paginatedData = data.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
 
   const statusColorMap: Record<string, string> = {
     Expired: theme.palette.error.main,
@@ -53,10 +57,7 @@ const TableView = ({ columns, data, onRowClick }: TableViewProps) => {
         <Chip
           label={value}
           size="small"
-          sx={{
-            bgcolor: bg,
-            color: theme.palette.getContrastText(bg),
-          }}
+          sx={{ bgcolor: bg, color: theme.palette.getContrastText(bg) }}
         />
       );
     }
@@ -69,6 +70,7 @@ const TableView = ({ columns, data, onRowClick }: TableViewProps) => {
         <Table size="small">
           <TableHead>
             <TableRow>
+              <TableCell padding="checkbox">Selected</TableCell>
               {columns.map((col) => (
                 <TableCell
                   key={col.accessor}
@@ -80,34 +82,52 @@ const TableView = ({ columns, data, onRowClick }: TableViewProps) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedData.map((row, rowIndex) => (
-              <TableRow
-                hover
-                key={rowIndex}
-                onClick={() => onRowClick?.(row)}
-                sx={{
-                  cursor: onRowClick ? "pointer" : "default",
-                  fontSize: "0.85rem",
-                }}
-              >
-                {columns.map((col) => (
-                  <TableCell
-                    key={col.accessor}
-                    sx={{ py: 0.5, fontSize: "0.85rem" }}
-                  >
-                    {renderCell(col.accessor, row[col.accessor])}
+            {paginatedData.map((row, rowIdx) => {
+              const rowId = row.itemID || row.containerID || rowIdx;
+              return (
+                <TableRow
+                  hover
+                  key={rowId}
+                  onClick={() => onRowClick?.(row)}
+                  sx={{
+                    cursor: onRowClick ? "pointer" : "default",
+                    fontSize: "0.85rem",
+                  }}
+                >
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      checked={selectedItems.includes(rowId)}
+                      onClick={(e) => e.stopPropagation()}
+                      onChange={(e) => {
+                        if (e.target.checked)
+                          setSelectedItems([...selectedItems, rowId]);
+                        else
+                          setSelectedItems(
+                            selectedItems.filter((id) => id !== rowId)
+                          );
+                      }}
+                    />
                   </TableCell>
-                ))}
-              </TableRow>
-            ))}
+                  {columns.map((col, colIdx) => (
+                    <TableCell
+                      key={`${col.accessor}-${colIdx}`}
+                      sx={{ py: 0.5, fontSize: "0.85rem" }}
+                    >
+                      {renderCell(col.accessor, row[col.accessor])}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              );
+            })}
 
-            {/* Fill empty rows */}
+            {/* Empty rows */}
             {Array.from({ length: rowsPerPage - paginatedData.length }).map(
               (_, idx) => (
                 <TableRow key={`empty-${idx}`}>
-                  {columns.map((col) => (
+                  <TableCell padding="checkbox" />
+                  {columns.map((col, colIdx) => (
                     <TableCell
-                      key={col.accessor}
+                      key={`${col.accessor}-empty-${colIdx}`}
                       sx={{ py: 0.5, fontSize: "0.85rem" }}
                     />
                   ))}
@@ -117,6 +137,7 @@ const TableView = ({ columns, data, onRowClick }: TableViewProps) => {
           </TableBody>
         </Table>
       </TableContainer>
+
       <TablePagination
         component="div"
         count={data.length}

@@ -11,9 +11,11 @@ import ItemsToday from "../components/StatBubbles/ItemsToday";
 import ItemsReturned from "../components/StatBubbles/ItemsReturned";
 import LostThisMonth from "../components/StatBubbles/ItemsLostMonth";
 import ItemsToCollectThisMonth from "../components/StatBubbles/ItemsToCollectThisMonth";
+import { useItemSelection } from "../util/useItemSelection";
 
 function ItemsPage() {
   const { items: itemsList } = useList("items", "list");
+  const { selectedItems, setSelectedItems } = useItemSelection();
 
   const [selectedItem, setSelectedItem] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,7 +28,6 @@ function ItemsPage() {
     items: searchResults,
     hasSearched,
   } = useSearch();
-
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -74,15 +75,8 @@ function ItemsPage() {
         pb: 2,
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          gap: 2,
-          mt: 1,
-          mb: 2,
-          flexWrap: "wrap",
-        }}
-      >
+      {/* Stat boxes */}
+      <Box sx={{ display: "flex", gap: 2, mt: 1, mb: 2, flexWrap: "wrap" }}>
         {[
           ItemsToday,
           ItemsReturned,
@@ -108,6 +102,7 @@ function ItemsPage() {
         ))}
       </Box>
 
+      {/* Search */}
       <Box mb={2}>
         <Searchbar
           searchTerm={searchTerm}
@@ -116,6 +111,7 @@ function ItemsPage() {
         />
       </Box>
 
+      {/* Table */}
       <Box sx={{ flexGrow: 1 }}>
         <TableView
           columns={columns}
@@ -125,6 +121,8 @@ function ItemsPage() {
               : reversedItems(itemsList)
           }
           onRowClick={handleRowClick}
+          selectedItems={selectedItems}
+          setSelectedItems={setSelectedItems}
         />
       </Box>
 
