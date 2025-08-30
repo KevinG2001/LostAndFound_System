@@ -354,4 +354,21 @@ router.delete("/file/delete/:itemID", async (req, res) => {
   }
 });
 
+// GET /items/:itemID
+router.get("/:itemID", async (req, res) => {
+  const { itemID } = req.params;
+  try {
+    const item = await Item.findOne({ itemID });
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+    res.status(200).json(item);
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "Error fetching item", error: err.message });
+  }
+});
+
 module.exports = router;

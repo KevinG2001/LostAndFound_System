@@ -9,6 +9,9 @@ import useSearch from "../util/useSearch";
 import Searchbar from "../components/Searchbar";
 import TableView from "../components/Views/TableView";
 import useList from "../util/useList";
+import MoreDetailsModal from "../components/Modals/moreDetailsModal";
+import { useState } from "react";
+import { ContainerData } from "../util/types/containerType";
 
 function Containers() {
   const { items: containersList } = useList("containers", "list");
@@ -23,12 +26,24 @@ function Containers() {
 
   // Container Columns
   const columns = [
-    { header: "ID", accessor: "ContainerID" },
-    { header: "Date Created", accessor: "DateCreated" },
-    { header: "Amount of Items", accessor: "AmountOfItems" },
+    { header: "ID", accessor: "containerID" },
+    { header: "Date Created", accessor: "createdAt" },
+    { header: "Amount of Items", accessor: "amountOfItems" },
   ];
 
-  const handleRowClick = (item: any) => {};
+  const [selectedContainer, setSelectedContainer] =
+    useState<ContainerData | null>(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleRowClick = (item: any) => {
+    setSelectedContainer(item);
+    setIsModalOpen(true);
+  };
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedContainer(null);
+  };
 
   return (
     <Container
@@ -91,6 +106,15 @@ function Containers() {
           onRowClick={handleRowClick}
         />
       </Box>
+      {/* Modal */}
+      {selectedContainer && (
+        <MoreDetailsModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          data={selectedContainer}
+          type="container"
+        />
+      )}
     </Container>
   );
 }

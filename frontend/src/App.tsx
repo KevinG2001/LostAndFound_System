@@ -9,7 +9,7 @@ import Tickets from "./pages/TicketsPage";
 import { SnackbarProvider } from "notistack";
 
 import { Box, CssBaseline } from "@mui/material";
-import Containers from "./pages/Containers";
+import Containers from "./pages/ContainersPage";
 
 function App() {
   return (

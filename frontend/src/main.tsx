@@ -4,11 +4,14 @@ import App from "./App.tsx";
 import "./index.css";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./components/theme.tsx";
+import { ItemSelectionProvider } from "./util/useItemSelection.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ThemeProvider theme={theme}>
-      <App />
-    </ThemeProvider>
+    <ItemSelectionProvider>
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
+    </ItemSelectionProvider>
   </StrictMode>
 );

@@ -1,15 +1,15 @@
 const dayjs = require("dayjs");
 
-const formatItemDates = (item) => {
-  const plainItem = item.toObject ? item.toObject() : item;
+const safeFormat = (date) => (date ? dayjs(date).format("DD-MM-YYYY") : null);
+
+const formatItemDates = (doc) => {
+  const plain = doc.toObject ? doc.toObject() : doc;
   return {
-    ...plainItem,
-    dateLost: dayjs(plainItem.dateLost).format("DD-MM-YYYY"),
-    dateCreated: dayjs(plainItem.dateCreated).format("DD-MM-YYYY"),
-    updatedAt: dayjs(plainItem.updatedAt).format("DD-MM-YYYY"),
+    ...plain,
+    dateCreated: safeFormat(plain.dateCreated),
+    updatedAt: safeFormat(plain.updatedAt),
+    dateLost: plain.dateLost ? safeFormat(plain.dateLost) : undefined,
   };
 };
 
-module.exports = {
-  formatItemDates,
-};
+module.exports = { formatItemDates };

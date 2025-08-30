@@ -4,10 +4,12 @@ import TicketIcon from "./Icons/TicketIcon";
 import BackpackIcon from "./Icons/BackpackIcon";
 import PieChartIcon from "./Icons/PieChartIcon";
 import BoxIcon from "./Icons/BoxIcon";
+import { useItemSelection } from "../util/useItemSelection";
 
 function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { handleAddToContainer } = useItemSelection();
 
   const navItems = [
     { label: "Dashboard", path: "/", icon: <PieChartIcon /> },
@@ -74,13 +76,20 @@ function Navbar() {
               onClick={() => navigate(path)}
             />
             {label === "Items" && location.pathname === "/items" && (
-              <NavButton
-                label="New Item"
-                onClick={() =>
-                  navigate("/items", { state: { openNewItemModal: true } })
-                }
-                isSubItem
-              />
+              <>
+                <NavButton
+                  label="New Item"
+                  onClick={() =>
+                    navigate("/items", { state: { openNewItemModal: true } })
+                  }
+                  isSubItem
+                />
+                <NavButton
+                  label="Add to Container"
+                  onClick={handleAddToContainer}
+                  isSubItem
+                />
+              </>
             )}
           </Box>
         ))}
