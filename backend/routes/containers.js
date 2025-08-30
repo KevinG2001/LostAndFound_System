@@ -27,7 +27,7 @@ router.post("/create", async (req, res) => {
       containerID,
       dateCreated: new Date(),
       listOfItemID,
-      AmountOfItems: listOfItemID.length,
+      amountOfItems: listOfItemID.length,
     });
 
     await newContainer.save();
