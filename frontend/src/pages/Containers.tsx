@@ -1,6 +1,35 @@
 import { Box, Container } from "@mui/material";
+// Stat box imports
+import ItemsToday from "../components/StatBubbles/ItemsToday";
+import ItemsReturned from "../components/StatBubbles/ItemsReturned";
+import LostThisMonth from "../components/StatBubbles/ItemsLostMonth";
+import ItemsToCollectThisMonth from "../components/StatBubbles/ItemsToCollectThisMonth";
+// Searchbar import
+import useSearch from "../util/useSearch";
+import Searchbar from "../components/Searchbar";
+import TableView from "../components/Views/TableView";
+import useList from "../util/useList";
 
 function Containers() {
+  const { items: containersList } = useList("containers", "list");
+  // Searchbar function
+  const {
+    searchTerm,
+    setSearchTerm,
+    searchDB,
+    items: searchResults,
+    hasSearched,
+  } = useSearch();
+
+  // Container Columns
+  const columns = [
+    { header: "ID", accessor: "ContainerID" },
+    { header: "Date Created", accessor: "DateCreated" },
+    { header: "Amount of Items", accessor: "AmountOfItems" },
+  ];
+
+  const handleRowClick = (item: any) => {};
+
   return (
     <Container
       maxWidth={false}
@@ -12,6 +41,7 @@ function Containers() {
         pb: 2,
       }}
     >
+      {/* Stat boxes */}
       <Box
         sx={{
           display: "flex",
@@ -21,7 +51,45 @@ function Containers() {
           flexWrap: "wrap",
         }}
       >
-        Container Page
+        {[
+          ItemsToday,
+          ItemsReturned,
+          LostThisMonth,
+          ItemsToCollectThisMonth,
+        ].map((Component, i) => (
+          <Box
+            key={i}
+            sx={{
+              flex: "1 1 0",
+              minWidth: 0,
+              bgcolor: "background.paper",
+              borderRadius: 2,
+              boxShadow: 1,
+              p: 1.5,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Component />
+          </Box>
+        ))}
+      </Box>
+      {/* Searchbar */}
+      <Box mb={2}>
+        <Searchbar
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          searchDB={searchDB}
+        />
+      </Box>
+      {/* Containers */}
+      <Box sx={{ flexGrow: 1 }}>
+        <TableView
+          columns={columns}
+          data={containersList}
+          onRowClick={handleRowClick}
+        />
       </Box>
     </Container>
   );
