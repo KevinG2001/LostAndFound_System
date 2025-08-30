@@ -1,5 +1,6 @@
 // src/context/ItemSelectionContext.tsx
 import React, { createContext, useContext, useState } from "react";
+import { useSnackbar } from "notistack";
 
 interface ItemSelectionContextType {
   selectedItems: string[];
@@ -22,10 +23,13 @@ export const ItemSelectionProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const { enqueueSnackbar } = useSnackbar(); // <-- use toast
 
   const handleAddToContainer = async () => {
     if (selectedItems.length === 0) {
-      alert("Please select at least one item.");
+      enqueueSnackbar("Please select at least one item.", {
+        variant: "warning",
+      });
       return;
     }
 
@@ -33,7 +37,7 @@ export const ItemSelectionProvider: React.FC<{ children: React.ReactNode }> = ({
       const containerData = {
         listOfItemID: selectedItems,
         dateCreated: new Date(),
-        AmountOfItems: selectedItems.length,
+        amountOfItems: selectedItems.length,
       };
 
       const res = await fetch(
@@ -48,14 +52,15 @@ export const ItemSelectionProvider: React.FC<{ children: React.ReactNode }> = ({
       if (!res.ok) throw new Error("Failed to create container");
 
       const newContainer = await res.json();
-      alert(
-        `Container ${newContainer.containerID} created with ${selectedItems.length} items!`
+      enqueueSnackbar(
+        `Container ${newContainer.containerID} created with ${selectedItems.length} items!`,
+        { variant: "success" }
       );
 
       setSelectedItems([]);
     } catch (err) {
       console.error(err);
-      alert("Error creating container");
+      enqueueSnackbar("Error creating container", { variant: "error" });
     }
   };
 
