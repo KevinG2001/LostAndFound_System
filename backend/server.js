@@ -13,7 +13,6 @@ const path = require("path");
 const app = express();
 const server = http.createServer(app);
 
-// Apply CORS middleware to Express
 app.use(cors(corsOptions));
 app.use(express.json());
 
@@ -37,6 +36,7 @@ const searchRoutes = require("./routes/search");
 const statRoutes = require("./routes/stats");
 const garageRoutes = require("./routes/garages");
 const containerRoutes = require("./routes/containers");
+const userRoutes = require("./routes/user");
 
 app.use("/items", itemRoutes);
 app.use("/tickets", ticketRoutes);
@@ -45,11 +45,10 @@ app.use("/search", searchRoutes);
 app.use("/stats", statRoutes);
 app.use("/garages", garageRoutes);
 app.use("/containers", containerRoutes);
+app.use("/user", userRoutes);
 
-// Use error handler middleware
 app.use(errorHandler);
 
-// MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
