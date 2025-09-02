@@ -11,8 +11,12 @@ function Navbar() {
   const location = useLocation();
   const { handleAddToContainer } = useItemSelection();
 
+  if (location.pathname === "/") {
+    return null;
+  }
+
   const navItems = [
-    { label: "Dashboard", path: "/", icon: <PieChartIcon /> },
+    { label: "Dashboard", path: "/dashboard", icon: <PieChartIcon /> },
     { label: "Items", path: "/items", icon: <BackpackIcon /> },
     { label: "Tickets", path: "/tickets", icon: <TicketIcon /> },
     { label: "Containers", path: "/containers", icon: <BoxIcon /> },
