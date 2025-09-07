@@ -9,7 +9,8 @@ import Tickets from "./pages/TicketsPage";
 import { Box, CssBaseline } from "@mui/material";
 import Containers from "./pages/ContainersPage";
 import LoginPage from "./pages/LoginPage";
-import { useAuth } from "./util/AuthContext";
+import AdminPage from "./pages/AdminPage";
+import ProtectedRoute from "./util/ProtectedRoute";
 
 function App() {
   return (
@@ -24,6 +25,14 @@ function App() {
             <Route path="/items" element={<Items />} />
             <Route path="/tickets" element={<Tickets />} />
             <Route path="/containers" element={<Containers />} />
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute permission="create_user">
+                  <AdminPage />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </Box>
       </Box>
