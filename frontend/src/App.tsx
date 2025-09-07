@@ -9,6 +9,7 @@ import Tickets from "./pages/TicketsPage";
 import { Box, CssBaseline } from "@mui/material";
 import Containers from "./pages/ContainersPage";
 import LoginPage from "./pages/LoginPage";
+import { useAuth } from "./util/AuthContext";
 
 function App() {
   return (

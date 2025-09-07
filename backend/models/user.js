@@ -7,6 +7,12 @@ const userSchema = new mongoose.Schema({
   Company: String,
   Location: String,
   Password: { type: String, required: true },
+  role: {
+    type: String,
+    ref: "Role",
+    required: true,
+    default: "employee",
+  },
 });
 
 module.exports = mongoose.model("User", userSchema);

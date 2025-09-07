@@ -6,6 +6,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import theme from "./components/theme.tsx";
 import { SnackbarProvider } from "notistack";
 import { ItemSelectionProvider } from "./util/useItemSelection.tsx";
+import { AuthProvider } from "./util/AuthContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -14,11 +15,13 @@ createRoot(document.getElementById("root")!).render(
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
       autoHideDuration={3000}
     >
-      <ItemSelectionProvider>
-        <ThemeProvider theme={theme}>
-          <App />
-        </ThemeProvider>
-      </ItemSelectionProvider>
+      <AuthProvider>
+        <ItemSelectionProvider>
+          <ThemeProvider theme={theme}>
+            <App />
+          </ThemeProvider>
+        </ItemSelectionProvider>
+      </AuthProvider>
     </SnackbarProvider>
   </StrictMode>
 );

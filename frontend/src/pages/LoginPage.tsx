@@ -3,24 +3,29 @@ import { Box, Button, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import useUser from "../util/useUser";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../util/AuthContext";
 
 function LoginPage() {
-  //! Make password hashed
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const { loginUser } = useUser("user", "login");
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-      const data = await loginUser("kglennon", "changeme123");
+      const data = await loginUser(username, password);
+
       console.log("Login success:", data);
+
+      login(data.token);
+
       navigate("/dashboard");
     } catch (err: any) {
       console.error(err.message);
+      setError(err.message || "Login failed");
     }
   };
 
