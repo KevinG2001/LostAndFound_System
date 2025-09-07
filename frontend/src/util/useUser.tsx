@@ -3,34 +3,39 @@ const useUser = (resource: string, endpoint: string) => {
     bodyData?: Record<string, any>,
     method: string = "GET"
   ) => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/${resource}/${endpoint}`,
-        {
-          method,
-          headers: { "Content-Type": "application/json" },
-          body: bodyData ? JSON.stringify(bodyData) : undefined,
-        }
-      );
+    console.log(
+      `Sending ${method} request to: ${
+        import.meta.env.VITE_API_URL
+      }/${resource}/${endpoint}`
+    );
+    console.log("Request body:", bodyData);
 
-      if (!response.ok) {
-        let errMessage = "Request failed";
-        try {
-          const errData = await response.json();
-          errMessage = errData.message || errMessage;
-        } catch {}
-        throw new Error(errMessage);
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/${resource}/${endpoint}`,
+      {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: bodyData ? JSON.stringify(bodyData) : undefined,
       }
+    );
 
-      return await response.json();
-    } catch (error) {
-      console.error(`Error fetching ${resource}/${endpoint}:`, error);
-      throw error;
+    console.log("Response status:", response.status);
+    console.log("Response ok?", response.ok);
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      console.error("Error response data:", errData);
+      throw new Error(errData.message || "Request failed");
     }
+
+    const data = await response.json();
+    console.log("Response data:", data);
+    return data;
   };
 
   const loginUser = async (username: string, password: string) => {
-    return await request({ username, password }, "POST");
+    console.log("Calling loginUser with:", { username, password });
+    return request({ username, password }, "POST");
   };
 
   return { loginUser, request };

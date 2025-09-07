@@ -12,6 +12,7 @@ import { useAuth } from "../util/AuthContext";
 import TableView from "../components/Views/TableView";
 import { useItemSelection } from "../util/useItemSelection";
 import { useSnackbar } from "notistack";
+import CreateUserModal from "../components/Modals/CreateUserModal"; // import the modal
 
 interface User {
   userId: string;
@@ -23,11 +24,11 @@ interface User {
 }
 
 function AdminPage() {
-  // ! Clean up fetchs and make custom hook?
   const [users, setUsers] = useState<User[]>([]);
   const { user } = useAuth();
   const { selectedItems, setSelectedItems } = useItemSelection();
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [createModalOpen, setCreateModalOpen] = useState(false); // new state
   const { enqueueSnackbar } = useSnackbar();
 
   const columns = [
@@ -113,7 +114,12 @@ function AdminPage() {
       />
 
       <Box mt={2} display="flex" gap={2}>
-        <Button sx={{ bgcolor: "green", color: "white" }}>Create User</Button>
+        <Button
+          sx={{ bgcolor: "green", color: "white" }}
+          onClick={() => setCreateModalOpen(true)} // open modal
+        >
+          Create User
+        </Button>
         <Button
           sx={{ bgcolor: "red", color: "white" }}
           onClick={handleDeleteClick}
@@ -137,6 +143,13 @@ function AdminPage() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Create User Modal */}
+      <CreateUserModal
+        isOpen={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        onUserCreated={fetchUsers} // refresh table after creation
+      />
     </Box>
   );
 }
