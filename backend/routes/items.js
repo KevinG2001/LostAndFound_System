@@ -303,7 +303,7 @@ router.post("/file/upload", upload.single("image"), async (req, res) => {
     item.historyDetails.push({
       action: "Image Uploaded",
       date: new Date(),
-      by: "System",
+      by: req.user?.username || req.user?.email || req.user?.id || "System",
       changes: {
         imageUrl: { from: null, to: imageUrl },
       },
@@ -343,7 +343,7 @@ router.delete("/file/delete/:itemID", async (req, res) => {
     item.historyDetails.push({
       action: "Image Deleted",
       date: new Date(),
-      by: "System",
+      by: req.user?.username || req.user?.email || req.user?.id || "System",
       changes: {
         imageUrl: { from: oldImageUrl, to: null },
       },
