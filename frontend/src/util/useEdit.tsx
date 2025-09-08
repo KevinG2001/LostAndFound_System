@@ -45,10 +45,12 @@ const useEdit = (id: string, type: "item" | "ticket") => {
         : `${import.meta.env.VITE_API_URL}/items/update/${id}`;
 
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch(endpoint, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify(updatedData),
       });
