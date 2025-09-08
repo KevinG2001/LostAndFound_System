@@ -62,9 +62,12 @@ const useEdit = (id: string, type: "item" | "ticket") => {
       const updated = await response.json();
       setSuccess(true);
       console.log(`${type} updated successfully:`, updated);
+
+      return updated;
     } catch (err) {
       setError((err as Error).message);
       console.error(`Error updating ${type}:`, err);
+      throw err;
     } finally {
       setLoading(false);
     }

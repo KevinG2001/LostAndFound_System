@@ -1,9 +1,14 @@
-// src/components/CollectionDetailsTab.tsx
 import React, { useState, useEffect } from "react";
 import { TextField, Button, Typography, Box, Stack } from "@mui/material";
 import useEdit from "../../../util/useEdit";
+import { ItemData } from "../../../util/types/itemTypes";
 
-function CollectionDetailsTab({ data }: { data: any }) {
+interface CollectionDetailsTabProps {
+  data: ItemData;
+  onUpdate?: (updatedItem: ItemData) => void;
+}
+
+function CollectionDetailsTab({ data, onUpdate }: CollectionDetailsTabProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState({
     firstName: "",
@@ -16,12 +21,7 @@ function CollectionDetailsTab({ data }: { data: any }) {
 
   useEffect(() => {
     if (data?.collectionDetails) {
-      setEditedData({
-        firstName: data.collectionDetails.firstName || "",
-        surname: data.collectionDetails.surname || "",
-        email: data.collectionDetails.email || "",
-        phone: data.collectionDetails.phone || "",
-      });
+      setEditedData({ ...data.collectionDetails });
     }
   }, [data]);
 
@@ -32,99 +32,53 @@ function CollectionDetailsTab({ data }: { data: any }) {
 
   const handleSave = async () => {
     try {
-      await editItem({
-        collectionDetails: editedData,
-      });
+      await editItem({ collectionDetails: editedData });
+
+      if (onUpdate) {
+        onUpdate({ ...data, collectionDetails: editedData });
+      }
+
       setIsEditing(false);
     } catch (err) {
-      console.error("Error saving collection details:", err);
+      console.error(err);
     }
   };
 
   return (
-    <Box
-      sx={{
-        maxWidth: 600,
-        margin: "0 auto",
-        px: 2,
-        mt: 3,
-      }}
-    >
+    <Box sx={{ maxWidth: 600, margin: "0 auto", px: 2, mt: 3 }}>
       <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 3 }}>
-        <Box>
-          <Typography variant="subtitle2">Firstname:</Typography>
-          {isEditing ? (
-            <TextField
-              fullWidth
-              name="firstName"
-              value={editedData.firstName}
-              onChange={handleInputChange}
-              variant="outlined"
-              size="small"
-            />
-          ) : (
-            <Typography>{editedData.firstName}</Typography>
-          )}
-        </Box>
-
-        <Box>
-          <Typography variant="subtitle2">Surname:</Typography>
-          {isEditing ? (
-            <TextField
-              fullWidth
-              name="surname"
-              value={editedData.surname}
-              onChange={handleInputChange}
-              variant="outlined"
-              size="small"
-            />
-          ) : (
-            <Typography>{editedData.surname}</Typography>
-          )}
-        </Box>
-
-        <Box>
-          <Typography variant="subtitle2">Email:</Typography>
-          {isEditing ? (
-            <TextField
-              fullWidth
-              name="email"
-              value={editedData.email}
-              onChange={handleInputChange}
-              variant="outlined"
-              size="small"
-            />
-          ) : (
-            <Typography>{editedData.email}</Typography>
-          )}
-        </Box>
-
-        <Box>
-          <Typography variant="subtitle2">Phone Number:</Typography>
-          {isEditing ? (
-            <TextField
-              fullWidth
-              name="phone"
-              value={editedData.phone}
-              onChange={handleInputChange}
-              variant="outlined"
-              size="small"
-            />
-          ) : (
-            <Typography>{editedData.phone}</Typography>
-          )}
-        </Box>
+        {["firstName", "surname", "email", "phone"].map((field) => (
+          <Box key={field}>
+            <Typography variant="subtitle2">
+              {field === "firstName"
+                ? "Firstname:"
+                : field === "surname"
+                ? "Surname:"
+                : field === "email"
+                ? "Email:"
+                : "Phone Number:"}
+            </Typography>
+            {isEditing ? (
+              <TextField
+                fullWidth
+                name={field}
+                value={editedData[field as keyof typeof editedData]}
+                onChange={handleInputChange}
+                size="small"
+              />
+            ) : (
+              <Typography>
+                {editedData[field as keyof typeof editedData]}
+              </Typography>
+            )}
+          </Box>
+        ))}
       </Box>
 
       <Box sx={{ mt: 3 }}>
         {isEditing ? (
           <Stack direction="row" spacing={2}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSave}
-              disabled={loading}
-            >
+            <Button variant="contained" onClick={handleSave} disabled={loading}>
               Save
             </Button>
             <Button variant="outlined" onClick={() => setIsEditing(false)}>

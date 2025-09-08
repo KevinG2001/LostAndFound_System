@@ -35,7 +35,6 @@ const TableView = ({
     setSelectedItems: contextSetSelectedItems,
   } = useItemSelection();
 
-  // Use props if provided, fallback to context
   const selectedItems =
     propSelectedItems !== undefined ? propSelectedItems : contextSelectedItems;
   const setSelectedItems =

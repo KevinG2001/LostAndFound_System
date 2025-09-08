@@ -12,12 +12,14 @@ import ItemsReturned from "../components/StatBubbles/ItemsReturned";
 import LostThisMonth from "../components/StatBubbles/ItemsLostMonth";
 import ItemsToCollectThisMonth from "../components/StatBubbles/ItemsToCollectThisMonth";
 import { useItemSelection } from "../util/useItemSelection";
+import { ItemData } from "../util/types/itemTypes";
 
 function ItemsPage() {
   const { items: itemsList } = useList("items", "list");
   const { selectedItems, setSelectedItems } = useItemSelection();
 
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [localItems, setLocalItems] = useState<ItemData[]>([]);
+  const [selectedItem, setSelectedItem] = useState<ItemData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNewItemModalOpen, setIsNewItemModalOpen] = useState(false);
 
@@ -32,13 +34,17 @@ function ItemsPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    setLocalItems(itemsList);
+  }, [itemsList]);
+
+  useEffect(() => {
     if (location.state?.openNewItemModal) {
       setIsNewItemModalOpen(true);
       navigate("/items", { replace: true, state: {} });
     }
   }, [location.state, navigate]);
 
-  const handleRowClick = (item: any) => {
+  const handleRowClick = (item: ItemData) => {
     setSelectedItem(item);
     setIsModalOpen(true);
   };
@@ -51,6 +57,18 @@ function ItemsPage() {
   const closeNewItemModal = () => setIsNewItemModalOpen(false);
   const handleCreateNewItem = () => closeNewItemModal();
 
+  const handleItemUpdate = (updatedItem: ItemData) => {
+    setLocalItems((prev) =>
+      prev.map((item) =>
+        item.itemID === updatedItem.itemID ? updatedItem : item
+      )
+    );
+
+    if (selectedItem?.itemID === updatedItem.itemID) {
+      setSelectedItem(updatedItem);
+    }
+  };
+
   const columns = [
     { header: "ID", accessor: "itemID" },
     { header: "Article", accessor: "article" },
@@ -62,7 +80,7 @@ function ItemsPage() {
     { header: "Status", accessor: "status" },
   ];
 
-  const reversedItems = (items: any[]) => items.slice().reverse();
+  const reversedItems = (items: ItemData[]) => items.slice().reverse();
 
   return (
     <Container
@@ -118,7 +136,7 @@ function ItemsPage() {
           data={
             hasSearched
               ? reversedItems(searchResults)
-              : reversedItems(itemsList)
+              : reversedItems(localItems)
           }
           onRowClick={handleRowClick}
           selectedItems={selectedItems}
@@ -139,6 +157,7 @@ function ItemsPage() {
           onClose={closeModal}
           data={selectedItem}
           type="item"
+          onUpdate={handleItemUpdate}
         />
       )}
     </Container>
