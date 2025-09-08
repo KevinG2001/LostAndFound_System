@@ -22,9 +22,26 @@ interface TableViewProps {
   setSelectedItems?: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const TableView = ({ columns, data, onRowClick }: TableViewProps) => {
+const TableView = ({
+  columns,
+  data,
+  onRowClick,
+  selectedItems: propSelectedItems,
+  setSelectedItems: propSetSelectedItems,
+}: TableViewProps) => {
   const theme = useTheme();
-  const { selectedItems, setSelectedItems } = useItemSelection();
+  const {
+    selectedItems: contextSelectedItems,
+    setSelectedItems: contextSetSelectedItems,
+  } = useItemSelection();
+
+  const selectedItems =
+    propSelectedItems !== undefined ? propSelectedItems : contextSelectedItems;
+  const setSelectedItems =
+    propSetSelectedItems !== undefined
+      ? propSetSelectedItems
+      : contextSetSelectedItems;
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -83,7 +100,8 @@ const TableView = ({ columns, data, onRowClick }: TableViewProps) => {
           </TableHead>
           <TableBody>
             {paginatedData.map((row, rowIdx) => {
-              const rowId = row.itemID || row.containerID || rowIdx;
+              const rowId =
+                row.userId || row.itemID || row.containerID || rowIdx;
               return (
                 <TableRow
                   hover

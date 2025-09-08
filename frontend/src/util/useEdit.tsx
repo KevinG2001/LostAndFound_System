@@ -45,10 +45,12 @@ const useEdit = (id: string, type: "item" | "ticket") => {
         : `${import.meta.env.VITE_API_URL}/items/update/${id}`;
 
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch(endpoint, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify(updatedData),
       });
@@ -60,9 +62,12 @@ const useEdit = (id: string, type: "item" | "ticket") => {
       const updated = await response.json();
       setSuccess(true);
       console.log(`${type} updated successfully:`, updated);
+
+      return updated;
     } catch (err) {
       setError((err as Error).message);
       console.error(`Error updating ${type}:`, err);
+      throw err;
     } finally {
       setLoading(false);
     }

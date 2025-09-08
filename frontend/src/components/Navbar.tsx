@@ -5,17 +5,28 @@ import BackpackIcon from "./Icons/BackpackIcon";
 import PieChartIcon from "./Icons/PieChartIcon";
 import BoxIcon from "./Icons/BoxIcon";
 import { useItemSelection } from "../util/useItemSelection";
+import { useAuth } from "../util/AuthContext";
 
 function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, hasPermission } = useAuth();
   const { handleAddToContainer } = useItemSelection();
 
+  if (location.pathname === "/") {
+    return null;
+  }
+
   const navItems = [
-    { label: "Dashboard", path: "/", icon: <PieChartIcon /> },
+    { label: "Dashboard", path: "/dashboard", icon: <PieChartIcon /> },
     { label: "Items", path: "/items", icon: <BackpackIcon /> },
     { label: "Tickets", path: "/tickets", icon: <TicketIcon /> },
     { label: "Containers", path: "/containers", icon: <BoxIcon /> },
+    {
+      label: "Admin",
+      path: "/admin",
+      permission: "create_user", // Only users with this permission will see it
+    },
   ];
 
   return (
@@ -67,39 +78,55 @@ function Navbar() {
           gap: 1.5,
         }}
       >
-        {navItems.map(({ label, path, icon }) => (
-          <Box key={label}>
-            <NavButton
-              label={label}
-              icon={icon}
-              active={location.pathname === path}
-              onClick={() => navigate(path)}
-            />
-            {label === "Items" && location.pathname === "/items" && (
-              <>
-                <NavButton
-                  label="New Item"
-                  onClick={() =>
-                    navigate("/items", { state: { openNewItemModal: true } })
-                  }
-                  isSubItem
-                />
-                <NavButton
-                  label="Add to Container"
-                  onClick={handleAddToContainer}
-                  isSubItem
-                />
-              </>
-            )}
-          </Box>
-        ))}
+        {navItems.map(({ label, path, icon, permission }) => {
+          // If the nav item requires a permission, and the user doesn't have it, skip rendering
+          if (permission && !hasPermission(permission)) return null;
+
+          return (
+            <Box key={label}>
+              <NavButton
+                label={label}
+                icon={icon}
+                active={location.pathname === path}
+                onClick={() => navigate(path)}
+              />
+              {label === "Items" && location.pathname === "/items" && (
+                <>
+                  <NavButton
+                    label="New Item"
+                    onClick={() =>
+                      navigate("/items", { state: { openNewItemModal: true } })
+                    }
+                    isSubItem
+                  />
+                  <NavButton
+                    label="Add to Container"
+                    onClick={handleAddToContainer}
+                    isSubItem
+                  />
+                </>
+              )}
+            </Box>
+          );
+        })}
       </Box>
 
       {/* Footer */}
       <Box mt="auto" py={2} textAlign="center">
-        <Typography variant="caption" color="text.secondary">
-          Footer
-        </Typography>
+        <Button
+          variant="contained"
+          color="secondary"
+          fullWidth
+          onClick={() => {
+            // Remove token from localStorage
+            localStorage.removeItem("token");
+            // Optionally reload user state if using AuthContext
+            // user.setUser(null); // if you expose a setter
+            navigate("/"); // redirect to login
+          }}
+        >
+          Logout
+        </Button>
       </Box>
     </Box>
   );

@@ -18,7 +18,8 @@ const ItemDetailsTab = ({
   data,
   isEditing,
   setIsEditing,
-}: ItemDetailsTabProps) => {
+  onUpdate,
+}: ItemDetailsTabProps & { onUpdate?: (updatedItem: ItemData) => void }) => {
   const initialState: ItemData = {
     article: "",
     itemID: "",
@@ -40,29 +41,32 @@ const ItemDetailsTab = ({
 
   useEffect(() => {
     if (data) {
-      setEditedData((prev) => ({
-        ...prev,
-        ...data,
-      }));
+      setEditedData({
+        article: data.article ?? "",
+        itemID: data.itemID ?? "",
+        description: data.description ?? "",
+        category: data.category ?? "",
+        type: data.type ?? "",
+        route: data.route ?? "",
+        garage: data.garage ?? "",
+        dateLost: data.dateLost ?? "",
+        status: data.status ?? "",
+        dateClaimed: data.dateClaimed ?? "",
+        imageUrl: data.imageUrl ?? "",
+        notes: data.notes ?? "",
+        collectionDetails: data.collectionDetails ?? undefined,
+      });
     }
   }, [data]);
 
-  const handleTextFieldChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ): void => {
+  const handleTextFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setEditedData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setEditedData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSelectChange = (e: SelectChangeEvent<string>): void => {
+  const handleSelectChange = (e: SelectChangeEvent<string>) => {
     const { name, value } = e.target;
-    setEditedData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setEditedData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSave = async () => {
@@ -72,9 +76,11 @@ const ItemDetailsTab = ({
     }
 
     try {
-      await editItem(updatedData);
+      const updatedItem = await editItem(updatedData);
       enqueueSnackbar("Item updated successfully", { variant: "success" });
       setIsEditing(false);
+
+      if (onUpdate && updatedItem) onUpdate(updatedItem);
     } catch (err) {
       console.error(err);
       enqueueSnackbar("Failed to update item", { variant: "error" });
@@ -92,7 +98,6 @@ const ItemDetailsTab = ({
           fullWidth
           disabled={!isEditing}
         />
-
         <TextField
           label="Description"
           name="description"

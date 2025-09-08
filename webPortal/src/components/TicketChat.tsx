@@ -1,3 +1,4 @@
+// src/components/TicketChat.tsx (Customer side)
 import { useState, useEffect, useRef, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
 import useTicketMessages from "../util/useTicketMessage";
@@ -9,28 +10,34 @@ import {
   Button,
   Paper,
   Divider,
+  Stack,
 } from "@mui/material";
 
 const TicketChat = ({ ticketId }: { ticketId: string }) => {
-  const { messages, customerName, description, error, fetchMessages } =
-    useTicketMessages(ticketId);
+  const {
+    messages,
+    customerName,
+    description,
+    error,
+    fetchMessages,
+    setMessages,
+  } = useTicketMessages(ticketId);
 
   const [newMessage, setNewMessage] = useState("");
   const socketRef = useRef<Socket | null>(null);
-  const [localMessages, setLocalMessages] = useState<Message[]>([]);
 
   const handleSendMessage = useCallback(() => {
     if (!newMessage.trim() || !socketRef.current) return;
 
     const messageData: Message = {
-      sender: customerName || "User",
+      sender: customerName || "Customer",
       message: newMessage.trim(),
       timestamp: new Date().toISOString(),
+      tag: "Customer",
     };
 
     socketRef.current.emit("sendMessage", { ticketId, ...messageData });
     setNewMessage("");
-    setLocalMessages((prev) => [...prev, messageData]);
   }, [newMessage, customerName, ticketId]);
 
   useEffect(() => {
@@ -39,9 +46,9 @@ const TicketChat = ({ ticketId }: { ticketId: string }) => {
     const socket = io(import.meta.env.VITE_API_URL);
     socketRef.current = socket;
 
-    const handleIncoming = (data: any) => {
+    const handleIncoming = (data: Message & { ticketId: string }) => {
       if (data.ticketId === ticketId) {
-        setLocalMessages((prev) => [...prev, data]);
+        setMessages((prev) => [...prev, data]);
       }
     };
 
@@ -51,22 +58,23 @@ const TicketChat = ({ ticketId }: { ticketId: string }) => {
       socket.off("newMessage", handleIncoming);
       socket.disconnect();
     };
-  }, [fetchMessages, ticketId]);
+  }, [fetchMessages, ticketId, setMessages]);
 
   const formatTime = (timestamp: string) =>
     new Date(timestamp).toLocaleString();
 
   const descriptionMessage: Message | null = description
     ? {
-        sender: customerName || "User",
+        sender: customerName || "Customer",
         message: description,
         timestamp: new Date().toISOString(),
+        tag: "Customer",
       }
     : null;
 
-  const allMessages = descriptionMessage
-    ? [descriptionMessage, ...messages, ...localMessages]
-    : [...messages, ...localMessages];
+  const allMessages: Message[] = descriptionMessage
+    ? [descriptionMessage, ...messages]
+    : [...messages];
 
   return (
     <Box
@@ -98,31 +106,44 @@ const TicketChat = ({ ticketId }: { ticketId: string }) => {
           gap: 1.5,
         }}
       >
-        {allMessages.map(({ sender, message, timestamp }, idx) => {
-          const isUser = sender === customerName;
+        {allMessages.map(({ sender, message, timestamp, company }, idx) => {
+          const isCustomerMessage = sender === customerName;
+
           return (
             <Paper
               key={idx}
               elevation={2}
               sx={{
-                alignSelf: isUser ? "flex-end" : "flex-start",
+                alignSelf: isCustomerMessage ? "flex-end" : "flex-start",
                 maxWidth: "75%",
                 p: 1.5,
-                bgcolor: isUser ? "primary.light" : "grey.200",
+                bgcolor: isCustomerMessage ? "primary.light" : "grey.200",
               }}
             >
+              <Stack direction="row" spacing={1} alignItems="center">
+                <Typography
+                  variant="subtitle2"
+                  fontWeight="bold"
+                  color={isCustomerMessage ? "primary.dark" : "text.primary"}
+                >
+                  {sender}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ fontSize: "0.75rem" }}
+                >
+                  {isCustomerMessage ? "Customer" : company || "Support"}
+                </Typography>
+              </Stack>
               <Typography
-                variant="subtitle2"
-                fontWeight="bold"
-                color={isUser ? "primary.dark" : "text.primary"}
+                variant="body1"
+                sx={{ whiteSpace: "pre-wrap", mt: 0.5 }}
               >
-                {sender}
-              </Typography>
-              <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
                 {message}
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                {formatTime(timestamp)}
+                {new Date(timestamp).toLocaleString()}
               </Typography>
             </Paper>
           );

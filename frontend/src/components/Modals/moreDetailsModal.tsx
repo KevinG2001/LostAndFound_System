@@ -33,6 +33,8 @@ interface MoreDetailsModalPropsItem {
   onClose: () => void;
   type: "item";
   data: ItemData;
+  onUpdate?: (updatedItem: ItemData) => void;
+  extraContent?: React.ReactNode;
 }
 
 interface MoreDetailsModalPropsTicket {
@@ -40,6 +42,8 @@ interface MoreDetailsModalPropsTicket {
   onClose: () => void;
   type: "ticket";
   data: Ticket;
+  onUpdate?: (updatedItem: Ticket) => void;
+  extraContent?: React.ReactNode;
 }
 
 interface MoreDetailsModalPropsContainer {
@@ -47,6 +51,8 @@ interface MoreDetailsModalPropsContainer {
   onClose: () => void;
   type: "container";
   data: ContainerData;
+  onUpdate?: (updatedItem: ContainerData) => void;
+  extraContent?: React.ReactNode;
 }
 
 type MoreDetailsModalProps =
@@ -59,33 +65,32 @@ const MoreDetailsModal = ({
   onClose,
   data,
   type,
+  onUpdate,
+  extraContent,
 }: MoreDetailsModalProps) => {
   const [activeTab, setActiveTab] = useState<
     "details" | "collection" | "history"
   >("details");
   const [isEditing, setIsEditing] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
   const [uploading, setUploading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(menuAnchorEl);
 
-  // Reset tab and editing state when modal or type changes
   useEffect(() => {
     setActiveTab("details");
     setIsEditing(false);
   }, [type, isOpen]);
 
-  // Set item image if type is item
   useEffect(() => {
     if (type === "item") {
-      setImageUrl((data as ItemData).imageUrl ?? null);
+      setImageUrl((data as ItemData).imageUrl ?? undefined);
     } else {
-      setImageUrl(null);
+      setImageUrl(undefined);
     }
   }, [data, type]);
 
-  // Handle tab changes
   const handleTabChange = (
     _: React.SyntheticEvent,
     newValue: string | number
@@ -118,6 +123,10 @@ const MoreDetailsModal = ({
       );
       const result = await res.json();
       setImageUrl(result.imageUrl);
+
+      if (onUpdate)
+        onUpdate({ ...(data as ItemData), imageUrl: result.imageUrl });
+
       enqueueSnackbar("Image uploaded successfully", { variant: "success" });
     } catch (err) {
       console.error(err);
@@ -130,7 +139,6 @@ const MoreDetailsModal = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     handleUploadImage(file);
     e.target.value = "";
   };
@@ -148,10 +156,10 @@ const MoreDetailsModal = ({
         `${import.meta.env.VITE_API_URL}/items/file/delete/${item.itemID}`,
         { method: "DELETE" }
       );
-
       if (!res.ok) throw new Error("Delete request failed");
 
-      setImageUrl(null);
+      setImageUrl(undefined);
+      if (onUpdate) onUpdate({ ...(data as ItemData), imageUrl: undefined });
       enqueueSnackbar("Image deleted", { variant: "info" });
     } catch (err) {
       console.error(err);
@@ -172,6 +180,7 @@ const MoreDetailsModal = ({
               data={data as ItemData}
               isEditing={isEditing}
               setIsEditing={setIsEditing}
+              onUpdate={onUpdate}
             />
           );
         }
@@ -180,13 +189,15 @@ const MoreDetailsModal = ({
         if (type === "container")
           return <ContainerDetailsTab data={data as ContainerData} />;
         return null;
-
       case "collection":
-        return <CollectionDetailsTab data={data} />;
-
+        return (
+          <CollectionDetailsTab
+            data={data as ItemData}
+            onUpdate={onUpdate as ((item: ItemData) => void) | undefined}
+          />
+        );
       case "history":
         return <HistoryTab data={data} />;
-
       default:
         return null;
     }
@@ -209,7 +220,6 @@ const MoreDetailsModal = ({
       </DialogTitle>
 
       <DialogContent dividers>
-        {/* Image Upload only for items */}
         {type === "item" && (
           <Box
             sx={{
@@ -304,14 +314,11 @@ const MoreDetailsModal = ({
           </Box>
         )}
 
-        {/* Tabs */}
         {(type === "item" || type === "container") && (
           <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
             <Tabs
               value={activeTab}
-              onChange={(_, newValue) =>
-                setActiveTab(newValue as "details" | "collection" | "history")
-              }
+              onChange={handleTabChange}
               textColor="primary"
               indicatorColor="primary"
             >
@@ -325,6 +332,8 @@ const MoreDetailsModal = ({
         )}
 
         <Box>{renderTabContent()}</Box>
+
+        {extraContent && <Box mt={3}>{extraContent}</Box>}
       </DialogContent>
     </Dialog>
   );

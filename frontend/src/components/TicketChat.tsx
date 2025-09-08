@@ -6,23 +6,25 @@ import {
   Paper,
   Divider,
 } from "@mui/material";
-import { useChat } from "../util/useChat";
-import { Message } from "../util/types/ticketType";
+import { useChat, Message } from "../util/useChat";
 
 interface TicketChatProps {
   ticketId: string;
   description: string;
+  senderName: string;
+  company?: string;
   maxHeight?: number | string;
 }
 
 const TicketChat = ({
   ticketId,
   description,
+  senderName,
+  company,
   maxHeight = "60vh",
 }: TicketChatProps) => {
-  const senderName = "Support";
   const { messages, newMessage, setNewMessage, handleSendMessage, error } =
-    useChat(ticketId, senderName);
+    useChat(ticketId, senderName, company);
 
   const descriptionMessage: Message | null = description
     ? {
@@ -71,7 +73,7 @@ const TicketChat = ({
           gap: 1.5,
         }}
       >
-        {allMessages.map(({ sender, message, timestamp }, idx) => {
+        {allMessages.map(({ sender, company, message, timestamp }, idx) => {
           const isUser = sender === senderName;
           return (
             <Paper
@@ -84,13 +86,26 @@ const TicketChat = ({
                 bgcolor: isUser ? "primary.light" : "grey.200",
               }}
             >
-              <Typography
-                variant="subtitle2"
-                fontWeight="bold"
-                color={isUser ? "primary.dark" : "text.primary"}
-              >
-                {sender}
-              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Typography
+                  variant="subtitle2"
+                  fontWeight="bold"
+                  color={isUser ? "primary.dark" : "text.primary"}
+                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                >
+                  {sender}
+                  {company && (
+                    <Typography
+                      component="span"
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ fontSize: "0.75rem" }}
+                    >
+                      {company}
+                    </Typography>
+                  )}
+                </Typography>
+              </Box>
               <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
                 {message}
               </Typography>
@@ -103,7 +118,6 @@ const TicketChat = ({
       </Box>
 
       <Divider sx={{ mb: 2 }} />
-
       <TextField
         multiline
         minRows={3}
@@ -113,7 +127,6 @@ const TicketChat = ({
         fullWidth
         sx={{ mb: 1 }}
       />
-
       <Button
         variant="contained"
         onClick={onSendMessage}

@@ -5,43 +5,16 @@ const router = express.Router();
 const { getNextId } = require("../util/idGenerator");
 const { formatItemDates } = require("../util/dateFormatter");
 const { uploadFileToS3, deleteFileFromS3 } = require("../util/s3Uploader");
+const authenticate = require("../middleware/authenticate");
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-router.post("/create", upload.single("image"), async (req, res) => {
-  const {
-    article,
-    description,
-    category,
-    type,
-    route,
-    garage,
-    notes,
-    dateLost,
-    status,
-  } = req.body;
-
-  if (!article || !description || !dateLost) {
-    return res.status(400).json({
-      message:
-        "Validation failed: article, description, and dateLost are required",
-    });
-  }
-
-  try {
-    const itemID = await getNextId(category);
-    let imageUrl = "";
-
-    if (req.file) {
-      imageUrl = await uploadFileToS3(
-        req.file.buffer,
-        req.file.originalname,
-        itemID,
-        req.file.mimetype
-      );
-    }
-
-    const newItem = new Item({
+router.post(
+  "/create",
+  authenticate,
+  upload.single("image"),
+  async (req, res) => {
+    const {
       article,
       description,
       category,
@@ -51,37 +24,71 @@ router.post("/create", upload.single("image"), async (req, res) => {
       notes,
       dateLost,
       status,
-      itemID,
-      imageUrl,
-      historyDetails: [
-        {
-          action: "Created",
-          date: new Date(),
-          by: "system",
-          changes: {
-            description: { from: null, to: description },
-            category: { from: null, to: category },
-            type: { from: null, to: type },
-            route: { from: null, to: route },
-            garage: { from: null, to: garage },
-            notes: { from: null, to: notes },
-            dateLost: { from: null, to: dateLost },
-            status: { from: null, to: status },
+    } = req.body;
+
+    if (!article || !description || !dateLost) {
+      return res.status(400).json({
+        message:
+          "Validation failed: article, description, and dateLost are required",
+      });
+    }
+
+    try {
+      const itemID = await getNextId(category);
+      let imageUrl = "";
+
+      if (req.file) {
+        imageUrl = await uploadFileToS3(
+          req.file.buffer,
+          req.file.originalname,
+          itemID,
+          req.file.mimetype
+        );
+      }
+
+      const newItem = new Item({
+        article,
+        description,
+        category,
+        type,
+        route,
+        garage,
+        notes,
+        dateLost,
+        status,
+        itemID,
+        imageUrl,
+        historyDetails: [
+          {
+            action: "Created",
+            date: new Date(),
+            by:
+              req.user?.username || req.user?.email || req.user?.id || "System",
+            changes: {
+              description: { from: null, to: description },
+              category: { from: null, to: category },
+              type: { from: null, to: type },
+              route: { from: null, to: route },
+              garage: { from: null, to: garage },
+              notes: { from: null, to: notes },
+              dateLost: { from: null, to: dateLost },
+              status: { from: null, to: status },
+            },
           },
-        },
-      ],
-    });
+        ],
+      });
 
-    const savedItem = await newItem.save();
+      const savedItem = await newItem.save();
 
-    res.status(201).json(savedItem);
-  } catch (error) {
-    console.error("Error saving item:", error);
-    res
-      .status(500)
-      .json({ message: "Error creating item", error: error.message });
+      res.status(201).json(savedItem);
+    } catch (error) {
+      console.error("Error saving item:", error);
+      res
+        .status(500)
+        .json({ message: "Error creating item", error: error.message });
+    }
   }
-});
+);
 
 router.get("/list", async (req, res) => {
   try {
@@ -96,7 +103,7 @@ router.get("/list", async (req, res) => {
   }
 });
 
-router.put("/update/:itemID", async (req, res) => {
+router.put("/update/:itemID", authenticate, async (req, res) => {
   const { itemID } = req.params;
   const {
     article,
@@ -192,7 +199,7 @@ router.put("/update/:itemID", async (req, res) => {
       item.historyDetails.push({
         action: "Updated",
         date: new Date(),
-        by: updatedBy || "System",
+        by: req.user?.username || req.user?.email || req.user?.id || "System",
         changes,
       });
     }
@@ -296,7 +303,7 @@ router.post("/file/upload", upload.single("image"), async (req, res) => {
     item.historyDetails.push({
       action: "Image Uploaded",
       date: new Date(),
-      by: "System",
+      by: req.user?.username || req.user?.email || req.user?.id || "System",
       changes: {
         imageUrl: { from: null, to: imageUrl },
       },
@@ -336,7 +343,7 @@ router.delete("/file/delete/:itemID", async (req, res) => {
     item.historyDetails.push({
       action: "Image Deleted",
       date: new Date(),
-      by: "System",
+      by: req.user?.username || req.user?.email || req.user?.id || "System",
       changes: {
         imageUrl: { from: oldImageUrl, to: null },
       },
