@@ -26,7 +26,14 @@ const useTicketMessages = (ticketId: string) => {
     }
   }, [ticketId]);
 
-  return { messages, customerName, description, error, fetchMessages };
+  return {
+    messages,
+    setMessages,
+    customerName,
+    description,
+    error,
+    fetchMessages,
+  };
 };
 
 export default useTicketMessages;

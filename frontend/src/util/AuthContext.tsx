@@ -4,6 +4,8 @@ import { jwtDecode } from "jwt-decode";
 interface User {
   id: string;
   username: string;
+  firstname: string;
+  company: string;
   role: string;
   permissions: string[];
 }
@@ -11,7 +13,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   hasPermission: (permission: string) => boolean;
-  login: (token: string) => void; // new
+  login: (token: string) => void;
   logout: () => void;
 }
 

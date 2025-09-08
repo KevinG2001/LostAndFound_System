@@ -6,11 +6,14 @@ import MoreDetailsModal from "../components/Modals/moreDetailsModal";
 import TotalTickets from "../components/StatBubbles/tickets/TotalTickets";
 import ClosedTickets from "../components/StatBubbles/tickets/ClosedTickets";
 import OpenTickets from "../components/StatBubbles/tickets/OpenTickets";
+import { useAuth } from "../util/AuthContext";
+import TicketChat from "../components/TicketChat";
 
 function TicketsPage() {
   const { items: tickets } = useList("tickets", "list");
   const [selectedTicket, setSelectedTicket] = useState<any | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { user } = useAuth();
 
   const theme = useTheme();
   const isSmDown = useMediaQuery(theme.breakpoints.down("sm"));
@@ -44,7 +47,6 @@ function TicketsPage() {
         pb: 2,
       }}
     >
-      {/* Stat Bubbles */}
       <Box
         sx={{
           display: "flex",
@@ -75,7 +77,6 @@ function TicketsPage() {
         ))}
       </Box>
 
-      {/* Table */}
       <Box sx={{ flexGrow: 1, mb: 4 }}>
         <TableView
           columns={columns}
@@ -84,13 +85,20 @@ function TicketsPage() {
         />
       </Box>
 
-      {/* Modal */}
       {selectedTicket && (
         <MoreDetailsModal
           isOpen={isModalOpen}
           onClose={closeModal}
           data={selectedTicket}
           type="ticket"
+          extraContent={
+            <TicketChat
+              ticketId={selectedTicket.ticketId}
+              description={selectedTicket.description}
+              senderName={user?.firstname || "Unknown Employee"}
+              company={user?.company}
+            />
+          }
         />
       )}
     </Container>

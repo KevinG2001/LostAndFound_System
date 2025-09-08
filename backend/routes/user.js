@@ -46,7 +46,13 @@ router.post("/login", async (req, res) => {
     const permissions = roleDoc ? roleDoc.permissions : [];
 
     const token = jwt.sign(
-      { id: user._id, username: user.Username, role: user.role, permissions },
+      {
+        id: user._id,
+        firstname: user.Firstname,
+        company: user.Company,
+        role: user.role,
+        permissions,
+      },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );

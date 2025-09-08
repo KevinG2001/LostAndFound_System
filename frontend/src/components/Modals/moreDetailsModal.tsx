@@ -34,6 +34,7 @@ interface MoreDetailsModalPropsItem {
   type: "item";
   data: ItemData;
   onUpdate?: (updatedItem: ItemData) => void;
+  extraContent?: React.ReactNode;
 }
 
 interface MoreDetailsModalPropsTicket {
@@ -42,6 +43,7 @@ interface MoreDetailsModalPropsTicket {
   type: "ticket";
   data: Ticket;
   onUpdate?: (updatedItem: Ticket) => void;
+  extraContent?: React.ReactNode;
 }
 
 interface MoreDetailsModalPropsContainer {
@@ -50,6 +52,7 @@ interface MoreDetailsModalPropsContainer {
   type: "container";
   data: ContainerData;
   onUpdate?: (updatedItem: ContainerData) => void;
+  extraContent?: React.ReactNode;
 }
 
 type MoreDetailsModalProps =
@@ -63,6 +66,7 @@ const MoreDetailsModal = ({
   data,
   type,
   onUpdate,
+  extraContent,
 }: MoreDetailsModalProps) => {
   const [activeTab, setActiveTab] = useState<
     "details" | "collection" | "history"
@@ -74,13 +78,11 @@ const MoreDetailsModal = ({
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(menuAnchorEl);
 
-  // Reset tab and editing state when modal or type changes
   useEffect(() => {
     setActiveTab("details");
     setIsEditing(false);
   }, [type, isOpen]);
 
-  // Set item image if type is item
   useEffect(() => {
     if (type === "item") {
       setImageUrl((data as ItemData).imageUrl ?? undefined);
@@ -89,7 +91,6 @@ const MoreDetailsModal = ({
     }
   }, [data, type]);
 
-  // Handle tab changes
   const handleTabChange = (
     _: React.SyntheticEvent,
     newValue: string | number
@@ -123,7 +124,6 @@ const MoreDetailsModal = ({
       const result = await res.json();
       setImageUrl(result.imageUrl);
 
-      // Notify parent
       if (onUpdate)
         onUpdate({ ...(data as ItemData), imageUrl: result.imageUrl });
 
@@ -189,7 +189,6 @@ const MoreDetailsModal = ({
         if (type === "container")
           return <ContainerDetailsTab data={data as ContainerData} />;
         return null;
-
       case "collection":
         return (
           <CollectionDetailsTab
@@ -197,10 +196,8 @@ const MoreDetailsModal = ({
             onUpdate={onUpdate as ((item: ItemData) => void) | undefined}
           />
         );
-
       case "history":
         return <HistoryTab data={data} />;
-
       default:
         return null;
     }
@@ -335,6 +332,8 @@ const MoreDetailsModal = ({
         )}
 
         <Box>{renderTabContent()}</Box>
+
+        {extraContent && <Box mt={3}>{extraContent}</Box>}
       </DialogContent>
     </Dialog>
   );

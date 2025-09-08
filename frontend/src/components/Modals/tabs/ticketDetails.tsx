@@ -11,7 +11,6 @@ import {
   Divider,
   SelectChangeEvent,
 } from "@mui/material";
-import TicketChat from "../../TicketChat";
 import useEdit from "../../../util/useEdit";
 
 const TicketDetailsTab = ({ data }: { data: any }) => {
@@ -106,10 +105,6 @@ const TicketDetailsTab = ({ data }: { data: any }) => {
           </Button>
         </Box>
       )}
-
-      <Box>
-        <TicketChat ticketId={data.ticketId} description={data.description} />
-      </Box>
     </Box>
   );
 };
