@@ -162,9 +162,10 @@ router.post(
 
       const hashedPassword = await bcrypt.hash(Password.trim(), 10);
 
-      const maxUser = await User.findOne().sort({ userId: -1 }).lean();
+      const lastUser = await User.findOne().sort({ _id: -1 }).lean();
+
       const newUserId =
-        maxUser && maxUser.userId ? Number(maxUser.userId) + 1 : 1;
+        lastUser && lastUser.userId ? Number(lastUser.userId) + 1 : 1;
 
       const newUser = new User({
         Username: Username.trim(),
